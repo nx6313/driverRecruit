@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img class="recruitCover" alt="RecruitCover" src="../assets/start_recruit.jpg">
-    <router-link to="/about" class="signInDriver" tag="span">注册成为网约车司机</router-link>
+    <router-link :to="getLinkTo" class="signInDriver" tag="span">注册成为网约车司机</router-link>
     <Presentation ref="fffff"/>
   </div>
 </template>
@@ -34,10 +34,13 @@ export default {
   },
   mounted() {},
   created() {
-    console.log(this.$comfun.encryptedData('secret=7jgfsec5l9jh9ybbvdq6rofhogswmuzy&token=uwjqqdrnllztafakpymunscvk15rp4sv'))
+    this.$store.dispatch('clearAll')
+    this.$store.commit('setDriverRecruitStateRule', {
+      stateRule: this.driverRecruitState
+    })
     if (!this.$comfun.hasAuthInfo(this)) {
       let myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/
-      this.$comfun.showDialogWithPrompt(this, '网址内未发现必要的参数', '是否需要登陆一个账号进行测试使用？此操作将会发送手机验证码', true, '请输入您的测试账号', myreg, '手机号正确', '手机号错误', (phoneNumber) => {
+      this.$comfun.showDialogWithPrompt(this, '网址内未发现必要的参数', '是否需要登陆一个账号进行测试使用？此操作将会发送手机验证码', true, '请输入您的测试账号', myreg, '账号格式正确', '请输入正确的手机号', (phoneNumber) => {
         this.getSms(phoneNumber)
       }, (verify) => {
         if (verify.result) {
@@ -49,6 +52,46 @@ export default {
     } else {
       // url中有必要的参数
       this.getUserDriverRecruit()
+    }
+  },
+  computed: {
+    getLinkTo: function() {
+      let link = '/'
+      if (this.userDriverRecruitState == this.driverRecruitState.USER_IS_DRIVER) {
+        // 该用户已经是司机了
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
+        // 该用户还未提交任何资料
+        link = '/baseInfo'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.AUDITING) {
+        // 该用户提交的资料正在审核中
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS) {
+        // 该用户提交的资料审核已通过，通知其来公司面试
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_NO_PASS) {
+        // 该用户提交的资料审核未通过
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_PASS) {
+        // 该用户已通过公司面试，需要阅读具体规则
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_NO_PASS) {
+        // 该用户未通过公司面试
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.RULEING) {
+        // 该用户提交的规则资料正在审核中
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_PASS) {
+        // 该用户提交的规则资料已通过审核
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_PASS_NO_UPDATE) {
+        // 该用户提交的规则资料未通过审核，不可修改
+        link = '/'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_PASS_CAN_UPDATE) {
+        // 该用户提交的规则资料未通过审核，可修改后重新提交
+        link = '/'
+      }
+      return link
     }
   },
   methods: {
@@ -69,6 +112,10 @@ export default {
       })
     },
     loginBySms: function(phone, smsCode) {
+      if (!smsCode) {
+        this.$comfun.showToast(this, '验证码不能为空')
+        return false
+      }
       this.$comfun.showLoading(this, 'loginBySms', false)
       this.$comfun.http_post(this, 'api/loginBySms', {
         phone: phone,
@@ -101,9 +148,13 @@ export default {
       this.$comfun.showLoading(this, 'applyDriver', false)
       this.$comfun.http_post(this, 'api/member/applyDriver', null).then((request) => {
         this.$comfun.hideLoading('applyDriver')
+        // eslint-disable-next-line
         console.log(request.data.msg)
         if (request.data.status == 'OK') {
           this.userDriverRecruitState = request.data.data.state
+          this.$store.commit('updateDriverRecruitState', {
+            state: request.data.data.state
+          })
         } else {
           this.$comfun.showToast(this, request.data.msg)
           if (!this.$comfun.hasAuthInfo(this)) {
