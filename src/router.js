@@ -15,6 +15,11 @@ export default new Router({
       path: '/baseInfo',
       name: 'baseInfo',
       component: () => import('./views/BaseInfo.vue')
+    },
+    {
+      path: '/baseInfoComplete',
+      name: 'baseInfoComplete',
+      component: () => import('./views/BaseInfoComplete.vue')
     }
   ]
 })

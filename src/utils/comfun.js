@@ -27,8 +27,8 @@ const dialogAlert = require('react-confirm-alert')
 
 // var server_address = "http://172.18.2.32:8080/" // 一飞
 // var server_address = "http://172.18.2.26:8080/" // 玉慧
-var server_address = "http://172.18.2.21:7777/" // 璐璐
-// var server_address = "https://www.dcchuxing.com/" // 正式服务器
+// var server_address = "http://172.18.2.21:7777/" // 璐璐
+var server_address = "https://www.dcchuxing.com/" // 正式服务器
 
 var server_address_dev = "https://dev.dcchuxing.com/" // 测试服务器
 var key = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
