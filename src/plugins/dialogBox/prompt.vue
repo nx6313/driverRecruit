@@ -137,7 +137,7 @@ export default {
       width: 70vw;
       padding: 10px;
       border-radius: 4px;
-      font-size: 0.6rem;
+      font-size: 0.7rem;
       box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
       color: #666;
       h1 {

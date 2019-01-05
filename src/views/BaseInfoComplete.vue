@@ -20,30 +20,31 @@ export default {
           label: '姓名',
           hint: '请输入您的姓名',
           type: 'text',
-          model: 'userName'
+          model: ''
         },
         {
           label: '性别',
-          type: 'radio',
-          model: 'userSex'
+          type: 'select',
+          range: [ { name: '1', value: '男' }, { name: '2', value: '女' } ],
+          model: '1'
         },
         {
           label: '身份证号',
           hint: '请输入您的身份证号',
           type: 'text',
-          model: 'userIdCard'
+          model: ''
         },
         {
           label: '现居住地',
           hint: '请输入您的现居住地',
           type: 'text',
-          model: 'userAddrss'
+          model: ''
         },
         {
           label: '驾驶证',
           hint: '请输入您的驾驶证',
           type: 'text',
-          model: 'userDriverType'
+          model: ''
         }
       ]
     }

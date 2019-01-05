@@ -33,4 +33,10 @@ div.react-confirm-alert-overlay {
     }
   }
 }
+
+input {
+  outline: none;
+  -webkit-appearance: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
 </style>
