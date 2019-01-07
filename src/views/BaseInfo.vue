@@ -37,11 +37,11 @@ export default {
 .toNextStep {
   position: relative;
   display: block;
-  width: 92vw;
+  width: calc(100% - 2.4rem);
   background: #2b2b2b;
   color: #ffffff;
   text-align: center;
-  left: 4vw;
+  left: 1.2rem;
   padding-top: 0.6rem;
   padding-bottom: 0.6rem;
   margin-top: 1.8rem;

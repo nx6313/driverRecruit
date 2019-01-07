@@ -6,11 +6,9 @@ import router from './router'
 import VueUi from '@vue/ui'
 import '@vue/ui/dist/vue-ui.css'
 import ComFun from '@/utils/comfun.js'
+import VConsole from '@/utils/vconsole.js'
 import { SOME_MUTATION } from '@/utils/mutation-types'
 
-if (process.env.NODE_ENV == 'development') {
-  require('@/utils/vconsole.js')
-}
 Vue.config.productionTip = false
 Vue.config.devtools = true
 Vue.use(Vuex)
@@ -22,8 +20,12 @@ const store = new Vuex.Store({
     // eslint-disable-next-line
     clearAll({ commit, state }) {
       for (let mudule in state) {
-        for (let key in state[mudule]) {
-          state[mudule][key] = null
+        if (Object.prototype.toString.call(state[mudule]) == '[object Object]') {
+          for (let key in state[mudule]) {
+            state[mudule][key] = null
+          }
+        } else {
+          state[mudule] = null
         }
       }
     }
@@ -65,6 +67,10 @@ const store = new Vuex.Store({
     }
   }
 })
+
+if (process.env.NODE_ENV == 'development') {
+  Vue.use(VConsole, { vuexStore: store })
+}
 
 new Vue({
   router,

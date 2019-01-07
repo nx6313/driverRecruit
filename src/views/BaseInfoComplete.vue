@@ -42,8 +42,21 @@ export default {
         },
         {
           label: '驾驶证',
-          hint: '请输入您的驾驶证',
-          type: 'text',
+          type: 'select',
+          range: [ { name: '1', value: 'C1' }, { name: '2', value: 'C2' } ],
+          model: '1'
+        },
+        {
+          label: '手机号',
+          hint: '请输入您的手机号',
+          type: 'sendSmsCode',
+          model: ''
+        },
+        {
+          label: '验证码',
+          hint: '请输入您的现居住地',
+          type: 'smsCodeText',
+          codeCount: 6,
           model: ''
         }
       ]
@@ -61,11 +74,11 @@ export default {
 .toSubmit {
   position: relative;
   display: block;
-  width: 92vw;
+  width: calc(100% - 2.4rem);
   background: #2b2b2b;
   color: #ffffff;
   text-align: center;
-  left: 4vw;
+  left: 1.2rem;
   padding-top: 0.6rem;
   padding-bottom: 0.6rem;
   margin-top: 1.8rem;
