@@ -64,13 +64,24 @@ const store = new Vuex.Store({
         }
       },
       actions: {}
+    },
+    // 用户司机招募相关信息
+    driverRecruitData: {
+      state: {
+        baseInfo: null
+      },
+      getters: {},
+      mutations: {
+        [SOME_MUTATION.setDriverRecruitData_BaseInfo] (state, payload) {
+          state.baseInfo = payload.baseInfo
+        }
+      },
+      actions: {}
     }
   }
 })
 
-if (process.env.NODE_ENV == 'development') {
-  Vue.use(VConsole, { vuexStore: store })
-}
+Vue.use(VConsole, { vuexStore: store })
 
 new Vue({
   router,

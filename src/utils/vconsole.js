@@ -34,10 +34,38 @@ export default {
 		vconsole.addPlugin(vuexPlugin)
 
 		vconsole.setOption('onReady', ()=> {
-			setTimeout(() => {
-				initSpecialVConsole(vconsole)
-			}, 100)
+			let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
+			if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
+			if (process.env.NODE_ENV == 'production') {
+				// 生产环境，隐藏日志面板控制开关
+				vconsole.hideSwitch()
+				// 添加一个很小的隐藏区域用于打开日志面板
+				let minSwitchArea = document.createElement('div')
+				minSwitchArea.id = '__minVcSwitch'
+				minSwitchArea.style = `position: fixed; left: 0; right: 0; bottom: 0; margin: 0 auto; width: 10px; height: 2px; border-radius: 10px 10px 0 0;`
+				document.body.parentNode.appendChild(minSwitchArea)
+				let clickMinSwitchTime = null
+				let clickMinSwitchCount = 0
+				vconsole.$.bind(minSwitchArea, 'click', function(event) {
+					event.preventDefault()
+					clearTimeout(clickMinSwitchTime)
+					clickMinSwitchTime = setTimeout(() => {
+						clickMinSwitchCount = 0
+					}, 400)
+					clickMinSwitchCount++
+					if (clickMinSwitchCount > 9) {
+						vconsole.show()
+						clickMinSwitchCount = 0
+						clearTimeout(clickMinSwitchTime)
+					}
+				})
+			}
+			initSpecialVConsole(vconsole)
 		})
+
+		Vue.prototype.$vconsole = vconsole
+		Vue.prototype.$vctool = vconsole.tool
+		Vue.prototype.$vcdom = vconsole.$
 	}
 }
 

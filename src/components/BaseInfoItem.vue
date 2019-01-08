@@ -23,7 +23,7 @@
         <VueSwitch class="radioSwitch" v-if="input.type == 'radio'" v-model="input.model"></VueSwitch>
         <div class="sendSmsCodeWrap" v-if="input.type == 'sendSmsCode'">
           <input class="textInput" type="text" :placeholder="input.hint" v-model="input.model">
-          <VueButton :class="['sendBtn', canUseSendSmsCodeBtn(input.model)]" @click="sendSmsCode(input.model)">{{hasSendSmsCode ? `${sendSmsCodeTime}秒后重新发送` : '发送验证码'}}</VueButton>
+          <VueButton :class="['sendBtn', canUseSendSmsCodeBtn(input.model)]" @click="sendSmsCode(input.model, input)">{{hasSendSmsCode ? `${sendSmsCodeTime}秒后重新发送` : '发送验证码'}}</VueButton>
         </div>
         <div class="smsCodeTextWrap" v-if="input.type == 'smsCodeText'">
           <input class="textInput" type="text" v-model="input.model" :maxlength="input.codeCount" v-focus="[codeBox, index]" v-on:input="codeBoxInput(input.model, index)" v-on:blur="codeBoxBlur(index)">
@@ -60,7 +60,7 @@ export default {
     },
     inputs: {
       /**
-       * label、model、hint、type(text、radio、select、sendSmsCode、smsCodeText)、range(对于select)、codeCount(对于smsCodeText)
+       * label、model、hint、type(text、radio、select、sendSmsCode、smsCodeText)、range(对于select)、send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)
        */
       default() {
         return []
@@ -152,8 +152,13 @@ export default {
       }
       return 'cantUse'
     },
-    sendSmsCode: function(phone) {
+    sendSmsCode: function(phone, input) {
       if (this.canUseSendSmsCodeBtn(phone) == 'canUse') {
+        this.$comfun.showLoading(this, 'sendSmsCodeForDriverRecruitBaseInfo', false)
+        input.send(phone).then((request) => {
+          this.$comfun.hideLoading('sendSmsCodeForDriverRecruitBaseInfo')
+          input.callBack(request)
+        })
         this.hasSendSmsCode = true
         let lockTime = setInterval(() => {
           this.sendSmsCodeTime--
@@ -178,7 +183,7 @@ export default {
       for (let i = 0; i < value.length; i++) {
         this.codeBox.get(String(keyIndex)).codeBoxArray[i] = value.split("")[i]
       }
-      this.currentInputCodeBox = value.length > this.codeBox.get(String(keyIndex)).inputInfo.codeCount - 1 ? this.codeBox.get(String(keyIndex)).inputInfo.codeCount - 1 : value.length
+      this.currentInputCodeBox = value.length > inputInfo.codeCount - 1 ? inputInfo.codeCount - 1 : value.length
     },
     codeBoxBlur: function(keyIndex) {
       this.codeBox.get(String(keyIndex)).focus = false
@@ -370,6 +375,17 @@ export default {
       font-weight: bold;
       animation: codeBoxInput 0.6s infinite alternate;
     }
+    .isInput::after {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 0.4rem;
+      right: 0.4rem;
+      bottom: 0.32rem;
+      height: 1px;
+      background: #2c2c2c;
+      animation: codeBoxInputAfter 0.6s infinite alternate;
+    }
   }
 }
 .formInputItem::after {
@@ -388,7 +404,11 @@ export default {
 }
 
 @keyframes codeBoxInput {
-  0% { background: #4dafc0; }
+  0% { background: #4dafc0; color: #073535; }
+  100% { background: #ffffff; color: #33374b; }
+}
+@keyframes codeBoxInputAfter {
+  0% { background: #2c2c2c; }
   100% { background: #ffffff; }
 }
 </style>

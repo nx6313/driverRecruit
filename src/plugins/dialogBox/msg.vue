@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" id="dialog-msg-wrap" class="dialog-msg-wrap">
-    <div class="msg-shade animated fadeIn"></div>
+    <div class="msg-shade animated fadeIn" @click="closeMsg"></div>
     <div class="msg-content animated fadeIn" ref="msg-content">
       <div>{{msg}}</div>
     </div>
@@ -77,7 +77,7 @@ export default {
     color: #ffffff;
     border-radius: 3px;
     padding: 0 0.9rem;
-    box-shadow: 0 0 2px #000000a8;
+    box-shadow: 0 0 8px #33333336;
   }
 }
 </style>

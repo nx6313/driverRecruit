@@ -40,4 +40,21 @@ input {
   -webkit-appearance: none !important;
   -webkit-tap-highlight-color: transparent;
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  border: none;
+}
+
+div#__vconsole {
+  user-select: none;
+  div#__vc_log_default {
+    div.vc-log {
+      padding-bottom: 0 !important;
+    }
+  }
+}
 </style>
