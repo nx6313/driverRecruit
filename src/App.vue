@@ -20,6 +20,7 @@
 body, html {
   padding: 0;
   margin: 0;
+  background: #F5F5F5 !important;
 }
 
 div.react-confirm-alert-overlay {
@@ -42,8 +43,7 @@ input {
 }
 
 ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+  display: none;
 }
 ::-webkit-scrollbar-thumb {
   border: none;

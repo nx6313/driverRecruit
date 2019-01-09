@@ -8,6 +8,7 @@
 
 <script>
 import Presentation from '@/components/Presentation.vue'
+import { SOME_RULES } from '@/utils/rules'
 
 export default {
   name: 'home',
@@ -39,7 +40,7 @@ export default {
       stateRule: this.driverRecruitState
     })
     if (!this.$comfun.hasAuthInfo(this)) {
-      let myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/
+      let myreg = SOME_RULES.phone
       this.$comfun.showDialogWithPrompt(this, '网址内未发现必要的参数', '是否需要登陆一个账号进行测试使用？此操作将会发送手机验证码', true, '请输入您的测试账号', myreg, '账号格式正确', '请输入正确的手机号', (phoneNumber) => {
         this.getSms(phoneNumber)
       }, (verify) => {
@@ -62,10 +63,10 @@ export default {
         link = '/'
       } else if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
         // 该用户还未提交任何资料
-        link = '/baseInfo'
+        link = '/cardInfo'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDITING) {
         // 该用户提交的资料正在审核中
-        link = '/'
+        link = '/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS) {
         // 该用户提交的资料审核已通过，通知其来公司面试
         link = '/'
@@ -97,7 +98,7 @@ export default {
   methods: {
     getSms: function(phone) {
       this.$comfun.showLoading(this, 'getSms', false)
-      this.$comfun.http_post(this, 'api/getSms', {
+      this.$comfun.http_get(this, 'api/getSms', {
         phone: phone
       }).then((request) => {
         this.$comfun.hideLoading('getSms')

@@ -77,6 +77,11 @@ export default {
   methods: {
     toSubmit: function() {
       // 判断用户的身份证照片、驾驶证照片信息是否完整
+      if (!(this.$store.state.driverRecruitData.cardInfo && this.$store.state.driverRecruitData.cardInfo.idCardA && this.$store.state.driverRecruitData.cardInfo.idCardB
+        && this.$store.state.driverRecruitData.cardInfo.driveCardA && this.$store.state.driverRecruitData.cardInfo.driveCardB)) {
+          this.$comfun.showToast(this, '证件照信息不完善，无法提交')
+          return false
+      }
       // 判断用户填写的完善信息是否完整
       if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
       if (this.input1[2].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的身份证号'); return false }
@@ -84,17 +89,23 @@ export default {
       if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的手机号'); return false }
       if (this.input1[6].model.trim() == '') { this.$comfun.showToast(this, '请先输入您收到的短信验证码'); return false }
       this.$comfun.showLoading(this, 'baseInfoApplyInfo', false)
+      this.submit()
+    },
+    submit: function() {
+      let health = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q1.answer : null
+      let league = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q2.answer : null
+      let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       this.$comfun.http_post(this, 'api/member/applyInfo', {
-        'apply.idcard_positive': phone,
-        'apply.idcard_reverse': phone,
-        'apply.driverlicense_positive': phone,
-        'apply.driverlicense_reverse': phone,
-        'apply.health': phone,
-        'apply.health_other': phone,
-        'apply.league': phone,
-        'apply.league_other': phone,
-        'apply.experience': phone,
-        'apply.experience_other': phone,
+        'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
+        'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
+        'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
+        'apply.driverlicense_reverse': this.$store.state.driverRecruitData.cardInfo.driveCardB,
+        'apply.health': health != null && this.$vctool.isArray(health) ? health.map(v => { return v.answer }).join(',') : null,
+        'apply.health_other': health != null && !this.$vctool.isArray(health) ? health : null,
+        'apply.league': league != null && this.$vctool.isArray(league) ? league.map(v => { return v.answer }).join(',') : null,
+        'apply.league_other': league != null && !this.$vctool.isArray(league) ? league : null,
+        'apply.experience': experience != null && this.$vctool.isArray(experience) ? experience.map(v => { return v.answer }).join(',') : null,
+        'apply.experience_other': experience != null && !this.$vctool.isArray(experience) ? experience : null,
         'apply.person_name': this.input1[0].model.trim(),
         'apply.person_sex': this.input1[1].model,
         'apply.idcar_no': this.input1[2].model.trim(),
@@ -106,6 +117,7 @@ export default {
         this.$comfun.hideLoading('baseInfoApplyInfo')
         if (request.data.status == 'OK') {
           // 基本信息资料提交成功，跳转到信息展示页面
+          this.$router.replace('/auditResult')
         } else {
           this.$comfun.showToast(this, request.data.msg)
         }

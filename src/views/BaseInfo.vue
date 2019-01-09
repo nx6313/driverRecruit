@@ -23,6 +23,9 @@ export default {
       answers_3: ['滴滴', '首汽', '曹操专车', '神州专车']
     }
   },
+  created() {
+    // this.$store.dispatch('clearDriverRecruitData_BaseInfo')
+  },
   methods: {
     toNext: function() {
       let question1 = this.$refs.question1.getResult()

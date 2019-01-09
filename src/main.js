@@ -22,7 +22,13 @@ const store = new Vuex.Store({
       for (let mudule in state) {
         if (Object.prototype.toString.call(state[mudule]) == '[object Object]') {
           for (let key in state[mudule]) {
-            state[mudule][key] = null
+            if (Object.prototype.toString.call(state[mudule][key]) == '[object Object]') {
+              for (let nextKey in state[mudule][key]) {
+                state[mudule][key][nextKey] = null
+              }
+            } else {
+              state[mudule][key] = null
+            }
           }
         } else {
           state[mudule] = null
@@ -68,15 +74,40 @@ const store = new Vuex.Store({
     // 用户司机招募相关信息
     driverRecruitData: {
       state: {
+        cardInfo: {
+          idCardA: null,
+          idCardB: null,
+          driveCardA: null,
+          driveCardB: null
+        },
         baseInfo: null
       },
-      getters: {},
+      getters: {
+        cardIsComplete(state) {
+          return state.cardInfo.idCardA != null && state.cardInfo.idCardB != null && state.cardInfo.driveCardA != null && state.cardInfo.driveCardB != null
+        }
+      },
       mutations: {
+        [SOME_MUTATION.setDriverRecruitData_CardInfo] (state, payload) {
+          state.cardInfo = payload.cardInfo
+        },
         [SOME_MUTATION.setDriverRecruitData_BaseInfo] (state, payload) {
           state.baseInfo = payload.baseInfo
         }
       },
-      actions: {}
+      actions: {
+        clearDriverRecruitData_CardInfo({ commit, state }) {
+          state.cardInfo = {
+            idCardA: null,
+            idCardB: null,
+            driveCardA: null,
+            driveCardB: null
+          }
+        },
+        clearDriverRecruitData_BaseInfo({ commit, state }) {
+          state.baseInfo = null
+        }
+      }
     }
   }
 })

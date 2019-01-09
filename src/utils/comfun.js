@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import axios from 'axios'
-import VueAxios from 'vue-axios'
 import CryptoJS from 'crypto-js'
 import Loading from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/vue-loading.css'
@@ -8,7 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 import '@/plugins/animate.css'
 import Dialogbox from '@/plugins/dialogBox/index.js'
 
-const MyAxios = axios.create({
+const Axios = axios.create({
   transformRequest: [function (data) {
     // 将数据转换为表单数据
     let ret = ''
@@ -16,10 +15,13 @@ const MyAxios = axios.create({
       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
     }
     return ret
-  }]
+  }],
+  timeout: 10000
+})
+const FileAxios = axios.create({
+  timeout: 10000
 })
 
-Vue.use(VueAxios, MyAxios)
 Vue.use(CryptoJS)
 Vue.use(Loading)
 Vue.use(Dialogbox)
@@ -27,8 +29,8 @@ const dialogAlert = require('react-confirm-alert')
 
 // var server_address = "http://172.18.2.32:8080/" // 一飞
 // var server_address = "http://172.18.2.26:8080/" // 玉慧
-// var server_address = "http://172.18.2.21:7777/" // 璐璐
-var server_address = "https://www.dcchuxing.com/" // 正式服务器
+var server_address = "http://172.18.2.21:7777/" // 璐璐
+// var server_address = "https://www.dcchuxing.com/" // 正式服务器
 
 var server_address_dev = "https://dev.dcchuxing.com/" // 测试服务器
 var key = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
@@ -57,6 +59,7 @@ export default {
           'token': !this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token,
           'secret': !this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret
         }
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
         var axiosOptions = {
           method: 'GET',
           headers: headers
@@ -67,11 +70,9 @@ export default {
           axiosOptions.url = server_address + url
         }
         if (params) {
-          axiosOptions.data = params
-          headers['Content-Type'] = 'application/x-www-form-urlencoded'
-          axiosOptions.headers = headers
+          axiosOptions.params = params
         }
-        return context.axios(axiosOptions)
+        return Axios(axiosOptions)
       },
       http_post: function (context, url, params) {
         let token = null
@@ -91,6 +92,7 @@ export default {
           'token': !this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token,
           'secret': !this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret
         }
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
         var axiosOptions = {
           method: 'POST',
           headers: headers
@@ -102,10 +104,46 @@ export default {
         }
         if (params) {
           axiosOptions.data = params
-          headers['Content-Type'] = 'application/x-www-form-urlencoded'
-          axiosOptions.headers = headers
         }
-        return context.axios(axiosOptions)
+        return Axios(axiosOptions)
+      },
+      http_file: function (context, url, file) {
+        let token = null
+        let secret = null
+        if (this.hasAuthInfoInUrl()) {
+          token = this.getRequestAuto('token')
+          secret = this.getRequestAuto('secret')
+          context.$store.commit('updateAuth', {
+            secret: secret,
+            token: token,
+            serviceType: context.$store.state.auth.serviceType
+          })
+        }
+        var headers = {
+          'appType': 2, // 请求的类型 1：司机、2：普通会员
+          'devicetype': 5,
+          'token': !this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token,
+          'secret': !this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret
+        }
+        headers['Content-Type'] = 'multipart/form-data'
+        var axiosOptions = {
+          method: 'POST',
+          headers: headers,
+          onUploadProgress: (progressEvent) => {
+            let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            // eslint-disable-next-line
+            console.log(`文件【${file.name}】上传进度：${percentCompleted} %`)
+          }
+        }
+        if (this.isDev(context)) {
+          axiosOptions.url = server_address_dev + url
+        } else {
+          axiosOptions.url = server_address + url
+        }
+        let formData = new FormData()
+        formData.append('file', file)
+        axiosOptions.data = formData
+        return FileAxios(axiosOptions)
       },
       // 判断当前是否为测试服访问
       isDev: function (context) {
@@ -454,6 +492,14 @@ export default {
           }
         }
         return index
+      },
+      // 判断是否为空对象
+      isEmptyObject: function(obj) {
+        // eslint-disable-next-line
+        for (let key in obj) {
+          return false
+        }
+        return true
       }
     }
 

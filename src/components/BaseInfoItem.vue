@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import { SOME_RULES } from '@/utils/rules'
+
 export default {
   name: 'BaseInfoItem',
   props: {
@@ -147,7 +149,7 @@ export default {
       }
     },
     canUseSendSmsCodeBtn: function(phone) {
-      if (phone && /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(phone.trim()) && !this.hasSendSmsCode) {
+      if (phone && SOME_RULES.phone.test(phone.trim()) && !this.hasSendSmsCode) {
         return 'canUse'
       }
       return 'cantUse'
