@@ -3,5 +3,6 @@ export const SOME_MUTATION = {
     updateDriverRecruitState: 'updateDriverRecruitState', // 更新用户司机招募相关状态
     setDriverRecruitStateRule: 'setDriverRecruitStateRule', // 设置用户司机招募状态规则
     setDriverRecruitData_CardInfo: 'setDriverRecruitData_CardInfo', // 设置用户司机招募证件照片
-    setDriverRecruitData_BaseInfo: 'setDriverRecruitData_BaseInfo' // 设置用户司机招募基本信息
+    setDriverRecruitData_BaseInfo: 'setDriverRecruitData_BaseInfo', // 设置用户司机招募基本信息
+    setDriverRecruitData_AuditState: 'setDriverRecruitData_AuditState' // 设置用户司机招募资料审核状态信息
 }

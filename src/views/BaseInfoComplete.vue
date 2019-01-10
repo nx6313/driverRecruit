@@ -116,6 +116,16 @@ export default {
       }).then((request) => {
         this.$comfun.hideLoading('baseInfoApplyInfo')
         if (request.data.status == 'OK') {
+          this.$store.commit('setDriverRecruitData_AuditState', {
+            auditState: {
+              state: true,
+              auditPass: false,
+              personName: this.$store.state.driverRecruitData.auditState.personName,
+              phone: this.$store.state.driverRecruitData.auditState.phone,
+              personSex: this.$store.state.driverRecruitData.auditState.personSex,
+              time: this.$store.state.driverRecruitData.auditState.time
+            }
+          })
           // 基本信息资料提交成功，跳转到信息展示页面
           this.$router.replace('/auditResult')
         } else {

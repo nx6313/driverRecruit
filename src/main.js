@@ -80,7 +80,15 @@ const store = new Vuex.Store({
           driveCardA: null,
           driveCardB: null
         },
-        baseInfo: null
+        baseInfo: null,
+        auditState: {
+          state: null,
+          auditPass: null,
+          personName: null,
+          phone: null,
+          personSex: null,
+          time: null
+        }
       },
       getters: {
         cardIsComplete(state) {
@@ -93,6 +101,9 @@ const store = new Vuex.Store({
         },
         [SOME_MUTATION.setDriverRecruitData_BaseInfo] (state, payload) {
           state.baseInfo = payload.baseInfo
+        },
+        [SOME_MUTATION.setDriverRecruitData_AuditState] (state, payload) {
+          state.auditState = payload.auditState
         }
       },
       actions: {

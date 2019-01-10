@@ -156,6 +156,18 @@ export default {
           this.$store.commit('updateDriverRecruitState', {
             state: request.data.data.state
           })
+          let aduitingState = this.userDriverRecruitState == this.driverRecruitState.AUDITING
+          let auditPassState = this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS
+          this.$store.commit('setDriverRecruitData_AuditState', {
+            auditState: {
+              state: aduitingState,
+              auditPass: auditPassState,
+              personName: request.data.data.personName,
+              phone: request.data.data.phone,
+              personSex: request.data.data.personSex,
+              time: request.data.data.time ? request.data.data.time.replace(/\-/g, "/") : null
+            }
+          })
         } else {
           this.$comfun.showToast(this, request.data.msg)
           if (!this.$comfun.hasAuthInfo(this)) {

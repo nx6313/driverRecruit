@@ -266,6 +266,7 @@ export default {
       // (new Date()).format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
       // (new Date()).format("yyyy-M-d h:m:s.S") ==> 2006-7-2 8:9:4.18
       formatDate: function (date, fmt) {
+        console.log(date)
         if (date) {
           var o = {
             'M+': date.getMonth() + 1, // 月份
