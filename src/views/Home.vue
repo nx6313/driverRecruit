@@ -69,13 +69,13 @@ export default {
         link = '/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS) {
         // 该用户提交的资料审核已通过，通知其来公司面试
-        link = '/'
+        link = '/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_NO_PASS) {
         // 该用户提交的资料审核未通过
-        link = '/'
+        link = '/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_PASS) {
         // 该用户已通过公司面试，需要阅读具体规则
-        link = '/'
+        link = '/policyRuleList'
       } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_NO_PASS) {
         // 该用户未通过公司面试
         link = '/'
@@ -147,7 +147,7 @@ export default {
     },
     getUserDriverRecruit: function() {
       this.$comfun.showLoading(this, 'applyDriver', false)
-      this.$comfun.http_post(this, 'api/member/applyDriver', null).then((request) => {
+      this.$comfun.http_post(this, 'api/member/applyDriver').then((request) => {
         this.$comfun.hideLoading('applyDriver')
         // eslint-disable-next-line
         console.log(request.data.msg)
@@ -157,7 +157,7 @@ export default {
             state: request.data.data.state
           })
           let aduitingState = this.userDriverRecruitState == this.driverRecruitState.AUDITING
-          let auditPassState = this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS
+          let auditPassState = this.userDriverRecruitState != this.driverRecruitState.AUDIT_NO_PASS
           this.$store.commit('setDriverRecruitData_AuditState', {
             auditState: {
               state: aduitingState,
@@ -165,6 +165,7 @@ export default {
               personName: request.data.data.personName,
               phone: request.data.data.phone,
               personSex: request.data.data.personSex,
+              // eslint-disable-next-line
               time: request.data.data.time ? request.data.data.time.replace(/\-/g, "/") : null
             }
           })

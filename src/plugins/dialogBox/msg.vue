@@ -70,6 +70,7 @@ export default {
   z-index: 999999;
   -vendor-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  user-select: none;
   div {
     position: relative;
     display: inline-block;

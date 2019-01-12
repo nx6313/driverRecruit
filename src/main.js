@@ -107,6 +107,7 @@ const store = new Vuex.Store({
         }
       },
       actions: {
+        // eslint-disable-next-line
         clearDriverRecruitData_CardInfo({ commit, state }) {
           state.cardInfo = {
             idCardA: null,
@@ -115,6 +116,7 @@ const store = new Vuex.Store({
             driveCardB: null
           }
         },
+        // eslint-disable-next-line
         clearDriverRecruitData_BaseInfo({ commit, state }) {
           state.baseInfo = null
         }

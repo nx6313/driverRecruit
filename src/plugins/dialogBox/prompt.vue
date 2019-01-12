@@ -115,6 +115,7 @@ export default {
 
 <style lang="less" scoped>
 .react-confirm-alert {
+  user-select: none;
   div.react-confirm-alert-overlay {
     position: fixed;
     top: 0;

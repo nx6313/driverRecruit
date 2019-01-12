@@ -40,7 +40,7 @@ export default {
         }
       } else {
         this.saveUserBaseInfo(question1, question2, question3)
-          this.$router.push('/baseInfoComplete')
+        this.$router.push('/baseInfoComplete')
       }
     },
     saveUserBaseInfo: function(question1, question2, question3) {
