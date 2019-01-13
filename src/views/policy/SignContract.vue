@@ -1,5 +1,6 @@
 <template>
     <div class="signContract">
+        <span class="toSignBtn" @click="toSign">{{signImgData == null ? '点击签名' : ''}}<img v-if="signImgData != null" :src="signImgData"></span>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
     </div>
@@ -10,7 +11,8 @@ export default {
     name: 'signContract',
     data() {
         return {
-            canReadFinishTime: 60 // 可以点击阅读完毕的倒计时
+            canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
+            signImgData: null
         }
     },
     created() {
@@ -23,6 +25,11 @@ export default {
         }, 1000)
     },
     methods: {
+        toSign: function() {
+            this.$comfun.showSignPanel(this, (base64, imgFile) => {
+                this.signImgData = base64
+            })
+        },
         readFinish: function() {
 
         }
@@ -31,7 +38,39 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.toSignBtn {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 4rem;
+    line-height: 4rem;
+    background: #e7dc9b;
+    text-align: center;
+    font-size: 0.9rem;
+    margin: 2rem 2rem 3rem;
+    float: right;
+    img {
+        position: absolute;
+        width: 4rem;
+        height: 8rem;
+        top: -2rem;
+        left: 2rem;
+        transform: rotate(-90deg);
+        transform-origin: center center;
+    }
+}
+.toSignBtn::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #303030;
+}
+
 .readFinish {
+  clear: both;
   position: relative;
   display: block;
   width: calc(100% - 2.4rem);
