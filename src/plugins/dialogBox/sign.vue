@@ -37,7 +37,7 @@ export default {
       canvasContext: null,
       lineWidth: 4,
       lineColor: '#303030',
-      callBack: (base64, imgFile) => {}
+      callBack: () => {}
     }
   },
   beforeMount () {

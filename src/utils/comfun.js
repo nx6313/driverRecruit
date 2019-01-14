@@ -261,7 +261,7 @@ export default {
       },
       // 显示签名面板
       showSignPanel: function(context, callBack) {
-        if (callBack === undefined) callBack = (base64, imgFile) => {}
+        if (callBack === undefined) callBack = () => {}
         context.$dialog_sign({
           callBack: callBack
         })

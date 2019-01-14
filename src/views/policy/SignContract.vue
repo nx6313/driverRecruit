@@ -1,8 +1,8 @@
 <template>
     <div class="signContract">
         <span class="toSignBtn" @click="toSign">{{signImgData == null ? '点击签名' : ''}}<img v-if="signImgData != null" :src="signImgData"></span>
-        <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
-        <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
+        <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">签字完毕确认</span>
+        <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 签字完毕确认`}}</span>
     </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
     name: 'signContract',
     data() {
         return {
-            canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
+            canReadFinishTime: 60, // 可以点击签字完毕确认的倒计时
             signImgData: null
         }
     },
@@ -62,11 +62,12 @@ export default {
 .toSignBtn::after {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: -0.4rem;
+    right: -0.4rem;
+    bottom: 0.4rem;
     height: 1px;
-    background: #303030;
+    background: #8a8a8a;
+    pointer-events: none;
 }
 
 .readFinish {

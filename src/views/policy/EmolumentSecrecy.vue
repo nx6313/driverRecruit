@@ -1,5 +1,9 @@
 <template>
-    <div class="emolumentSecrecy">
+    <!-- 薪酬保密承诺书 -->
+    <div class="emolumentSecrecy" v-if="userInfo">
+        <div class="policyContentWrap">
+            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(new Date(), 'yyyy')}} 年 {{$comfun.formatDate(new Date(), 'MM')}} 月 {{$comfun.formatDate(new Date(), 'dd')}} 日郑重承诺在职期间严格遵守公司的薪资保密制度，不以任何方式向任何人透漏自己或询问其他人员的薪酬状况；不议论与员工薪资有关的任何信息。如有违反，愿意承担当月工资 50% 的罚款，同时接受公司根据《人力资源管理手册》进行的处罚，直至解聘，并自愿承担由此产生的一切后果。</p>
+        </div>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
     </div>
@@ -10,8 +14,12 @@ export default {
     name: 'emolumentSecrecy',
     data() {
         return {
-            canReadFinishTime: 60 // 可以点击阅读完毕的倒计时
+            canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
+            userInfo: null
         }
+    },
+    mounted() {
+        this.userInfo = this.$store.state.driverRecruitData.auditState
     },
     created() {
         let lockTime = setInterval(() => {
@@ -31,6 +39,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.policyContentWrap {
+    position: relative;
+    padding: 1rem 1rem 0.7rem;
+    text-indent: 2em;
+    font-size: 0.9rem;
+    line-height: 1.8rem;
+    color: #33374b;
+    text-align: left;
+}
+
 .readFinish {
   position: relative;
   display: block;

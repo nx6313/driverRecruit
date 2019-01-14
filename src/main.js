@@ -88,6 +88,10 @@ const store = new Vuex.Store({
           phone: null,
           personSex: null,
           time: null
+        },
+        policyDataInfo: {
+          salaryCard: null,
+          noCrimeRecord: null
         }
       },
       getters: {
@@ -104,6 +108,9 @@ const store = new Vuex.Store({
         },
         [SOME_MUTATION.setDriverRecruitData_AuditState] (state, payload) {
           state.auditState = payload.auditState
+        },
+        [SOME_MUTATION.setDriverRecruitData_PolicyDataInfo] (state, payload) {
+          state.policyDataInfo[payload.key] = payload.value
         }
       },
       actions: {
