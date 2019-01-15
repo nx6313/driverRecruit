@@ -39,6 +39,7 @@ export default {
             auditPass: this.isAuditPass,
             personName: request.data.data.personName,
             phone: request.data.data.phone,
+            idcarNo: request.data.data.idcarNo,
             personSex: request.data.data.personSex,
             // eslint-disable-next-line
             time: request.data.data.time ? request.data.data.time.replace(/\-/g, "/") : null

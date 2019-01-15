@@ -2,7 +2,7 @@
     <!-- 入职须知 -->
     <div class="entryNotice" v-if="userInfo">
         <div class="policyContentWrap">
-            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(new Date(), 'yyyy')}} 年 {{$comfun.formatDate(new Date(), 'MM')}} 月 {{$comfun.formatDate(new Date(), 'dd')}} 日自愿加入山西大昌网约车服务有限公司，本人承诺积极配合公司经办人员办理相关入职手续，并于 5 个工作日之内完成以下手续办理及材料提交，如果超过时限，将视为我自动放弃在贵公司的工作机会。</p>
+            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日自愿加入山西大昌网约车服务有限公司，本人承诺积极配合公司经办人员办理相关入职手续，并于 5 个工作日之内完成以下手续办理及材料提交，如果超过时限，将视为我自动放弃在贵公司的工作机会。</p>
         </div>
         <div class="line doTitle">请上传以下文件</div>
         <template v-for="(doItem, doIndex) in doItems">
@@ -11,7 +11,7 @@
                 <template v-if="doIndex === 0">
                     <div :class="['cardWrap', 'userPhotoWrap', userPhotoBase64 == null ? 'normalCardWrap' : '']">
                         <input type="file" class="fileInput" title="请选择红底正装照片" accept="image/*" @change="selectFile($event, 'user_photo', doItem)">
-                        <img class="cardDisplay showBorder" :src="require('@/assets/salary_card.png')">
+                        <img class="cardDisplay showBorder" :src="require('@/assets/user_photo.png')">
                         <span v-if="userPhotoBase64 != null" class="imgPreview hasBorder" :style="userPhotoBase64 != null ? { 'background-image': `url(${userPhotoBase64})` } : {}"></span>
                     </div>
                 </template>
@@ -23,16 +23,33 @@
                     </div>
                 </template>
                 <template v-if="doIndex === 2">
-                    <div :class="['cardWrap', 'salaryCardWrap', salaryCardBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择户口簿个人页" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
-                        <img class="cardDisplay showBorder" :src="require('@/assets/salary_card.png')">
-                        <span v-if="salaryCardBase64 != null" class="imgPreview hasBorder" :style="salaryCardBase64 != null ? { 'background-image': `url(${salaryCardBase64})` } : {}"></span>
+                    <div :class="['cardWrap', 'salaryCardWrap', accountCardBase64 == null ? 'normalCardWrap' : '']">
+                        <input type="file" class="fileInput" title="请选择户口簿个人页" accept="image/*" @change="selectFile($event, 'account_card', doItem)">
+                        <img class="cardDisplay showBorder" :src="require('@/assets/user_hk.png')">
+                        <span v-if="accountCardBase64 != null" class="imgPreview hasBorder" :style="accountCardBase64 != null ? { 'background-image': `url(${accountCardBase64})` } : {}"></span>
                     </div>
                 </template>
-                <template v-if="doIndex === 3">0</template>
-                <template v-if="doIndex === 4">0</template>
-                <template v-if="doIndex === 5">0</template>
-                <template v-if="doIndex === 6">6</template>
+                <template v-if="doIndex === 3">
+                    <div :class="['cardWrap', 'salaryCardWrap', liverBase64 == null ? 'normalCardWrap' : '']">
+                        <input type="file" class="fileInput" title="请选择肝功能体检报告" accept="image/*" @change="selectFile($event, 'liver', doItem)">
+                        <div class="cardDisplay showBorder h8"></div>
+                        <span v-if="liverBase64 != null" class="imgPreview hasBorder" :style="liverBase64 != null ? { 'background-image': `url(${liverBase64})` } : {}"></span>
+                    </div>
+                </template>
+                <template v-if="doIndex === 4">
+                    <div :class="['cardWrap', 'salaryCardWrap', heartBase64 == null ? 'normalCardWrap' : '']">
+                        <input type="file" class="fileInput" title="请选择心电体检报告" accept="image/*" @change="selectFile($event, 'heart', doItem)">
+                        <div class="cardDisplay showBorder h8"></div>
+                        <span v-if="heartBase64 != null" class="imgPreview hasBorder" :style="heartBase64 != null ? { 'background-image': `url(${heartBase64})` } : {}"></span>
+                    </div>
+                </template>
+                <template v-if="doIndex === 5">
+                    <div :class="['cardWrap', 'salaryCardWrap', xLightBase64 == null ? 'normalCardWrap' : '']">
+                        <input type="file" class="fileInput" title="请选择X光胸透体检报告" accept="image/*" @change="selectFile($event, 'x_light', doItem)">
+                        <div class="cardDisplay showBorder h8"></div>
+                        <span v-if="xLightBase64 != null" class="imgPreview hasBorder" :style="xLightBase64 != null ? { 'background-image': `url(${xLightBase64})` } : {}"></span>
+                    </div>
+                </template>
             </div>
         </template>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">上传且阅读完毕</span>
@@ -83,18 +100,31 @@ export default {
                     minTitle: '',
                     isUnfold: false,
                     isOk: false
-                },
-                {
-                    title: '其他',
-                    minTitle: '',
-                    isUnfold: false,
-                    isOk: false
                 }
             ],
+            // 证件照
+            userPhoto: null,
+            userPhotoBase64: null,
+            // 工资卡
             salaryCard: null,
             salaryCardBase64: null,
-            userPhoto: null,
-            userPhotoBase64: null
+            // 户口簿
+            accountCard: null,
+            accountCardBase64: null,
+            // 肝功
+            liver: null,
+            liverBase64: null,
+            // 心电
+            heart: null,
+            heartBase64: null,
+            // x光
+            xLight: null,
+            xLightBase64: null
+        }
+    },
+    computed: {
+        currentDate: function() {
+            return new Date()
         }
     },
     mounted() {
@@ -121,9 +151,24 @@ export default {
             doItem.isUnfold = !doItem.isUnfold
         },
         selectFile: function(event, type, doItem) {
-            if (type == 'salary_card') {
+            if (type == 'user_photo') {
+                this.userPhoto = event.target.files[0]
+                this.imgPreview(this.userPhoto, type, doItem)
+            } else if (type == 'salary_card') {
                 this.salaryCard = event.target.files[0]
                 this.imgPreview(this.salaryCard, type, doItem)
+            } else if (type == 'account_card') {
+                this.accountCard = event.target.files[0]
+                this.imgPreview(this.accountCard, type, doItem)
+            } else if (type == 'liver') {
+                this.liver = event.target.files[0]
+                this.imgPreview(this.liver, type, doItem)
+            } else if (type == 'heart') {
+                this.heart = event.target.files[0]
+                this.imgPreview(this.heart, type, doItem)
+            } else if (type == 'x_light') {
+                this.xLight = event.target.files[0]
+                this.imgPreview(this.xLight, type, doItem)
             }
         },
         imgPreview: function(file, type, doItem) {
@@ -131,12 +176,57 @@ export default {
             let reader = new FileReader()
             reader.readAsDataURL(file)
             reader.onloadend = (event) => {
-                if (type == 'salary_card') {
+                if (type == 'user_photo') {
+                    this.userPhotoBase64 = event.target.result
+                    this.uploadCardFile(this.userPhoto, (path) => {
+                        doItem.isOk = true
+                        this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                            key: 'userPhoto',
+                            value: path
+                        })
+                    })
+                } else if (type == 'salary_card') {
                     this.salaryCardBase64 = event.target.result
                     this.uploadCardFile(this.salaryCard, (path) => {
                         doItem.isOk = true
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'salaryCard',
+                            value: path
+                        })
+                    })
+                } else if (type == 'account_card') {
+                    this.accountCardBase64 = event.target.result
+                    this.uploadCardFile(this.accountCard, (path) => {
+                        doItem.isOk = true
+                        this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                            key: 'accountCard',
+                            value: path
+                        })
+                    })
+                } else if (type == 'liver') {
+                    this.liverBase64 = event.target.result
+                    this.uploadCardFile(this.liver, (path) => {
+                        doItem.isOk = true
+                        this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                            key: 'liver',
+                            value: path
+                        })
+                    })
+                } else if (type == 'heart') {
+                    this.heartBase64 = event.target.result
+                    this.uploadCardFile(this.heart, (path) => {
+                        doItem.isOk = true
+                        this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                            key: 'heart',
+                            value: path
+                        })
+                    })
+                } else if (type == 'x_light') {
+                    this.xLightBase64 = event.target.result
+                    this.uploadCardFile(this.xLight, (path) => {
+                        doItem.isOk = true
+                        this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                            key: 'xLight',
                             value: path
                         })
                     })
@@ -177,7 +267,7 @@ export default {
     text-indent: 2em;
     font-size: 0.9rem;
     line-height: 1.8rem;
-    background: #f9f8f1;
+    background: #f0eed7;
     color: #33374b;
 }
 .line {
@@ -306,7 +396,7 @@ export default {
         pointer-events: none;
     }
     .userPhotoWrap {
-        width: 8rem;
+        width: 6rem;
     }
     .salaryCardWrap {
         width: 13rem;

@@ -4,6 +4,8 @@ import CryptoJS from 'crypto-js'
 import Loading from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/vue-loading.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import 'wheel-picker/dist/wheelpicker.min.css'
+import '@/plugins/comm.css'
 import '@/plugins/animate.css'
 import Dialogbox from '@/plugins/dialogBox/index.js'
 
@@ -26,6 +28,7 @@ Vue.use(CryptoJS)
 Vue.use(Loading)
 Vue.use(Dialogbox)
 const dialogAlert = require('react-confirm-alert')
+const WheelPicker = require('wheel-picker')
 
 // var server_address = "http://172.18.2.32:8080/" // 一飞
 // var server_address = "http://172.18.2.26:8080/" // 玉慧
@@ -221,11 +224,12 @@ export default {
         })
       },
       // 显示带有输入框的dialog弹出框
-      showDialogWithPrompt: function (context, title, message, showCancel, hint, rule, ruleOkTip, ruleErrorTip, okCallBack, ruleCallBack) {
+      showDialogWithPrompt: function (context, title, message, showCancel, hint, rule, ruleOkTip, ruleErrorTip, okCallBack, ruleCallBack, isMultiline) {
         if (title === undefined) title = '未定义标题'
         if (showCancel === undefined) showCancel = true
         if (hint === undefined) hint = ''
         if (okCallBack === undefined) okCallBack = () => {}
+        if (isMultiline === undefined) isMultiline = false
         let btns = [
           {
             label: '取消',
@@ -247,7 +251,8 @@ export default {
           ruleOkTip: ruleOkTip,
           ruleErrorTip: ruleErrorTip,
           buttons: btns,
-          ruleCallBack: ruleCallBack
+          ruleCallBack: ruleCallBack,
+          isMultiline: isMultiline
         })
       },
       // 显示Toast
@@ -265,6 +270,28 @@ export default {
         context.$dialog_sign({
           callBack: callBack
         })
+      },
+      // 弹出picker选择
+      // data 为双层数组结构
+      showPicker: function(title, data, onSelect, onChange) {
+        let picker = new WheelPicker({
+          title: title,
+          data: data,
+          hideOnBackdrop: true,
+          onSelect: (result) => {
+            onSelect(result)
+            setTimeout(() => {
+              picker.destory()
+            }, 300)
+          },
+          onCancel: () => {
+            setTimeout(() => {
+              picker.destory()
+            }, 300)
+          },
+          onChange: onChange
+        })
+        picker.show()
       },
       // 日期格式转字符串，指定格式
       // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符

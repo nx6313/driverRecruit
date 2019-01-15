@@ -20,7 +20,6 @@
 body, html {
   padding: 0;
   margin: 0;
-  background: #F5F5F5 !important;
 }
 
 div.react-confirm-alert-overlay {
@@ -54,6 +53,23 @@ div#__vconsole {
   div#__vc_log_default {
     div.vc-log {
       padding-bottom: 0 !important;
+    }
+  }
+}
+
+.wheelpicker {
+  .wheelpicker-panel {
+    .wheelpicker-actions {
+      border-bottom: none;
+      button {
+        outline: none;
+      }
+    }
+    .wheelpicker-main {
+      .wheelpicker-mask-current {
+        border-top: 1px solid #e8e8e8;
+        border-bottom: 1px solid #e8e8e8;
+      }
     }
   }
 }

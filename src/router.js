@@ -16,7 +16,7 @@ let router = new Router({
       name: 'cardInfo',
       component: () => import('./views/CardInfo.vue'),
       beforeEnter: (to, from, next) => {
-        if (router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
+        if (!router.app.$store || router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
           next('/')
         } else {
           next()
@@ -31,7 +31,7 @@ let router = new Router({
       name: 'baseInfo',
       component: () => import('./views/BaseInfo.vue'),
       beforeEnter: (to, from, next) => {
-        if (router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
+        if (!router.app.$store || router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
           next('/')
         } else {
           next()
@@ -46,7 +46,7 @@ let router = new Router({
       name: 'baseInfoComplete',
       component: () => import('./views/BaseInfoComplete.vue'),
       beforeEnter: (to, from, next) => {
-        if (router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
+        if (!router.app.$store || router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
           next('/')
         } else {
           next()
@@ -77,7 +77,8 @@ let router = new Router({
       name: 'emolumentSecrecy',
       component: () => import('./views/policy/EmolumentSecrecy.vue'),
       meta: {
-        title: '薪酬保密承诺书'
+        title: '薪酬保密承诺书',
+        pageBg: '#f0eed7'
       }
     },
     {
@@ -93,7 +94,8 @@ let router = new Router({
       name: 'leaveDeclare',
       component: () => import('./views/policy/LeaveDeclare.vue'),
       meta: {
-        title: '无法提交《离职证明》申明'
+        title: '无法提交《离职证明》申明',
+        pageBg: '#f0eed7'
       }
     },
     {
@@ -101,7 +103,17 @@ let router = new Router({
       name: 'noCrimeRecord',
       component: () => import('./views/policy/NoCrimeRecord.vue'),
       meta: {
-        title: '无犯罪记录声明'
+        title: '无犯罪记录声明',
+        pageBg: '#f0eed7'
+      }
+    },
+    {
+      path: '/policy/noCrimeRecordDec',
+      name: 'noCrimeRecordDec',
+      component: () => import('./views/policy/NoCrimeRecordDec.vue'),
+      meta: {
+        title: '申请无犯罪流程图',
+        pageBg: '#1090e9'
       }
     },
     {
@@ -109,7 +121,8 @@ let router = new Router({
       name: 'noPartTimeJob',
       component: () => import('./views/policy/NoPartTimeJob.vue'),
       meta: {
-        title: '无兼职工作申明'
+        title: '无兼职工作申明',
+        pageBg: '#f0eed7'
       }
     },
     {
@@ -117,7 +130,8 @@ let router = new Router({
       name: 'qualification',
       component: () => import('./views/policy/Qualification.vue'),
       meta: {
-        title: '申报网约车驾驶员资格证承诺书'
+        title: '申报网约车驾驶员资格证承诺书',
+        pageBg: '#f0eed7'
       }
     },
     {
@@ -125,7 +139,8 @@ let router = new Router({
       name: 'signContract',
       component: () => import('./views/policy/SignContract.vue'),
       meta: {
-        title: '专职司机文件签约单'
+        title: '专职司机文件签约单',
+        pageBg: '#f0eed7'
       }
     },
     {
@@ -133,7 +148,8 @@ let router = new Router({
       name: 'trafficSafety',
       component: () => import('./views/policy/TrafficSafety.vue'),
       meta: {
-        title: '驾驶人员交通安全承诺书'
+        title: '驾驶人员交通安全承诺书',
+        pageBg: '#f0eed7'
       }
     },
     {
@@ -141,12 +157,24 @@ let router = new Router({
       name: 'workClothes',
       component: () => import('./views/policy/WorkClothes.vue'),
       meta: {
-        title: '工衣西服费用申明'
+        title: '工衣西服费用申明',
+        pageBg: '#f0eed7'
       }
     }
   ]
 })
 router.beforeEach((to, from, next) => {
+  if (to.meta.pageBg) {
+    if (router.app.$vctool.isObject(to.meta.pageBg)) {
+      for (let styleKey in to.meta.pageBg) {
+        document.body.parentNode.style[styleKey] = to.meta.pageBg[styleKey]
+      }
+    } else {
+      document.body.parentNode.style.backgroundColor = to.meta.pageBg
+    }
+  } else {
+    document.body.parentNode.style.backgroundColor = '#F5F5F5'
+  }
   if (to.meta.title) {
     document.title = to.meta.title
   } else {

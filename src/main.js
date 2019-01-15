@@ -86,11 +86,17 @@ const store = new Vuex.Store({
           auditPass: null,
           personName: null,
           phone: null,
+          idcarNo: null,
           personSex: null,
           time: null
         },
         policyDataInfo: {
+          userPhoto: null,
           salaryCard: null,
+          accountCard: null,
+          liver: null,
+          heart: null,
+          xLight: null,
           noCrimeRecord: null
         }
       },

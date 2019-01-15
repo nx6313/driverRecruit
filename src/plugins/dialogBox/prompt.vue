@@ -5,7 +5,8 @@
         <div class="react-confirm-alert-body">
           <h1>{{title}}</h1>
           {{msg}}
-          <input class="react-confirm-alert-prompt" type="text" :placeholder="hint" v-model="promptInput" ref="prompt-input"/>
+          <input v-if="!isMultiline" class="react-confirm-alert-prompt" type="text" :placeholder="hint" v-model="promptInput" ref="prompt-input"/>
+          <textarea v-if="isMultiline" class="react-confirm-alert-prompt multiline" type="text" :placeholder="hint" v-model="promptInput" ref="prompt-input"/>
           <div v-if="rule !== undefined && hasStartInput" class="ruleTip">
             <span v-if="isOkForRule" class="ok">{{ruleOkTip}}</span>
             <span v-if="!isOkForRule" class="error">{{ruleErrorTip}}</span>
@@ -48,7 +49,8 @@ export default {
         }
       ],
       showCancel: true,
-      ruleCallBack: () => {}
+      ruleCallBack: () => {},
+      isMultiline: false
     }
   },
   beforeMount () {
@@ -184,6 +186,20 @@ export default {
         button.btn-cancel {
           background: #8d8d8d;
         }
+      }
+      .multiline {
+        display: block;
+        width: calc(100% - 20px);
+        height: 6rem;
+        border: none;
+        padding: 8px 10px;
+        background: #e9e9e9;
+        margin-top: 10px;
+        outline: none;
+        font-size: 0.8rem;
+        color: #2c2c2c;
+        border-radius: 4px;
+        resize: none;
       }
     }
   }

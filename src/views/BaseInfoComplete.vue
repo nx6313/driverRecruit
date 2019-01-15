@@ -122,6 +122,7 @@ export default {
               auditPass: false,
               personName: this.$store.state.driverRecruitData.auditState.personName,
               phone: this.$store.state.driverRecruitData.auditState.phone,
+              idcarNo: this.$store.state.driverRecruitData.auditState.idcarNo,
               personSex: this.$store.state.driverRecruitData.auditState.personSex,
               time: this.$store.state.driverRecruitData.auditState.time
             }

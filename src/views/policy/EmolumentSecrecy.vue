@@ -2,7 +2,7 @@
     <!-- 薪酬保密承诺书 -->
     <div class="emolumentSecrecy" v-if="userInfo">
         <div class="policyContentWrap">
-            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(new Date(), 'yyyy')}} 年 {{$comfun.formatDate(new Date(), 'MM')}} 月 {{$comfun.formatDate(new Date(), 'dd')}} 日郑重承诺在职期间严格遵守公司的薪资保密制度，不以任何方式向任何人透漏自己或询问其他人员的薪酬状况；不议论与员工薪资有关的任何信息。如有违反，愿意承担当月工资 50% 的罚款，同时接受公司根据《人力资源管理手册》进行的处罚，直至解聘，并自愿承担由此产生的一切后果。</p>
+            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日郑重承诺在职期间严格遵守公司的薪资保密制度，不以任何方式向任何人透漏自己或询问其他人员的薪酬状况；不议论与员工薪资有关的任何信息。如有违反，愿意承担当月工资 50% 的罚款，同时接受公司根据《人力资源管理手册》进行的处罚，直至解聘，并自愿承担由此产生的一切后果。</p>
         </div>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
@@ -16,6 +16,11 @@ export default {
         return {
             canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
             userInfo: null
+        }
+    },
+    computed: {
+        currentDate: function() {
+            return new Date()
         }
     },
     mounted() {
