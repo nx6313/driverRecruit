@@ -245,11 +245,11 @@ export default {
             })
         },
         readFinish: function() {
-            this.$comfun.showLoading(this, 'applyRule', false)
-            this.$comfun.http_post(this, 'api/member/applyRule', {
-                'rule.induction': 1
+            this.$comfun.showLoading(this, 'applyRuleRead', false)
+            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+                type: 'induction'
             }).then((request) => {
-                this.$comfun.hideLoading('applyRule')
+                this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
