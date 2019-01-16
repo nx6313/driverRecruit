@@ -45,10 +45,53 @@ export default {
         toSign: function() {
             this.$comfun.showSignPanel(this, (base64, imgFile) => {
                 this.signImgData = base64
+                this.uploadCardFile(imgFile, (path) => {
+                    this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                        key: 'signContract',
+                        value: path
+                    })
+                })
+            })
+        },
+        uploadCardFile: function(file, callBack) {
+            this.$comfun.showLoading(this, 'uploadCardFile', false)
+            this.$comfun.http_file(this, 'file', file).then((request) => {
+                this.$comfun.hideLoading('uploadCardFile')
+                if (request.data.status == 'OK') {
+                    callBack(request.data.data.path)
+                } else {
+                    this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
+                }
             })
         },
         readFinish: function() {
-
+            let allIsRead = true
+            for (let policyIndex in this.$store.state.driverRecruitData.policyList) {
+                if (!this.$store.state.driverRecruitData.policyList[policyIndex].read) {
+                    allIsRead = false
+                    break
+                }
+            }
+            if (!allIsRead) {
+                this.$comfun.showToast(this, '请您先阅读其他的所有政策声明')
+                return false
+            }
+            if (this.$store.state.driverRecruitData.policyDataInfo.signContract == null) {
+                this.$comfun.showToast(this, '请您先阅读签约单并签名')
+                return false
+            }
+            this.$comfun.showLoading(this, 'applyRuleRead', false)
+            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+                type: 'signature',
+                'signature.path': this.$store.state.driverRecruitData.policyDataInfo.signContract
+            }).then((request) => {
+                this.$comfun.hideLoading('applyRuleRead')
+                if (request.data.status == 'OK') {
+                    this.$router.back()
+                } else {
+                    this.$comfun.showToast(this, request.data.msg)
+                }
+            })
         }
     }
 }

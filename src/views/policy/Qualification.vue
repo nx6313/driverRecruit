@@ -41,7 +41,17 @@ export default {
     },
     methods: {
         readFinish: function() {
-
+            this.$comfun.showLoading(this, 'applyRuleRead', false)
+            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+                type: 'qualification'
+            }).then((request) => {
+                this.$comfun.hideLoading('applyRuleRead')
+                if (request.data.status == 'OK') {
+                    this.$router.back()
+                } else {
+                    this.$comfun.showToast(this, request.data.msg)
+                }
+            })
         }
     }
 }

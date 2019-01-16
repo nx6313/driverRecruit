@@ -60,7 +60,7 @@ export default {
       let link = '/'
       if (this.userDriverRecruitState == this.driverRecruitState.USER_IS_DRIVER) {
         // 该用户已经是司机了
-        link = '/'
+        link = '/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
         // 该用户还未提交任何资料
         link = '/cardInfo'
@@ -78,19 +78,19 @@ export default {
         link = '/policyRuleList'
       } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_NO_PASS) {
         // 该用户未通过公司面试
-        link = '/'
+        link = '/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULEING) {
         // 该用户提交的规则资料正在审核中
-        link = '/'
+        link = '/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_PASS) {
         // 该用户提交的规则资料已通过审核
-        link = '/'
+        link = '/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_PASS_NO_UPDATE) {
         // 该用户提交的规则资料未通过审核，不可修改
-        link = '/'
+        link = '/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_PASS_CAN_UPDATE) {
         // 该用户提交的规则资料未通过审核，可修改后重新提交
-        link = '/'
+        link = '/complete'
       }
       return link
     }

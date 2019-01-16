@@ -79,7 +79,22 @@ export default {
             })
         },
         readFinish: function() {
-
+            if (this.noCrimeRecord == null) {
+                this.$comfun.showToast(this, '请先上传无犯罪记录证明图片文件')
+                return false
+            }
+            this.$comfun.showLoading(this, 'applyRuleRead', false)
+            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+                type: 'crime',
+                'crime.path': this.$store.state.driverRecruitData.policyDataInfo.noCrimeRecord
+            }).then((request) => {
+                this.$comfun.hideLoading('applyRuleRead')
+                if (request.data.status == 'OK') {
+                    this.$router.back()
+                } else {
+                    this.$comfun.showToast(this, request.data.msg)
+                }
+            })
         }
     }
 }

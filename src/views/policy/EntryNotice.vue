@@ -21,6 +21,10 @@
                         <img class="cardDisplay showBorder" :src="require('@/assets/salary_card.png')">
                         <span v-if="salaryCardBase64 != null" class="imgPreview hasBorder" :style="salaryCardBase64 != null ? { 'background-image': `url(${salaryCardBase64})` } : {}"></span>
                     </div>
+                    <div class="inputWrap">
+                        <input class="salaryCardAddress" type="text" placeholder="请输入开户行地址" v-model="salaryCardAddress">
+                        <span>开户行地址</span>
+                    </div>
                 </template>
                 <template v-if="doIndex === 2">
                     <div :class="['cardWrap', 'salaryCardWrap', accountCardBase64 == null ? 'normalCardWrap' : '']">
@@ -108,6 +112,7 @@ export default {
             // 工资卡
             salaryCard: null,
             salaryCardBase64: null,
+            salaryCardAddress: '',
             // 户口簿
             accountCard: null,
             accountCardBase64: null,
@@ -245,12 +250,24 @@ export default {
             })
         },
         readFinish: function() {
+            if (this.userPhoto == null || this.salaryCard == null || this.salaryCardAddress == '' || this.accountCard == null || this.liver == null || this.heart == null || this.xLight == null) {
+                this.$comfun.showToast(this, '请先上传所有需要的文件内容')
+                return false
+            }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, 'api/member/applyRuleRead', {
-                type: 'induction'
+                type: 'induction',
+                'induction.photo': this.$store.state.driverRecruitData.policyDataInfo.userPhoto,
+                'induction.bankcar': this.$store.state.driverRecruitData.policyDataInfo.salaryCard,
+                'induction.bankaddress': this.salaryCardAddress,
+                // 'induction.residence': this.$store.state.driverRecruitData.policyDataInfo.userPhoto,
+                'induction.liver': this.$store.state.driverRecruitData.policyDataInfo.liver,
+                'induction.ecg': this.$store.state.driverRecruitData.policyDataInfo.heart,
+                'induction.xray': this.$store.state.driverRecruitData.policyDataInfo.xLight
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
+                    this.$router.back()
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
                 }
@@ -400,6 +417,48 @@ export default {
     }
     .salaryCardWrap {
         width: 13rem;
+    }
+    .inputWrap {
+        position: relative;
+        width: 24rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        .salaryCardAddress {
+            display: block;
+            width: calc(100% - 0.6rem - 5rem);
+            margin-top: 0.4rem;
+            border: none;
+            padding: 0.4rem 0.6rem 0.4rem 5rem;
+            background: #dee7f1;
+            border-radius: 4px;
+            color: rgb(48, 48, 48);
+            font-size: 0.8rem;
+        }
+        span {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0.34rem;
+            font-size: 0.8rem;
+            line-height: 1.9rem;
+            font-weight: bold;
+        }
+        span::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: -0.3rem;
+            width: 1px;
+            background: #c9d2dd;
+        }
+    }
+    .inputWrap input {
+        position: relative;
+        top: 0;
+        bottom: 0;
+        padding-left: 4rem;
     }
 }
 .readFinish {

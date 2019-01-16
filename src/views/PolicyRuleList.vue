@@ -6,7 +6,7 @@
                 {{policy.title}}
                 <img class="needWrite" :src="require('@/assets/policy_edit.png')" v-if="policy.edit">
             </span>
-            <span class="policyRead"><img class="hasRead" :src="require('@/assets/icon_has_read.png')" v-if="policy.read">{{policy.read ? '已阅读' : '未阅读'}}</span>
+            <span :class="['policyRead', policy.read ? 'policyReadHasRead' : '']"><img class="hasRead" :src="require('@/assets/icon_has_read.png')" v-if="policy.read">{{policy.read ? '已阅读' : '未阅读'}}</span>
         </div>
     </div>
 </template>
@@ -18,63 +18,63 @@ export default {
         return {
             policyData: [
                 {
-                    id: 'rule_entryNotice',
+                    id: 'induction',
                     title: '入职须知',
                     read: false,
                     route: '/policy/entryNotice',
                     edit: true
                 },
                 {
-                    id: 'rule_noCrimeRecord',
+                    id: 'crime',
                     title: '无犯罪记录声明',
                     read: false,
                     route: '/policy/noCrimeRecord',
                     edit: true
                 },
                 {
-                    id: 'rule_emolumentSecrecy',
+                    id: 'compensation',
                     title: '薪酬保密承诺书',
                     read: false,
                     route: '/policy/emolumentSecrecy',
                     edit: false
                 },
                 {
-                    id: 'rule_trafficSafety',
+                    id: 'traffic',
                     title: '驾驶人员交通安全承诺书',
                     read: false,
                     route: '/policy/trafficSafety',
                     edit: false
                 },
                 {
-                    id: 'rule_qualification',
+                    id: 'qualification',
                     title: '申报网约车驾驶员资格证承诺书',
                     read: false,
                     route: '/policy/qualification',
                     edit: false
                 },
                 {
-                    id: 'rule_workClothes',
+                    id: 'overall',
                     title: '工衣西服费用申明',
                     read: false,
                     route: '/policy/workClothes',
                     edit: false
                 },
                 {
-                    id: 'rule_leaveDeclare',
+                    id: 'departure',
                     title: '无法提交《离职证明》申明',
                     read: false,
                     route: '/policy/leaveDeclare',
                     edit: true
                 },
                 {
-                    id: 'rule_noPartTimeJob',
+                    id: 'porttime',
                     title: '无兼职工作申明',
                     read: false,
                     route: '/policy/noPartTimeJob',
                     edit: false
                 },
                 {
-                    id: 'rule_signContract',
+                    id: 'signature',
                     title: '专职司机文件签约单',
                     read: false,
                     route: '/policy/signContract',
@@ -83,10 +83,37 @@ export default {
             ]
         }
     },
+    mounted() {
+        this.$store.commit('setDriverRecruitData_PolicyList', {
+            policyList: this.policyData
+        })
+        // 更新文件阅读状态
+        this.$comfun.showLoading(this, 'policyListStateUpdate', false)
+        this.$comfun.http_post(this, 'api/member/applyIsRuleRead').then((request) => {
+            this.$comfun.hideLoading('policyListStateUpdate')
+            if (request.data.status == 'OK') {
+                let requestData = request.data.data
+                for (let polictIndex in this.policyData) {
+                    if (parseInt(requestData[this.policyData[polictIndex].id]) === 1) {
+                        this.policyData[polictIndex].read = true
+                    }
+                }
+                this.$store.commit('setDriverRecruitData_PolicyList', {
+                    policyList: this.policyData
+                })
+            } else {
+                this.$comfun.showToast(this, request.data.msg)
+            }
+        })
+    },
     methods: {
         toPolicyDetail: function(policyId) {
             let policyInfo = this.policyData[this.policyData.map(v => { return v.id }).indexOf(policyId)]
-            this.$router.push(policyInfo.route)
+            if (!policyInfo.read) {
+                this.$router.push(policyInfo.route)
+            } else {
+                this.$comfun.showToast(this, '该规则您已阅读，请查看其他规则')
+            }
         }
     }
 }
@@ -134,6 +161,9 @@ export default {
             margin-right: 0.3rem;
             transform: translateY(0.12rem);
         }
+    }
+    .policyReadHasRead {
+        color: #3a3a3a;
     }
 }
 .policyItemWrap:nth-last-of-type(n + 2)::after {

@@ -21,7 +21,9 @@ export default {
             leaveMonth: null,
             leaveDay: null,
             leaveCompany: null,
-            leaveReason: null
+            leaveReason: null,
+            currentPicker: null,
+            currentPromptDialog: null
         }
     },
     mounted() {
@@ -36,6 +38,11 @@ export default {
           }
         }, 1000)
     },
+    beforeRouteLeave(to, from, next) {
+        if (this.currentPicker && this.currentPicker.cancelled !== true) this.currentPicker.destory()
+        if (this.currentPromptDialog) this.currentPromptDialog.destory()
+        next()
+    },
     methods: {
         selectPicker: function(type) {
             if (type == 'year') {
@@ -43,7 +50,7 @@ export default {
                 for (let y = 1990; y <= parseInt(this.$comfun.formatDate(new Date(), 'yyyy')); y++) {
                     yearPickerData.push(y)
                 }
-                this.$comfun.showPicker('离职日期 - 年', [yearPickerData], (result) => {
+                this.currentPicker = this.$comfun.showPicker('离职日期 - 年', [yearPickerData], (result) => {
                     this.leaveMonth = null
                     this.leaveDay = null
                     this.leaveYear = result[0].value
@@ -53,7 +60,7 @@ export default {
                     this.selectPicker('year')
                     return false
                 }
-                this.$comfun.showPicker('离职日期 - 月', [['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']], (result) => {
+                this.currentPicker = this.$comfun.showPicker('离职日期 - 月', [['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']], (result) => {
                     this.leaveDay = null
                     this.leaveMonth = result[0].value
                 })
@@ -70,24 +77,43 @@ export default {
                 for (let d = 1; d <= parseInt(this.$comfun.formatDate(this.$comfun.getLastDay(this.leaveYear, this.leaveMonth), 'dd')); d++) {
                     dayPickerData.push(d)
                 }
-                this.$comfun.showPicker('离职日期 - 日', [dayPickerData], (result) => {
+                this.currentPicker = this.$comfun.showPicker('离职日期 - 日', [dayPickerData], (result) => {
                     this.leaveDay = result[0].value
                 })
             }
         },
         toInput: function(type) {
             if (type == 'company') {
-                this.$comfun.showDialogWithPrompt(this, '请输入您的原单位名称', undefined, true, '输入原单位名称', undefined, undefined, undefined, (leaveCompany) => {
+                this.currentPromptDialog = this.$comfun.showDialogWithPrompt(this, '请输入您的原单位名称', undefined, true, '输入原单位名称', undefined, undefined, undefined, (leaveCompany) => {
                     this.leaveCompany = leaveCompany
                 }, undefined, true)
             } else if (type == 'reason') {
-                this.$comfun.showDialogWithPrompt(this, '请输入您在原单位无法离职原因', undefined, true, '输入原单位无法离职原因', undefined, undefined, undefined, (leaveReason) => {
+                this.currentPromptDialog = this.$comfun.showDialogWithPrompt(this, '请输入您在原单位无法离职原因', undefined, true, '输入原单位无法离职原因', undefined, undefined, undefined, (leaveReason) => {
                     this.leaveReason = leaveReason
                 }, undefined, true)
             }
         },
         readFinish: function() {
-
+            // if (this.leaveYear == null || this.leaveMonth == null || this.leaveDay == null || this.leaveCompany == null || this.leaveReason == null) {
+            //     this.$comfun.showToast(this, '请先填写无法离职信息')
+            //     return false
+            // }
+            this.$comfun.showLoading(this, 'applyRuleRead', false)
+            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+                type: 'departure',
+                'departure.leave_year': this.leaveYear,
+                'departure.leave_month': this.leaveMonth,
+                'departure.leave_date': this.leaveDay,
+                'departure.company': this.leaveCompany,
+                'departure.reason': this.leaveReason
+            }).then((request) => {
+                this.$comfun.hideLoading('applyRuleRead')
+                if (request.data.status == 'OK') {
+                    this.$router.back()
+                } else {
+                    this.$comfun.showToast(this, request.data.msg)
+                }
+            })
         }
     }
 }
@@ -113,6 +139,7 @@ export default {
         position: relative;
         display: inline-block;
         width: 3rem;
+        height: 1rem;
     }
     .notEmpty::after, .empty::after {
         content: '';

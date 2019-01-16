@@ -90,6 +90,7 @@ const store = new Vuex.Store({
           personSex: null,
           time: null
         },
+        policyList: null,
         policyDataInfo: {
           userPhoto: null,
           salaryCard: null,
@@ -97,7 +98,8 @@ const store = new Vuex.Store({
           liver: null,
           heart: null,
           xLight: null,
-          noCrimeRecord: null
+          noCrimeRecord: null,
+          signContract: null
         }
       },
       getters: {
@@ -114,6 +116,12 @@ const store = new Vuex.Store({
         },
         [SOME_MUTATION.setDriverRecruitData_AuditState] (state, payload) {
           state.auditState = payload.auditState
+        },
+        [SOME_MUTATION.setDriverRecruitData_PolicyList] (state, payload) {
+          state.policyList = payload.policyList
+        },
+        [SOME_MUTATION.setDriverRecruitData_PolicyListUpdateReadStatus] (state, payload) {
+          state.policyList[payload.index][payload.key] = payload.value
         },
         [SOME_MUTATION.setDriverRecruitData_PolicyDataInfo] (state, payload) {
           state.policyDataInfo[payload.key] = payload.value

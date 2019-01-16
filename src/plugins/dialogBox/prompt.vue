@@ -1,6 +1,7 @@
 <template>
   <div v-if="isShow" id="dialog-prompt-wrap" class="react-confirm-alert">
-    <div class="react-confirm-alert-overlay animated fadeIn" @click="closePrompt">
+    <div class="react-confirm-alert-overlay-shade" @click="shadeClosePrompt"></div>
+    <div class="react-confirm-alert-overlay animated fadeIn">
       <div class="react-confirm-alert prompt-content animated fadeIn" ref="prompt-content">
         <div class="react-confirm-alert-body">
           <h1>{{title}}</h1>
@@ -60,14 +61,17 @@ export default {
     }
   },
   methods: {
-    closePrompt () {
+    shadeClosePrompt () {
       if (this.shadeClose) {
-          this.$refs['prompt-content'].classList.remove('fadeIn')
-          this.$refs['prompt-content'].classList.add('fadeOut')
-          setTimeout(() => {
-              this.isShow = false
-          }, 0.2 * 1000)
+        this.$refs['prompt-content'].classList.remove('fadeIn')
+        this.$refs['prompt-content'].classList.add('fadeOut')
+        setTimeout(() => {
+            this.isShow = false
+        }, 0.2 * 1000)
       }
+    },
+    destoryPrompt () {
+      this.isShow = false
     },
     promptVerify (val) {
       this.hasStartInput = true
@@ -118,6 +122,14 @@ export default {
 <style lang="less" scoped>
 .react-confirm-alert {
   user-select: none;
+  div.react-confirm-alert-overlay-shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 98;
+  }
   div.react-confirm-alert-overlay {
     position: fixed;
     top: 0;

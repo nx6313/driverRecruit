@@ -7,6 +7,9 @@ Prompt.installPrompt = function (options) {
     data: options
   }).$mount()
   document.querySelector('body').appendChild(comment.$el)
+  return {
+    destory: comment.destoryPrompt
+  }
 }
 
 export default Prompt

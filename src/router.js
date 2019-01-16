@@ -65,6 +65,14 @@ let router = new Router({
       }
     },
     {
+      path: '/complete',
+      name: 'complete',
+      component: () => import('./views/Complete.vue'),
+      meta: {
+        title: '加入大昌出行'
+      }
+    },
+    {
       path: '/policyRuleList',
       name: 'policyRuleList',
       component: () => import('./views/PolicyRuleList.vue'),
@@ -163,7 +171,7 @@ let router = new Router({
     }
   ]
 })
-router.beforeEach((to, from, next) => {
+router.beforeResolve((to, from, next) => {
   if (to.meta.pageBg) {
     if (router.app.$vctool.isObject(to.meta.pageBg)) {
       for (let styleKey in to.meta.pageBg) {

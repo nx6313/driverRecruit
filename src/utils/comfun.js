@@ -242,7 +242,7 @@ export default {
             }
           }
         ]
-        context.$dialog_prompt({
+        let dialogPrompt = context.$dialog_prompt({
           title: title,
           msg: message,
           showCancel: showCancel,
@@ -254,6 +254,7 @@ export default {
           ruleCallBack: ruleCallBack,
           isMultiline: isMultiline
         })
+        return dialogPrompt
       },
       // 显示Toast
       showToast: function(context, msg, duration) {
@@ -292,6 +293,7 @@ export default {
           onChange: onChange
         })
         picker.show()
+        return picker
       },
       // 日期格式转字符串，指定格式
       // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符

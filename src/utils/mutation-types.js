@@ -5,5 +5,7 @@ export const SOME_MUTATION = {
     setDriverRecruitData_CardInfo: 'setDriverRecruitData_CardInfo', // 设置用户司机招募证件照片
     setDriverRecruitData_BaseInfo: 'setDriverRecruitData_BaseInfo', // 设置用户司机招募基本信息
     setDriverRecruitData_AuditState: 'setDriverRecruitData_AuditState', // 设置用户司机招募资料审核状态信息
+    setDriverRecruitData_PolicyList: 'setDriverRecruitData_PolicyList', // 设置用户司机招募政策声明列表
+    setDriverRecruitData_PolicyListUpdateReadStatus: 'setDriverRecruitData_PolicyListUpdateReadStatus', // 设置用户司机招募政策声明列表文件阅读状态
     setDriverRecruitData_PolicyDataInfo: 'setDriverRecruitData_PolicyDataInfo' // 设置用户司机招募资料政策声明相关信息
 }
