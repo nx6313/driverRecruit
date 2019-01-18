@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from './store'
 import Home from './views/Home.vue'
 
 Vue.use(Router)
+Vue.use(store)
 
 let router = new Router({
   routes: [
@@ -16,7 +18,7 @@ let router = new Router({
       name: 'cardInfo',
       component: () => import('./views/CardInfo.vue'),
       beforeEnter: (to, from, next) => {
-        if (!router.app.$store || router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
+        if (store.state.driverRecruitData.auditState.state == null || store.state.driverRecruitData.auditState.state === true) {
           next('/')
         } else {
           next()
@@ -31,7 +33,7 @@ let router = new Router({
       name: 'baseInfo',
       component: () => import('./views/BaseInfo.vue'),
       beforeEnter: (to, from, next) => {
-        if (!router.app.$store || router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
+        if (store.state.driverRecruitData.auditState.state == null || store.state.driverRecruitData.auditState.state === true) {
           next('/')
         } else {
           next()
@@ -46,7 +48,7 @@ let router = new Router({
       name: 'baseInfoComplete',
       component: () => import('./views/BaseInfoComplete.vue'),
       beforeEnter: (to, from, next) => {
-        if (!router.app.$store || router.app.$store.state.driverRecruitData.auditState.state == null || router.app.$store.state.driverRecruitData.auditState.state === true) {
+        if (store.state.driverRecruitData.auditState.state == null || store.state.driverRecruitData.auditState.state === true) {
           next('/')
         } else {
           next()
@@ -76,6 +78,24 @@ let router = new Router({
       path: '/policyRuleList',
       name: 'policyRuleList',
       component: () => import('./views/PolicyRuleList.vue'),
+      beforeEnter: (to, from, next) => {
+        if (store.state.driverRecruitData.policyList) {
+          let allIsRead = true
+          for (let policyIndex in store.state.driverRecruitData.policyList) {
+            if (!store.state.driverRecruitData.policyList[policyIndex].read) {
+              allIsRead = false
+              break
+            }
+          }
+          if (allIsRead) {
+            next('/')
+          } else {
+            next()
+          }
+        } else {
+          next()
+        }
+      },
       meta: {
         title: '政策声明'
       }
@@ -190,4 +210,8 @@ router.beforeResolve((to, from, next) => {
   }
   next()
 })
-export default router
+
+export default {
+  router: router,
+  store: store
+}

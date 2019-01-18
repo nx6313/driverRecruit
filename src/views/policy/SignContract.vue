@@ -67,7 +67,7 @@ export default {
         readFinish: function() {
             let allIsRead = true
             for (let policyIndex in this.$store.state.driverRecruitData.policyList) {
-                if (!this.$store.state.driverRecruitData.policyList[policyIndex].read) {
+                if (policyIndex < this.$store.state.driverRecruitData.policyList.length - 1 && !this.$store.state.driverRecruitData.policyList[policyIndex].read) {
                     allIsRead = false
                     break
                 }
@@ -87,6 +87,11 @@ export default {
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
+                    this.$store.commit('setDriverRecruitData_PolicyListUpdateReadStatus', {
+                        index: this.$store.state.driverRecruitData.policyList.map(v => { return v.id }).indexOf(this.$route.query.policyId),
+                        key: 'read',
+                        value: true
+                    })
                     this.$router.back()
                 } else {
                     this.$comfun.showToast(this, request.data.msg)

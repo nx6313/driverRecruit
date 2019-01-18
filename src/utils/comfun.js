@@ -8,6 +8,7 @@ import 'wheel-picker/dist/wheelpicker.min.css'
 import '@/plugins/comm.css'
 import '@/plugins/animate.css'
 import Dialogbox from '@/plugins/dialogBox/index.js'
+import DialogMsg from '@/plugins/dialogBox/msg.js'
 
 const Axios = axios.create({
   transformRequest: [function (data) {
@@ -20,8 +21,48 @@ const Axios = axios.create({
   }],
   timeout: 10000
 })
+Axios.interceptors.response.use((response) => {
+  return response
+}, (error) => {
+  loadingManager.forEach((loader) => {
+    loader.hide()
+  })
+  loadingManager.clear()
+  if (String(error).indexOf('timeout') >= 0) {
+    DialogMsg.installMsg({
+      msg: '请求超时',
+      duration: 2000
+    })
+  } else {
+    DialogMsg.installMsg({
+      msg: '请求出错',
+      duration: 2000
+    })
+  }
+  return Promise.reject(error)
+})
 const FileAxios = axios.create({
   timeout: 10000
+})
+FileAxios.interceptors.response.use((response) => {
+  return response
+}, (error) => {
+  loadingManager.forEach((loader) => {
+    loader.hide()
+  })
+  loadingManager.clear()
+  if (String(error).indexOf('timeout') >= 0) {
+    DialogMsg.installMsg({
+      msg: '文件上传超时',
+      duration: 2000
+    })
+  } else {
+    DialogMsg.installMsg({
+      msg: '文件上传出错',
+      duration: 2000
+    })
+  }
+  return Promise.reject(error)
 })
 
 Vue.use(CryptoJS)

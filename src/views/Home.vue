@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      userDriverRecruitState: 0,
+      userDriverRecruitState: -1,
       driverRecruitState: {
         USER_IS_DRIVER: 0, // 该用户已经是司机了
         NORMAL: 10, // 该用户还未提交任何资料
