@@ -63,11 +63,14 @@ export default {
                             key: 'noCrimeRecord',
                             value: path
                         })
+                    }, () => {
+                        this.noCrimeRecord = null
+                        this.noCrimeRecordBase64 = null
                     })
                 }
             }
         },
-        uploadCardFile: function(file, callBack) {
+        uploadCardFile: function(file, callBack, errorCallBack) {
             this.$comfun.showLoading(this, 'uploadCardFile', false)
             this.$comfun.http_file(this, 'file', file).then((request) => {
                 this.$comfun.hideLoading('uploadCardFile')
@@ -75,6 +78,7 @@ export default {
                     callBack(request.data.data.path)
                 } else {
                     this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
+                    errorCallBack()
                 }
             })
         },

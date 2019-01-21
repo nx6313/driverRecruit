@@ -37,3 +37,31 @@
 .h10 {
     height: 10rem;
 }
+
+.data-table {
+    margin: 0 4rem;
+    width: calc(100% - 8rem);
+    border-collapse: collapse;
+    border: 2px solid #303030;
+}
+.data-table tr:nth-last-of-type(n + 2) td {
+    border-bottom: 1px solid #303030;
+}
+.data-table th {
+    padding: 10px 0;
+    text-align: center;
+    border-bottom: 1px solid #303030;
+}
+.data-table tr th {
+    border-right: 1px solid #303030;
+}
+.data-table tr td {
+    border-right: 1px solid #303030;
+}
+.data-table td {
+    padding: 10px 0;
+    text-align: center;
+}
+.data-table td.bold {
+    font-weight: bold;
+}

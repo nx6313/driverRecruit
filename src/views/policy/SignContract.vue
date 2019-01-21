@@ -43,28 +43,6 @@ export default {
     },
     methods: {
         toSign: function() {
-            this.$comfun.showSignPanel(this, (base64, imgFile) => {
-                this.signImgData = base64
-                this.uploadCardFile(imgFile, (path) => {
-                    this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
-                        key: 'signContract',
-                        value: path
-                    })
-                })
-            })
-        },
-        uploadCardFile: function(file, callBack) {
-            this.$comfun.showLoading(this, 'uploadCardFile', false)
-            this.$comfun.http_file(this, 'file', file).then((request) => {
-                this.$comfun.hideLoading('uploadCardFile')
-                if (request.data.status == 'OK') {
-                    callBack(request.data.data.path)
-                } else {
-                    this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
-                }
-            })
-        },
-        readFinish: function() {
             let allIsRead = true
             for (let policyIndex in this.$store.state.driverRecruitData.policyList) {
                 if (policyIndex < this.$store.state.driverRecruitData.policyList.length - 1 && !this.$store.state.driverRecruitData.policyList[policyIndex].read) {
@@ -76,6 +54,31 @@ export default {
                 this.$comfun.showToast(this, '请您先阅读其他的所有政策声明')
                 return false
             }
+            this.$comfun.showSignPanel(this, (base64, imgFile) => {
+                this.signImgData = base64
+                this.uploadCardFile(imgFile, (path) => {
+                    this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                        key: 'signContract',
+                        value: path
+                    })
+                }, () => {
+                    this.signImgData = null
+                })
+            })
+        },
+        uploadCardFile: function(file, callBack, errorCallBack) {
+            this.$comfun.showLoading(this, 'uploadCardFile', false)
+            this.$comfun.http_file(this, 'file', file).then((request) => {
+                this.$comfun.hideLoading('uploadCardFile')
+                if (request.data.status == 'OK') {
+                    callBack(request.data.data.path)
+                } else {
+                    this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
+                    errorCallBack()
+                }
+            })
+        },
+        readFinish: function() {
             if (this.$store.state.driverRecruitData.policyDataInfo.signContract == null) {
                 this.$comfun.showToast(this, '请您先阅读签约单并签名')
                 return false

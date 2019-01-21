@@ -118,6 +118,9 @@ export default {
                 driveCardB: this.$store.state.driverRecruitData.cardInfo.driveCardB
               }
             })
+          }, () => {
+            this.idCardA = null
+            this.idCardABase64 = null
           })
         } else if (type == 'id_card_b') {
           this.idCardBBase64 = event.target.result
@@ -130,6 +133,9 @@ export default {
                 driveCardB: this.$store.state.driverRecruitData.cardInfo.driveCardB
               }
             })
+          }, () => {
+            this.idCardB = null
+            this.idCardBBase64 = null
           })
         } else if (type == 'drive_card_a') {
           this.driveCardABase64 = event.target.result
@@ -142,6 +148,9 @@ export default {
                 driveCardB: this.$store.state.driverRecruitData.cardInfo.driveCardB
               }
             })
+          }, () => {
+            this.driveCardA = null
+            this.driveCardABase64 = null
           })
         } else if (type == 'drive_card_b') {
           this.driveCardBBase64 = event.target.result
@@ -154,11 +163,14 @@ export default {
                 driveCardB: path
               }
             })
+          }, () => {
+            this.driveCardB = null
+            this.driveCardBBase64 = null
           })
         }
       }
     },
-    uploadCardFile: function(file, callBack) {
+    uploadCardFile: function(file, callBack, errorCallBack) {
       this.$comfun.showLoading(this, 'uploadCardFile', false)
       this.$comfun.http_file(this, 'file', file).then((request) => {
         this.$comfun.hideLoading('uploadCardFile')
@@ -166,6 +178,7 @@ export default {
           callBack(request.data.data.path)
         } else {
           this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
+          errorCallBack()
         }
       })
     },

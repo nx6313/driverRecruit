@@ -100,6 +100,7 @@ let router = new Router({
         title: '政策声明'
       }
     },
+    // 政策文件说明开始
     {
       path: '/policy/emolumentSecrecy',
       name: 'emolumentSecrecy',
@@ -187,6 +188,15 @@ let router = new Router({
       meta: {
         title: '工衣西服费用申明',
         pageBg: '#f0eed7'
+      }
+    },
+    // 政策文件说明结束
+    {
+      path: '/datumShow',
+      name: 'datumShow',
+      component: () => import('./views/DatumShow.vue'),
+      meta: {
+        title: '司机招募已提交资料预览'
       }
     }
   ]

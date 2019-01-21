@@ -189,15 +189,23 @@ export default {
                             key: 'userPhoto',
                             value: path
                         })
+                    }, () => {
+                        this.userPhoto = null
+                        this.userPhotoBase64 = null
                     })
                 } else if (type == 'salary_card') {
                     this.salaryCardBase64 = event.target.result
                     this.uploadCardFile(this.salaryCard, (path) => {
-                        doItem.isOk = true
+                        if (this.salaryCardAddress.trim() != '') {
+                            doItem.isOk = true
+                        }
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'salaryCard',
                             value: path
                         })
+                    }, () => {
+                        this.salaryCard = null
+                        this.salaryCardBase64 = null
                     })
                 } else if (type == 'account_card') {
                     this.accountCardBase64 = event.target.result
@@ -207,6 +215,9 @@ export default {
                             key: 'accountCard',
                             value: path
                         })
+                    }, () => {
+                        this.accountCard = null
+                        this.accountCardBase64 = null
                     })
                 } else if (type == 'liver') {
                     this.liverBase64 = event.target.result
@@ -216,6 +227,9 @@ export default {
                             key: 'liver',
                             value: path
                         })
+                    }, () => {
+                        this.liver = null
+                        this.liverBase64 = null
                     })
                 } else if (type == 'heart') {
                     this.heartBase64 = event.target.result
@@ -225,6 +239,9 @@ export default {
                             key: 'heart',
                             value: path
                         })
+                    }, () => {
+                        this.heart = null
+                        this.heartBase64 = null
                     })
                 } else if (type == 'x_light') {
                     this.xLightBase64 = event.target.result
@@ -234,11 +251,14 @@ export default {
                             key: 'xLight',
                             value: path
                         })
+                    }, () => {
+                        this.xLight = null
+                        this.xLightBase64 = null
                     })
                 }
             }
         },
-        uploadCardFile: function(file, callBack) {
+        uploadCardFile: function(file, callBack, errorCallBack) {
             this.$comfun.showLoading(this, 'uploadCardFile', false)
             this.$comfun.http_file(this, 'file', file).then((request) => {
                 this.$comfun.hideLoading('uploadCardFile')
@@ -246,6 +266,7 @@ export default {
                     callBack(request.data.data.path)
                 } else {
                     this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
+                    errorCallBack()
                 }
             })
         },
@@ -272,6 +293,15 @@ export default {
                     this.$comfun.showToast(this, request.data.msg)
                 }
             })
+        }
+    },
+    watch: {
+        salaryCardAddress: function(val) {
+            if (this.salaryCard != null && val.trim() != '') {
+                this.doItems[1].isOk = true
+            } else {
+                this.doItems[1].isOk = false
+            }
         }
     }
 }
