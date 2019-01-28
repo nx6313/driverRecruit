@@ -42,7 +42,7 @@ export default {
 				// 添加一个很小的隐藏区域用于打开日志面板
 				let minSwitchArea = document.createElement('div')
 				minSwitchArea.id = '__minVcSwitch'
-				minSwitchArea.style = `position: fixed; left: 0; right: 0; bottom: 0; margin: 0 auto; width: 10px; height: 2px; border-radius: 10px 10px 0 0;`
+				minSwitchArea.style = `position: fixed; left: 0; bottom: 0; width: 10px; height: 10px; border-radius: 0 50px 50px 0;`
 				document.body.parentNode.appendChild(minSwitchArea)
 				let clickMinSwitchTime = null
 				let clickMinSwitchCount = 0

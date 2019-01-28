@@ -182,8 +182,8 @@ export default {
             reader.readAsDataURL(file)
             reader.onloadend = (event) => {
                 if (type == 'user_photo') {
-                    this.userPhotoBase64 = event.target.result
                     this.uploadCardFile(this.userPhoto, (path) => {
+                        this.userPhotoBase64 = event.target.result
                         doItem.isOk = true
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'userPhoto',
@@ -194,8 +194,8 @@ export default {
                         this.userPhotoBase64 = null
                     })
                 } else if (type == 'salary_card') {
-                    this.salaryCardBase64 = event.target.result
                     this.uploadCardFile(this.salaryCard, (path) => {
+                        this.salaryCardBase64 = event.target.result
                         if (this.salaryCardAddress.trim() != '') {
                             doItem.isOk = true
                         }
@@ -208,8 +208,8 @@ export default {
                         this.salaryCardBase64 = null
                     })
                 } else if (type == 'account_card') {
-                    this.accountCardBase64 = event.target.result
                     this.uploadCardFile(this.accountCard, (path) => {
+                        this.accountCardBase64 = event.target.result
                         doItem.isOk = true
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'accountCard',
@@ -220,8 +220,8 @@ export default {
                         this.accountCardBase64 = null
                     })
                 } else if (type == 'liver') {
-                    this.liverBase64 = event.target.result
                     this.uploadCardFile(this.liver, (path) => {
+                        this.liverBase64 = event.target.result
                         doItem.isOk = true
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'liver',
@@ -232,8 +232,8 @@ export default {
                         this.liverBase64 = null
                     })
                 } else if (type == 'heart') {
-                    this.heartBase64 = event.target.result
                     this.uploadCardFile(this.heart, (path) => {
+                        this.heartBase64 = event.target.result
                         doItem.isOk = true
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'heart',
@@ -244,8 +244,8 @@ export default {
                         this.heartBase64 = null
                     })
                 } else if (type == 'x_light') {
-                    this.xLightBase64 = event.target.result
                     this.uploadCardFile(this.xLight, (path) => {
+                        this.xLightBase64 = event.target.result
                         doItem.isOk = true
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'xLight',
@@ -268,6 +268,8 @@ export default {
                     this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
                     errorCallBack()
                 }
+            }, error => {
+                errorCallBack()
             })
         },
         readFinish: function() {

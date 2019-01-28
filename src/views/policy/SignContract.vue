@@ -76,6 +76,8 @@ export default {
                     this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
                     errorCallBack()
                 }
+            }, error => {
+                errorCallBack()
             })
         },
         readFinish: function() {

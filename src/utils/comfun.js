@@ -75,8 +75,8 @@ const WheelPicker = require('wheel-picker')
 
 // var server_address = "http://172.18.2.32:8080/" // 一飞
 // var server_address = "http://172.18.2.26:8080/" // 玉慧
-var server_address = "http://172.18.2.21:7777/" // 璐璐
-// var server_address = "https://www.dcchuxing.com/" // 正式服务器
+// var server_address = "http://172.18.2.21:7777/" // 璐璐
+var server_address = "https://www.dcchuxing.com/" // 正式服务器
 
 var server_address_dev = "https://dev.dcchuxing.com/" // 测试服务器
 var key = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
@@ -99,6 +99,7 @@ export default {
             serviceType: context.$store.state.auth.serviceType
           })
         }
+        console.log(`发起get请求，${url} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
           'devicetype': 5,
@@ -132,6 +133,7 @@ export default {
             serviceType: context.$store.state.auth.serviceType
           })
         }
+        console.log(`发起post请求，${url} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
           'devicetype': 5,
@@ -580,7 +582,7 @@ export default {
         }
         return true
       },
-      convertPdf: function(pdfFileName, toPdfDom, fillPdfCallBack) {
+      convertPdf: function(pdfFileName, toPdfDom) {
         if (toPdfDom == undefined) toPdfDom = document.body.parentElement
         html2Canvas(toPdfDom, {
           allowTaint: true

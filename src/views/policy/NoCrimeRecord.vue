@@ -57,8 +57,8 @@ export default {
             reader.readAsDataURL(file)
             reader.onloadend = (event) => {
                 if (type == 'no_crime_record') {
-                    this.noCrimeRecordBase64 = event.target.result
                     this.uploadCardFile(this.noCrimeRecord, (path) => {
+                        this.noCrimeRecordBase64 = event.target.result
                         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                             key: 'noCrimeRecord',
                             value: path
@@ -80,6 +80,8 @@ export default {
                     this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
                     errorCallBack()
                 }
+            }, error => {
+                errorCallBack()
             })
         },
         readFinish: function() {

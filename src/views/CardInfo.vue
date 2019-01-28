@@ -108,8 +108,8 @@ export default {
       reader.readAsDataURL(file)
       reader.onloadend = (event) => {
         if (type == 'id_card_a') {
-          this.idCardABase64 = event.target.result
           this.uploadCardFile(this.idCardA, (path) => {
+            this.idCardABase64 = event.target.result
             this.$store.commit('setDriverRecruitData_CardInfo', {
               cardInfo: {
                 idCardA: path,
@@ -123,8 +123,8 @@ export default {
             this.idCardABase64 = null
           })
         } else if (type == 'id_card_b') {
-          this.idCardBBase64 = event.target.result
           this.uploadCardFile(this.idCardB, (path) => {
+            this.idCardBBase64 = event.target.result
             this.$store.commit('setDriverRecruitData_CardInfo', {
               cardInfo: {
                 idCardA: this.$store.state.driverRecruitData.cardInfo.idCardA,
@@ -138,8 +138,8 @@ export default {
             this.idCardBBase64 = null
           })
         } else if (type == 'drive_card_a') {
-          this.driveCardABase64 = event.target.result
           this.uploadCardFile(this.driveCardA, (path) => {
+            this.driveCardABase64 = event.target.result
             this.$store.commit('setDriverRecruitData_CardInfo', {
               cardInfo: {
                 idCardA: this.$store.state.driverRecruitData.cardInfo.idCardA,
@@ -153,8 +153,8 @@ export default {
             this.driveCardABase64 = null
           })
         } else if (type == 'drive_card_b') {
-          this.driveCardBBase64 = event.target.result
           this.uploadCardFile(this.driveCardB, (path) => {
+            this.driveCardBBase64 = event.target.result
             this.$store.commit('setDriverRecruitData_CardInfo', {
               cardInfo: {
                 idCardA: this.$store.state.driverRecruitData.cardInfo.idCardA,
@@ -180,6 +180,8 @@ export default {
           this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
           errorCallBack()
         }
+      }, error => {
+          errorCallBack()
       })
     },
     toNext: function() {
