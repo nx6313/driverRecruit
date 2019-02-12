@@ -103,7 +103,7 @@ export default {
   methods: {
     selectThisAnswer: function(index, answer) {
       this.otherAnswer = null
-      let thisSelected = { index: index, answer: answer }
+      let thisSelected = { index: index, answer: answer, key: String.fromCharCode(65 + index) }
       if (this.isMultiple) {
         if (this.selectAnswer == null) this.selectAnswer = []
         let hasThis = false
@@ -193,9 +193,9 @@ export default {
     },
     getResult: function() {
       if (this.isMultiple) {
-        return (this.selectAnswer != null && this.selectAnswer.length > 0 ? this.selectAnswer : null) || this.otherAnswer
+        return (this.selectAnswer != null && this.selectAnswer.length > 0 ? this.selectAnswer : null) || (this.otherAnswer != null ? { key: String.fromCharCode(65 + this.answers.length), val: this.otherAnswer } : null)
       }
-      return this.selectAnswer || this.otherAnswer
+      return this.selectAnswer || (this.otherAnswer != null ? { key: String.fromCharCode(65 + this.answers.length), val: this.otherAnswer } : null)
     }
   }
 }

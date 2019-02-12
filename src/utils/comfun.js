@@ -99,7 +99,7 @@ export default {
             serviceType: context.$store.state.auth.serviceType
           })
         }
-        console.log(`发起get请求，${url} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
+        console.log(`发起get请求，${url} - token：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - secret：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
           'devicetype': 5,
@@ -133,7 +133,7 @@ export default {
             serviceType: context.$store.state.auth.serviceType
           })
         }
-        console.log(`发起post请求，${url} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - ${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
+        console.log(`发起post请求，${url} - token：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - secret：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
           'devicetype': 5,
