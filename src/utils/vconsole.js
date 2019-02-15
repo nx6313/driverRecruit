@@ -42,22 +42,81 @@ export default {
 				// 添加一个很小的隐藏区域用于打开日志面板
 				let minSwitchArea = document.createElement('div')
 				minSwitchArea.id = '__minVcSwitch'
-				minSwitchArea.style = `position: fixed; left: 0; bottom: 0; width: 10px; height: 10px; border-radius: 0 50px 50px 0;`
+				minSwitchArea.style = `position: fixed; left: 0; bottom: calc(50vh - 50px); width: 8px; height: 100px; border-radius: 0 50px 50px 0; z-index: 999999; touch-action: none;`
 				document.body.parentNode.appendChild(minSwitchArea)
+				let minSwitchClickArea = document.createElement('div')
+				minSwitchClickArea.id = '__minVcClickSwitch'
+				minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none;`
+				document.body.parentNode.appendChild(minSwitchClickArea)
+				let touchDistance = 0
+				let startTouchX = null
+				let hasShowVcClickSpan = false
+				let clickMinClickSwitchTimer = null
+				let hideClickSpanTime = 1400
+				vconsole.$.bind(minSwitchArea, 'touchstart', function(event) {
+					touchDistance = 0
+					startTouchX = null
+					hasShowVcClickSpan = false
+					clearTimeout(clickMinClickSwitchTimer)
+					if (event.touches.length == 1) {
+						startTouchX = event.touches[0].pageX
+					}
+				})
+				vconsole.$.bind(minSwitchArea, 'touchmove', function(event) {
+					event.preventDefault()
+					event.stopPropagation()
+					if (event.touches.length == 1) {
+						touchDistance = event.touches[0].pageX - startTouchX
+						if (hasShowVcClickSpan === false && touchDistance > document.body.clientWidth - 10) {
+							hasShowVcClickSpan = true
+							minSwitchClickArea.style.display = 'block'
+							clearTimeout(clickMinClickSwitchTimer)
+							clickMinClickSwitchTimer = setTimeout(() => {
+								minSwitchClickArea.style.display = 'none'
+							}, hideClickSpanTime)
+						}
+					}
+				})
+				vconsole.$.bind(minSwitchArea, 'touchend', function(event) {
+					event.preventDefault()
+					touchDistance = 0
+					startTouchX = null
+					hasShowVcClickSpan = false
+				})
 				let clickMinSwitchTime = null
 				let clickMinSwitchCount = 0
-				vconsole.$.bind(minSwitchArea, 'click', function(event) {
+				vconsole.$.bind(minSwitchClickArea, 'touchmove', function(event) {
 					event.preventDefault()
 					clearTimeout(clickMinSwitchTime)
 					clickMinSwitchTime = setTimeout(() => {
 						clickMinSwitchCount = 0
 					}, 400)
+					clearTimeout(clickMinClickSwitchTimer)
+					clickMinClickSwitchTimer = setTimeout(() => {
+						minSwitchClickArea.style.display = 'none'
+					}, hideClickSpanTime)
 					clickMinSwitchCount++
-					if (clickMinSwitchCount > 9) {
+					if (clickMinSwitchCount > 1000) {
 						vconsole.show()
 						clickMinSwitchCount = 0
+						minSwitchClickArea.style.display = 'none'
 						clearTimeout(clickMinSwitchTime)
+						clearTimeout(clickMinClickSwitchTimer)
 					}
+				})
+				vconsole.$.bind(minSwitchClickArea, 'touchend', function(event) {
+					event.preventDefault()
+					clearTimeout(clickMinSwitchTime)
+					clickMinSwitchCount = 0
+					clearTimeout(clickMinClickSwitchTimer)
+					minSwitchClickArea.style.display = 'none'
+				})
+				vconsole.$.bind(minSwitchClickArea, 'touchcancel', function(event) {
+					event.preventDefault()
+					clearTimeout(clickMinSwitchTime)
+					clickMinSwitchCount = 0
+					clearTimeout(clickMinClickSwitchTimer)
+					minSwitchClickArea.style.display = 'none'
 				})
 			}
 			initSpecialVConsole(vconsole)
