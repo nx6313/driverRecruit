@@ -198,7 +198,7 @@ export default {
   position: relative;
   display: block;
   width: 92vw;
-  background: #2b2b2b;
+  background: #33374b;
   color: #ffffff;
   text-align: center;
   left: 4vw;

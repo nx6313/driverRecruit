@@ -110,7 +110,7 @@ export default {
   position: relative;
   display: block;
   width: calc(100% - 2.4rem);
-  background: #2b2b2b;
+  background: #33374b;
   color: #ffffff;
   text-align: center;
   left: 1.2rem;

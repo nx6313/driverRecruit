@@ -17,10 +17,11 @@
       <div v-for="(input, index) in inputs" v-bind:key="index" :class="['formInputItem', `input-item-${index}`]">
         <span class="inputLabel">{{input.label}}</span>
         <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model">
+        <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'"/>
         <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
           <VueGroupButton v-for="(select, selectIndex) in input.range" v-bind:key="selectIndex" class="selectBtnItem round" :value="select.name">{{select.value}}</VueGroupButton>
         </VueGroup>
-        <VueSwitch class="radioSwitch" v-if="input.type == 'radio'" v-model="input.model"></VueSwitch>
+        <VueSwitch class="radioSwitch" v-if="input.type == 'switch'" v-model="input.model"></VueSwitch>
         <div class="sendSmsCodeWrap" v-if="input.type == 'sendSmsCode'">
           <input class="textInput" type="text" :placeholder="input.hint" v-model="input.model">
           <VueButton :class="['sendBtn', canUseSendSmsCodeBtn(input.model)]" @click="sendSmsCode(input.model, input)">{{hasSendSmsCode ? `${sendSmsCodeTime}秒后重新发送` : '发送验证码'}}</VueButton>
@@ -36,9 +37,13 @@
 
 <script>
 import { SOME_RULES } from '@/utils/rules'
+import FormRadio from '@/components/FormRadio.vue'
 
 export default {
   name: 'BaseInfoItem',
+  components: {
+    FormRadio
+  },
   props: {
     titleIcon: {
       default: require('@/assets/logo.png')
@@ -62,7 +67,7 @@ export default {
     },
     inputs: {
       /**
-       * label、model、hint、type(text、radio、select、sendSmsCode、smsCodeText)、range(对于select)、send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)
+       * label、model、hint、type(text、radio、switch、select、sendSmsCode、smsCodeText)、range(对于select)、send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)
        */
       default() {
         return []
