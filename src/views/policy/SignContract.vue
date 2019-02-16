@@ -6,7 +6,7 @@
         </div>
         <span class="toSignBtn" @click="toSign">
             <span class="tip">{{signImgData == null ? '点这里签名' : ''}}</span>
-            <img v-if="signImgData != null" :src="signImgData">
+            <img v-if="signImgData != null" v-lazy="signImgData">
             <span class="signDateTime">日期：{{$comfun.formatDate(currentDate, 'yyyy/MM/dd hh:mm:ss')}}</span>
         </span>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">签字完毕确认</span>

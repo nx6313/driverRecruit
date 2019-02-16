@@ -11,14 +11,14 @@
                 <template v-if="doIndex === 0">
                     <div :class="['cardWrap', 'userPhotoWrap', userPhotoBase64 == null ? 'normalCardWrap' : '']">
                         <input type="file" class="fileInput" title="请选择红底正装照片" accept="image/*" @change="selectFile($event, 'user_photo', doItem)">
-                        <img class="cardDisplay showBorder" :src="require('@/assets/user_photo.png')">
+                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/user_photo.png')">
                         <span v-if="userPhotoBase64 != null" class="imgPreview hasBorder" :style="userPhotoBase64 != null ? { 'background-image': `url(${userPhotoBase64})` } : {}"></span>
                     </div>
                 </template>
                 <template v-if="doIndex === 1">
                     <div :class="['cardWrap', 'salaryCardWrap', salaryCardBase64 == null ? 'normalCardWrap' : '']">
                         <input type="file" class="fileInput" title="请选择建行工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
-                        <img class="cardDisplay showBorder" :src="require('@/assets/salary_card.png')">
+                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/salary_card.png')">
                         <span v-if="salaryCardBase64 != null" class="imgPreview hasBorder" :style="salaryCardBase64 != null ? { 'background-image': `url(${salaryCardBase64})` } : {}"></span>
                     </div>
                     <div class="inputWrap">
@@ -29,7 +29,7 @@
                 <template v-if="doIndex === 2">
                     <div :class="['cardWrap', 'salaryCardWrap', accountCardBase64 == null ? 'normalCardWrap' : '']">
                         <input type="file" class="fileInput" title="请选择户口簿个人页" accept="image/*" @change="selectFile($event, 'account_card', doItem)">
-                        <img class="cardDisplay showBorder" :src="require('@/assets/user_hk.png')">
+                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/user_hk.png')">
                         <span v-if="accountCardBase64 != null" class="imgPreview hasBorder" :style="accountCardBase64 != null ? { 'background-image': `url(${accountCardBase64})` } : {}"></span>
                     </div>
                 </template>

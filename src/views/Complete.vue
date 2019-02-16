@@ -1,8 +1,8 @@
 <template>
     <div class="complete">
-        <img v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULEING" :src="require('@/assets/icon_audit.png')">
-        <img v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULE_PASS || $store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.USER_IS_DRIVER" :src="require('@/assets/icon_audit_pass.png')">
-        <img v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULE_NO_PASS_NO_UPDATE || $store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULE_NO_PASS_CAN_UPDATE || $store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.INTERVIEW_NO_PASS" :src="require('@/assets/icon_audit_reject.png')">
+        <img v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULEING" v-lazy="require('@/assets/icon_audit.png')">
+        <img v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULE_PASS || $store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.USER_IS_DRIVER" v-lazy="require('@/assets/icon_audit_pass.png')">
+        <img v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULE_NO_PASS_NO_UPDATE || $store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULE_NO_PASS_CAN_UPDATE || $store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.INTERVIEW_NO_PASS" v-lazy="require('@/assets/icon_audit_reject.png')">
         <span v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.RULEING" class="tip">
             <span class="tipTitle">审核中 · · ·</span>
             <span>我们会在一个工作日进行初审，请耐心等待</span>

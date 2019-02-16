@@ -4,9 +4,9 @@
             <span class="policyTitle">
                 <span :class="['titlePoint', policy.read ? 'titlePointHasRead' : '']"></span>
                 {{policy.title}}
-                <img class="needWrite" :src="require('@/assets/policy_edit.png')" v-if="policy.edit">
+                <img class="needWrite" v-lazy="require('@/assets/policy_edit.png')" v-if="policy.edit">
             </span>
-            <span :class="['policyRead', policy.read ? 'policyReadHasRead' : '']"><img class="hasRead" :src="require('@/assets/icon_has_read.png')" v-if="policy.read">{{policy.read ? '已阅读' : '未阅读'}}</span>
+            <span :class="['policyRead', policy.read ? 'policyReadHasRead' : '']"><img class="hasRead" v-lazy="require('@/assets/icon_has_read.png')" v-if="policy.read">{{policy.read ? '已阅读' : '未阅读'}}</span>
         </div>
     </div>
 </template>

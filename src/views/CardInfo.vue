@@ -6,7 +6,7 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择身份证正面照" accept="image/*" @change="selectFile($event, 'id_card_a')">
-            <img class="cardDisplay" :src="require('@/assets/id_card_a.jpg')">
+            <img class="cardDisplay" v-lazy="require('@/assets/id_card_a.jpg')">
             <span v-if="idCardABase64 != null" class="imgPreview" :style="idCardABase64 != null ? { 'background-image': `url(${idCardABase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传身份证正面</span>
@@ -14,7 +14,7 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择身份证国徽面照" accept="image/*" @change="selectFile($event, 'id_card_b')">
-            <img class="cardDisplay" :src="require('@/assets/id_card_b.jpg')">
+            <img class="cardDisplay" v-lazy="require('@/assets/id_card_b.jpg')">
             <span v-if="idCardBBase64 != null" class="imgPreview" :style="idCardBBase64 != null ? { 'background-image': `url(${idCardBBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传身份证国徽面</span>
@@ -27,7 +27,7 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择驾驶证正面照" accept="image/*" @change="selectFile($event, 'drive_card_a')">
-            <img class="cardDisplay showBorder" :src="require('@/assets/drive_card_a.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
             <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传驾驶证正面照</span>
@@ -35,7 +35,7 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择驾驶证副页照" accept="image/*" @change="selectFile($event, 'drive_card_b')">
-            <img class="cardDisplay showBorder" :src="require('@/assets/drive_card_b.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
             <span v-if="driveCardBBase64 != null" class="imgPreview hasBorder" :style="driveCardBBase64 != null ? { 'background-image': `url(${driveCardBBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传驾驶证副页</span>
@@ -44,19 +44,19 @@
     </div>
     <div class="cardTipWrap">
       <div class="cardTip">
-        <img :src="require('@/assets/card_ok.jpg')">
+        <img v-lazy="require('@/assets/card_ok.jpg')">
         <span>标准拍摄</span>
       </div>
       <div class="cardTip">
-        <img :src="require('@/assets/card_error_1.jpg')">
+        <img v-lazy="require('@/assets/card_error_1.jpg')">
         <span>边框缺失</span>
       </div>
       <div class="cardTip">
-        <img :src="require('@/assets/card_error_2.jpg')">
+        <img v-lazy="require('@/assets/card_error_2.jpg')">
         <span>照片模糊</span>
       </div>
       <div class="cardTip">
-        <img :src="require('@/assets/card_error_3.jpg')">
+        <img v-lazy="require('@/assets/card_error_3.jpg')">
         <span>闪光强烈</span>
       </div>
     </div>

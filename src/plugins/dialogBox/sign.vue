@@ -10,7 +10,7 @@
           @mouseup="mouseUp" ref="canvasSign"></canvas>
           <span class="signClose" @click="closeSign"></span>
           <span class="signClear" @click="clear"></span>
-          <span class="signComplate" @click="commit"><img :src="require('@/assets/sign_complate.png')"></span>
+          <span class="signComplate" @click="commit"><img v-lazy="require('@/assets/sign_complate.png')"></span>
       </div>
     </div>
   </div>

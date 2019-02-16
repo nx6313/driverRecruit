@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <img class="recruitCover" alt="RecruitCover" src="../assets/start_recruit.jpg">
+    <img class="recruitCover" alt="RecruitCover" v-lazy="require('../assets/start_recruit.jpg')">
     <router-link :to="getLinkTo" class="signInDriver" tag="span">注册成为网约车司机</router-link>
-    <Presentation ref="fffff"/>
+    <Presentation/>
   </div>
 </template>
 
@@ -63,7 +63,7 @@ export default {
         link = '/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
         // 该用户还未提交任何资料
-        link = '/cardInfo'
+        link = '/baseInfoComplete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDITING) {
         // 该用户提交的资料正在审核中
         link = '/auditResult'

@@ -14,11 +14,28 @@ let router = new Router({
       component: Home
     },
     {
+      path: '/baseInfoComplete',
+      name: 'baseInfoComplete',
+      component: () => import('./views/BaseInfoComplete.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.driverRecruitData.auditState.state == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '基础信息'
+      }
+    },
+    {
       path: '/cardInfo',
       name: 'cardInfo',
       component: () => import('./views/CardInfo.vue'),
       beforeEnter: (to, from, next) => {
-        if (store.state.driverRecruitData.auditState.state == null || store.state.driverRecruitData.auditState.state === true) {
+        refForVuexData()
+        if (store.state.driverRecruitData.auditState.state == null) {
           next('/')
         } else {
           next()
@@ -33,29 +50,15 @@ let router = new Router({
       name: 'baseInfo',
       component: () => import('./views/BaseInfo.vue'),
       beforeEnter: (to, from, next) => {
-        if (store.state.driverRecruitData.auditState.state == null || store.state.driverRecruitData.auditState.state === true) {
+        refForVuexData()
+        if (store.state.driverRecruitData.auditState.state == null) {
           next('/')
         } else {
           next()
         }
       },
       meta: {
-        title: '基础信息'
-      }
-    },
-    {
-      path: '/baseInfoComplete',
-      name: 'baseInfoComplete',
-      component: () => import('./views/BaseInfoComplete.vue'),
-      beforeEnter: (to, from, next) => {
-        if (store.state.driverRecruitData.auditState.state == null || store.state.driverRecruitData.auditState.state === true) {
-          next('/')
-        } else {
-          next()
-        }
-      },
-      meta: {
-        title: '基础信息'
+        title: '完善信息'
       }
     },
     {
@@ -79,6 +82,7 @@ let router = new Router({
       name: 'policyRuleList',
       component: () => import('./views/PolicyRuleList.vue'),
       beforeEnter: (to, from, next) => {
+        refForVuexData()
         if (store.state.driverRecruitData.policyList) {
           let allIsRead = true
           for (let policyIndex in store.state.driverRecruitData.policyList) {
@@ -202,6 +206,7 @@ let router = new Router({
   ]
 })
 router.beforeResolve((to, from, next) => {
+  refForVuexData()
   if (to.meta.pageBg) {
     if (router.app.$vctool.isObject(to.meta.pageBg)) {
       for (let styleKey in to.meta.pageBg) {
@@ -220,6 +225,11 @@ router.beforeResolve((to, from, next) => {
   }
   next()
 })
+
+let refForVuexData = function() {
+  router.app.$store.replaceState(Object.assign({}, router.app.$store.state, JSON.parse(sessionStorage.getItem('store'))))
+  sessionStorage.clear()
+}
 
 export default {
   router: router,

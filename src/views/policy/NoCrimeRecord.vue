@@ -6,7 +6,7 @@
         </div>
         <div :class="['cardWrap', 'noCrimeRecordWrap', noCrimeRecordBase64 == null ? 'normalCardWrap' : '']">
             <input type="file" class="fileInput" title="请选择无犯罪记录证明照片" accept="image/*" @change="selectFile($event, 'no_crime_record')">
-            <img class="cardDisplay showBorder" :src="require('@/assets/no_crime.png')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/no_crime.png')">
             <span v-if="noCrimeRecordBase64 != null" class="imgPreview hasBorder" :style="noCrimeRecordBase64 != null ? { 'background-image': `url(${noCrimeRecordBase64})` } : {}"></span>
         </div>
         <span class="uploadTip">上传犯罪记录证明</span>

@@ -85,7 +85,7 @@
                     <td width="100" class="bold">签名时间</td>
                     <td colspan="4">2018.08.06 12:06:28</td>
                     <td width="100" class="bold">签名图</td>
-                    <td colspan="4"><img :src="require('@/assets/logo.png')"></td>
+                    <td colspan="4"><img v-lazy="require('@/assets/logo.png')"></td>
                 </tr>
             </table>
         </div>

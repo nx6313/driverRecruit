@@ -1,7 +1,7 @@
 <template>
   <div class="baseInfoItem">
     <div class="itemTitleWrap">
-      <img class="itemTitleIcon" :src="titleIcon">
+      <img class="itemTitleIcon" v-lazy="titleIcon">
       <span class="itemTitleContent">{{title}}</span>
     </div>
     <template v-if="inputs.length == 0">

@@ -71,6 +71,15 @@ const store = new Vuex.Store({
           driveCardB: null
         },
         baseInfo: null,
+        baseInfoComplete: {
+          personName: null,
+          personSex: null,
+          idcarNo: null,
+          addressDetail: null,
+          driverlicenseNo: null,
+          phone: null,
+          smsCode: null
+        },
         auditState: {
           state: null,
           auditPass: null,
@@ -104,6 +113,9 @@ const store = new Vuex.Store({
         [SOME_MUTATION.setDriverRecruitData_BaseInfo] (state, payload) {
           state.baseInfo = payload.baseInfo
         },
+        [SOME_MUTATION.setDriverRecruitData_BaseInfoComplete] (state, payload) {
+          state.baseInfoComplete = payload.baseInfoComplete
+        },
         [SOME_MUTATION.setDriverRecruitData_AuditState] (state, payload) {
           state.auditState = payload.auditState
         },
@@ -130,6 +142,10 @@ const store = new Vuex.Store({
         // eslint-disable-next-line
         clearDriverRecruitData_BaseInfo({ commit, state }) {
           state.baseInfo = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_BaseInfoComplete({ commit, state }) {
+          state.baseInfoComplete = null
         }
       }
     }

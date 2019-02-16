@@ -46,7 +46,7 @@ export default {
 				document.body.parentNode.appendChild(minSwitchArea)
 				let minSwitchClickArea = document.createElement('div')
 				minSwitchClickArea.id = '__minVcClickSwitch'
-				minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none;`
+				minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; line-height: 30px; text-align: center; font-size: 10px; font-weight: bold; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none; color: #ffffff;`
 				document.body.parentNode.appendChild(minSwitchClickArea)
 				let touchDistance = 0
 				let startTouchX = null
@@ -57,6 +57,7 @@ export default {
 					touchDistance = 0
 					startTouchX = null
 					hasShowVcClickSpan = false
+					minSwitchClickArea.innerText = ''
 					clearTimeout(clickMinClickSwitchTimer)
 					if (event.touches.length == 1) {
 						startTouchX = event.touches[0].pageX
@@ -70,6 +71,7 @@ export default {
 						if (hasShowVcClickSpan === false && touchDistance > document.body.clientWidth - 10) {
 							hasShowVcClickSpan = true
 							minSwitchClickArea.style.display = 'block'
+							minSwitchClickArea.innerText = ''
 							clearTimeout(clickMinClickSwitchTimer)
 							clickMinClickSwitchTimer = setTimeout(() => {
 								minSwitchClickArea.style.display = 'none'
@@ -82,6 +84,7 @@ export default {
 					touchDistance = 0
 					startTouchX = null
 					hasShowVcClickSpan = false
+					minSwitchClickArea.innerText = ''
 				})
 				let clickMinSwitchTime = null
 				let clickMinSwitchCount = 0
@@ -94,12 +97,15 @@ export default {
 					clearTimeout(clickMinClickSwitchTimer)
 					clickMinClickSwitchTimer = setTimeout(() => {
 						minSwitchClickArea.style.display = 'none'
+						minSwitchClickArea.innerText = ''
 					}, hideClickSpanTime)
 					clickMinSwitchCount++
-					if (clickMinSwitchCount > 1000) {
+					minSwitchClickArea.innerText = clickMinSwitchCount
+					if (clickMinSwitchCount > 400) {
 						vconsole.show()
 						clickMinSwitchCount = 0
 						minSwitchClickArea.style.display = 'none'
+						minSwitchClickArea.innerText = ''
 						clearTimeout(clickMinSwitchTime)
 						clearTimeout(clickMinClickSwitchTimer)
 					}
@@ -110,6 +116,7 @@ export default {
 					clickMinSwitchCount = 0
 					clearTimeout(clickMinClickSwitchTimer)
 					minSwitchClickArea.style.display = 'none'
+					minSwitchClickArea.innerText = ''
 				})
 				vconsole.$.bind(minSwitchClickArea, 'touchcancel', function(event) {
 					event.preventDefault()
@@ -117,6 +124,7 @@ export default {
 					clickMinSwitchCount = 0
 					clearTimeout(clickMinClickSwitchTimer)
 					minSwitchClickArea.style.display = 'none'
+					minSwitchClickArea.innerText = ''
 				})
 			}
 			initSpecialVConsole(vconsole)

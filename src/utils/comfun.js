@@ -528,13 +528,17 @@ export default {
         var hash = window.location.hash
         var theRequest = {}
         if (hash.indexOf('#/') !== -1) {
-          var str = decodeURIComponent(hash.split('#/')[1])
-          if (safe) {
-            str = this.decryptedData(str)
-          }
-          var strs = str.split('&')
-          for (var i = 0; i < strs.length; i++) {
-            theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
+          try {
+            var str = decodeURIComponent(hash.split('#/')[1])
+            if (safe) {
+              str = this.decryptedData(str)
+            }
+            var strs = str.split('&')
+            for (var i = 0; i < strs.length; i++) {
+              theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
+            }
+          } catch (error) {
+            return null
           }
         }
         if (key) {
