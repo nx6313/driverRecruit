@@ -42,7 +42,7 @@ export default {
         },
         {
           label: '驾驶证',
-          type: 'select',
+          type: 'radio',
           range: [ { name: 'C1', value: 'C1' }, { name: 'C2', value: 'C2' } ],
           model: 'C1'
         },
@@ -82,8 +82,19 @@ export default {
       if (this.input1[3].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的现居住地'); return false }
       if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的手机号'); return false }
       if (this.input1[6].model.trim() == '') { this.$comfun.showToast(this, '请先输入您收到的短信验证码'); return false }
-      this.saveUserBaseInfo()
-      this.$router.push('/cardInfo')
+      this.$comfun.showLoading(this, 'applyDriverSmsCode', false)
+      this.$comfun.http_post(this, 'api/member/applyDriverSmsCode', {
+        phone: this.input1[5].model.trim(),
+        sms_code: this.input1[6].model.trim()
+      }).then((request) => {
+        this.$comfun.hideLoading('applyDriverSmsCode')
+        if (request.data.status == 'OK') {
+          this.saveUserBaseInfo()
+          this.$router.push('/cardInfo')
+        } else {
+          this.$comfun.showToast(this, request.data.msg)
+        }
+      })
     },
     saveUserBaseInfo: function() {
       this.$store.commit('setDriverRecruitData_BaseInfoComplete', {
