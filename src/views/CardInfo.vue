@@ -172,7 +172,7 @@ export default {
     },
     uploadCardFile: function(file, callBack, errorCallBack) {
       this.$comfun.showLoading(this, 'uploadCardFile', false)
-      this.$comfun.http_file(this, 'file', file).then((request) => {
+      this.$comfun.http_file(this, this.$api.file, file).then((request) => {
         this.$comfun.hideLoading('uploadCardFile')
         if (request.data.status == 'OK') {
           callBack(request.data.data.path)

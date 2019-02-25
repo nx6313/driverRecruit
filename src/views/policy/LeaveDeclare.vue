@@ -99,7 +99,7 @@ export default {
             //     return false
             // }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
-            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+            this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 type: 'departure',
                 'departure.leave_year': this.leaveYear,
                 'departure.leave_month': this.leaveMonth,

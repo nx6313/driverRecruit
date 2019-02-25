@@ -6,12 +6,14 @@ import VueLazyload from "vue-lazyload"
 import VueUi from '@vue/ui'
 import '@vue/ui/dist/vue-ui.css'
 import ComFun from '@/utils/comfun.js'
+import Api from '@/utils/api.js'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
 Vue.use(VueLazyload)
 Vue.use(VueUi)
 Vue.use(ComFun)
+Vue.prototype.$api = Api
 
 const router = appConfig.router
 const store = appConfig.store

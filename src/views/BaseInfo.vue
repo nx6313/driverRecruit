@@ -19,7 +19,7 @@ export default {
     return {
       isMustSelect: false,
       answers_1: ['癫痫', '心脏病', '各类传染性疾病', '精神类疾病', '各类贫血、败血症', '高血压等血栓性疾病', '阑尾炎'],
-      answers_2: ['人才市场', '微信', '平台', '推荐'],
+      answers_2: ['人才市场', '微信', '平台', '推荐人姓名及联系方式[league_recommend]'],
       answers_3: ['滴滴', '首汽', '曹操专车', '神州专车']
     }
   },
@@ -61,8 +61,18 @@ export default {
     submit: function() {
       let health = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q1.answer : null
       let league = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q2.answer : null
+      let leagueRecommend = null
+      if (league != null && this.$vctool.isArray(league)) {
+        league.map(v => {
+          if (v.hasOwnProperty('filterKey')) {
+            if (v['filterKey'] === 'league_recommend') {
+              leagueRecommend = v['filterValue']
+            }
+          }
+        })
+      }
       let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
-      this.$comfun.http_post(this, 'api/member/applyInfo', {
+      this.$comfun.http_post(this, this.$api.applyInfo, {
         'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
         'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
         'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
@@ -70,6 +80,7 @@ export default {
         'apply.health': health != null && this.$vctool.isArray(health) ? health.map(v => { return v.key }).join(',') : (health != null && !this.$vctool.isArray(health) ? health.key : null),
         'apply.health_other': health != null && !this.$vctool.isArray(health) ? health.val : null,
         'apply.league': league != null && this.$vctool.isArray(league) ? league.map(v => { return v.key }).join(',') : (league != null && !this.$vctool.isArray(league) ? league.key : null),
+        'apply.league_recommend': leagueRecommend,
         'apply.league_other': league != null && !this.$vctool.isArray(league) ? league.val : null,
         'apply.experience': experience != null && this.$vctool.isArray(experience) ? experience.map(v => { return v.key }).join(',') : (experience != null && !this.$vctool.isArray(experience) ? experience.key : null),
         'apply.experience_other': experience != null && !this.$vctool.isArray(experience) ? experience.val : null,

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <img class="recruitCover" alt="RecruitCover" v-lazy="require('../assets/start_recruit.jpg')">
+    <img class="recruitCover" alt="RecruitCover" v-lazy="require('@/assets/start_recruit.jpg')">
     <router-link :to="getLinkTo" class="signInDriver" tag="span">注册成为网约车司机</router-link>
     <Presentation/>
   </div>
@@ -33,7 +33,8 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+  },
   created() {
     this.$store.dispatch('clearAll')
     this.$store.commit('setDriverRecruitStateRule', {
@@ -98,7 +99,7 @@ export default {
   methods: {
     getSms: function(phone) {
       this.$comfun.showLoading(this, 'getSms', false)
-      this.$comfun.http_get(this, 'api/getSms', {
+      this.$comfun.http_get(this, this.$api.getSms, {
         phone: phone
       }).then((request) => {
         this.$comfun.hideLoading('getSms')
@@ -118,7 +119,7 @@ export default {
         return false
       }
       this.$comfun.showLoading(this, 'loginBySms', false)
-      this.$comfun.http_post(this, 'api/loginBySms', {
+      this.$comfun.http_post(this, this.$api.loginBySms, {
         phone: phone,
         smsCode: smsCode,
         landingIp: '',
@@ -147,7 +148,7 @@ export default {
     },
     getUserDriverRecruit: function() {
       this.$comfun.showLoading(this, 'applyDriver', false)
-      this.$comfun.http_post(this, 'api/member/applyDriver').then((request) => {
+      this.$comfun.http_post(this, this.$api.applyDriver).then((request) => {
         this.$comfun.hideLoading('applyDriver')
         // eslint-disable-next-line
         console.log(request.data.msg)

@@ -25,7 +25,7 @@ export default {
   },
   mounted() {
     this.$comfun.showLoading(this, 'applyDriver', false)
-    this.$comfun.http_post(this, 'api/member/applyDriver').then((request) => {
+    this.$comfun.http_post(this, this.$api.applyDriver).then((request) => {
       this.$comfun.hideLoading('applyDriver')
       if (request.data.status == 'OK') {
         this.$store.commit('updateDriverRecruitState', {

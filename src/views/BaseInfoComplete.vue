@@ -51,7 +51,7 @@ export default {
           hint: '请输入您的手机号',
           type: 'sendSmsCode',
           send: (phone) => {
-            return this.$comfun.http_post(this, 'api/member/applySms', {
+            return this.$comfun.http_post(this, this.$api.applySms, {
               phone: phone
             })
           },
@@ -83,7 +83,7 @@ export default {
       if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的手机号'); return false }
       if (this.input1[6].model.trim() == '') { this.$comfun.showToast(this, '请先输入您收到的短信验证码'); return false }
       this.$comfun.showLoading(this, 'applyDriverSmsCode', false)
-      this.$comfun.http_post(this, 'api/member/applyDriverSmsCode', {
+      this.$comfun.http_post(this, this.$api.applyDriverSmsCode, {
         phone: this.input1[5].model.trim(),
         sms_code: this.input1[6].model.trim()
       }).then((request) => {

@@ -8,10 +8,17 @@
       <div class="itemQuestionSelectWrap">
         <span class="questionContent">{{question}}</span>
         <div class="answersWrap">
-          <span v-for="(answer, index) in answers" v-bind:key="index" @click="selectThisAnswer(index, answer)" :class="['answerItem', thisAnswerSelected(index, answer) ? 'current-selected' : '']">{{answer}}</span>
+          <template v-for="(answer, index) in answers">
+            <span v-bind:key="index" v-if="!/^\S+(\[\S+\]){1}$/.test(answer)" @click="selectThisAnswer(index, answer)" :class="['answerItem', thisAnswerSelected(index, answer) ? 'current-selected' : '']">{{answer}}</span>
+          </template>
         </div>
       </div>
-      <input type="text" :placeholder="otherAnswerHint" v-model="otherAnswer" :class="['otherAnswer', otherAnswer != null ? 'other-answer-selected' : '']" @click="writeOtherAnswer(true)" @blur="writeOtherAnswer(false)">
+      <div v-for="(answer, index) in answers" v-bind:key="index" :class="['otherInputWrap', hasThis(answer.match(/(\[\S+\]){1}$/)) ? 'other-answer-selected-for-wrap' : '']" :data-beforeContent="answer | filterAnswer">
+        <input type="text" v-if="/^\S+(\[\S+\]){1}$/.test(answer)" :placeholder="answer | filterAnswer" :placeholderData="answer | filterAnswer" :class="['otherAnswer', hasThis(answer.match(/(\[\S+\]){1}$/)) ? 'other-answer-selected' : '']" :ref="`input_${answer.match(/(\[\S+\]){1}$/)[0].substr(1).substr(0, answer.match(/(\[\S+\]){1}$/)[0].length - 2)}`" @click="writeFilterAnswer(index, answer.match(/(\[\S+\]){1}$/), true, `input_${answer.match(/(\[\S+\]){1}$/)[0].substr(1).substr(0, answer.match(/(\[\S+\]){1}$/)[0].length - 2)}`)" @blur="writeFilterAnswer(index, answer.match(/(\[\S+\]){1}$/), false, `input_${answer.match(/(\[\S+\]){1}$/)[0].substr(1).substr(0, answer.match(/(\[\S+\]){1}$/)[0].length - 2)}`)">
+      </div>
+      <div :class="['otherInputWrap', (otherAnswer != null && otherAnswer != '') ? 'other-answer-selected-for-wrap' : '']" :data-beforeContent="otherAnswerHint">
+        <input type="text" :placeholder="otherAnswerHint" v-model="otherAnswer" :class="['otherAnswer', otherAnswer != null ? 'other-answer-selected' : '']" @click="writeOtherAnswer(true)" @blur="writeOtherAnswer(false)">
+      </div>
     </template>
     <template v-if="inputs.length > 0">
       <div v-for="(input, index) in inputs" v-bind:key="index" :class="['formInputItem', `input-item-${index}`]">
@@ -95,6 +102,14 @@ export default {
       }
     }
   },
+  filters: {
+    filterAnswer: function(value) {
+      if (/^\S+(\[\S+\]){1}$/.test(value)) {
+        value = value.replace(/(\[\S+\]){1}$/, '')
+      }
+      return value;
+    }
+  },
   directives: {
     focus: {
       inserted: (el, binding) => {
@@ -107,6 +122,7 @@ export default {
   },
   methods: {
     selectThisAnswer: function(index, answer) {
+      answer = answer.replace(/(\[\S+\]){1}$/, '')
       this.otherAnswer = null
       let thisSelected = { index: index, answer: answer, key: String.fromCharCode(65 + index) }
       if (this.isMultiple) {
@@ -130,6 +146,7 @@ export default {
       }
     },
     thisAnswerSelected: function(index, answer) {
+      answer = answer.replace(/(\[\S+\]){1}$/, '')
       if (this.isMultiple) {
         return this.selectAnswer!= null && (() => {
           let hasThis = false
@@ -146,11 +163,54 @@ export default {
       }
     },
     writeOtherAnswer: function(focus) {
+      let filterKeys = this.selectAnswer != null ? this.selectAnswer.map(v => { return v.filterKey }) : []
+      this.answers.map(v => {
+        if (/^\S+(\[\S+\]){1}$/.test(v)) {
+          let ref = v.match(/(\[\S+\]){1}$/)[0].substr(1).substr(0, v.match(/(\[\S+\]){1}$/)[0].length - 2)
+          let thisInput = this.$refs['input_' + ref][0]
+          thisInput.value = ''
+          let hasInIndex = filterKeys.indexOf(ref)
+          if (hasInIndex >= 0) {
+            this.selectAnswer.splice(hasInIndex, 1)
+          }
+        }
+      })
       if (focus) {
         this.otherAnswer = ''
         this.selectAnswer = null
       } else {
-        if (this.otherAnswer == '') this.otherAnswer = null
+        if (this.otherAnswer == '') {
+          this.otherAnswer = null
+        }
+      }
+    },
+    hasThis: function(filter) {
+      if (filter != null) {
+        let filterKeys = this.selectAnswer != null ? this.selectAnswer.map(v => { return v.filterKey }) : []
+        return filterKeys.indexOf(filter[0].substr(1).substr(0, filter[0].length - 2)) >= 0
+      }
+      return false
+    },
+    writeFilterAnswer: function(index, filter, focus, ref) {
+      let thisInput = this.$refs[ref][0]
+      this.otherAnswer = null
+      let filterKeys = this.selectAnswer != null ? this.selectAnswer.map(v => { return v.filterKey }) : []
+      let hasInIndex = filterKeys.indexOf(filter[0].substr(1).substr(0, filter[0].length - 2))
+      if (focus) {
+        thisInput.placeholder = '请输入'
+        if (this.selectAnswer == null) this.selectAnswer = []
+        let thisSelected = { index: index, filterKey: filter[0].substr(1).substr(0, filter[0].length - 2), filterValue: '', key: String.fromCharCode(65 + index) }
+        if (hasInIndex >= 0) {
+          this.selectAnswer.splice(hasInIndex, 1)
+        }
+        this.selectAnswer.push(thisSelected)
+      } else {
+        thisInput.placeholder = thisInput.getAttribute('placeholderData')
+        if (thisInput.value.trim() === '') {
+          let filterKeys = this.selectAnswer != null ? this.selectAnswer.map(v => { return v.filterKey }) : []
+          this.selectAnswer.splice(hasInIndex, 1)
+          thisInput.value = ''
+        }
       }
     },
     canUseSendSmsCodeBtn: function(phone) {
@@ -197,6 +257,14 @@ export default {
       this.currentInputCodeBox = -1
     },
     getResult: function() {
+      if (this.selectAnswer != null && this.selectAnswer.length > 0) {
+        this.selectAnswer.map(v => {
+          if (v.hasOwnProperty('filterKey')) {
+            let thisInput = this.$refs['input_' + v['filterKey']][0]
+            v['filterValue'] = thisInput.value.trim()
+          }
+        })
+      }
       if (this.isMultiple) {
         return (this.selectAnswer != null && this.selectAnswer.length > 0 ? this.selectAnswer : null) || (this.otherAnswer != null ? { key: String.fromCharCode(65 + this.answers.length), val: this.otherAnswer } : null)
       }
@@ -417,5 +485,32 @@ export default {
 @keyframes codeBoxInputAfter {
   0% { background: #2c2c2c; }
   100% { background: #ffffff; }
+}
+
+.otherInputWrap {
+  position: relative;
+}
+.other-answer-selected-for-wrap::before {
+  content: attr(data-beforeContent);
+  background-color: #bb5151;
+  position: absolute;
+  top: 0.24rem;
+  left: 1.8rem;
+  font-size: 0.6rem;
+  color: #ffffff;
+  padding: 0 0.4rem;
+  border-radius: 4px;
+  animation: inputAnim 240ms linear forwards;
+}
+
+@keyframes inputAnim {
+  from {
+    opacity: 0;
+    transform: translate(-10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
 }
 </style>

@@ -73,12 +73,15 @@ Vue.use(Dialogbox)
 const dialogAlert = require('react-confirm-alert')
 const WheelPicker = require('wheel-picker')
 
-// var server_address = "http://172.18.2.32:8080/" // 一飞
-// var server_address = "http://172.18.2.26:8080/" // 玉慧
-// var server_address = "http://172.18.2.21:7777/" // 璐璐
-var server_address = "https://www.dcchuxing.com/" // 正式服务器
+// var server_address_production = "http://172.18.2.32:8080/" // 一飞
+// var server_address_production = "http://172.18.2.26:8080/" // 玉慧
+// var server_address_production = "http://172.18.2.21:7777/" // 璐璐
+var server_address_production = "http://172.18.2.14:8080/" // 泽明
 
-var server_address_dev = "https://dev.dcchuxing.com/" // 测试服务器
+var server_address_test = "https://test.dcchuxing.com/" // 测试服务器
+var server_address_development = "https://pre.dcchuxing.com/" // 预生产服务器
+// var server_address_production = "https://www.dcchuxing.com/" // 生产服务器
+
 var key = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 var iv = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 
@@ -111,10 +114,12 @@ export default {
           method: 'GET',
           headers: headers
         }
-        if (this.isDev(context)) {
-          axiosOptions.url = server_address_dev + url
+        if (this.getServiceType(context) === 'test') {
+          axiosOptions.url = server_address_test + url
+        } else if (this.getServiceType(context) === 'development') {
+          axiosOptions.url = server_address_development + url
         } else {
-          axiosOptions.url = server_address + url
+          axiosOptions.url = server_address_production + url
         }
         if (params) {
           axiosOptions.params = params
@@ -145,10 +150,12 @@ export default {
           method: 'POST',
           headers: headers
         }
-        if (this.isDev(context)) {
-          axiosOptions.url = server_address_dev + url
+        if (this.getServiceType(context) === 'test') {
+          axiosOptions.url = server_address_test + url
+        } else if (this.getServiceType(context) === 'development') {
+          axiosOptions.url = server_address_development + url
         } else {
-          axiosOptions.url = server_address + url
+          axiosOptions.url = server_address_production + url
         }
         if (params) {
           axiosOptions.data = params
@@ -183,10 +190,12 @@ export default {
             console.log(`文件【${file.name}】上传进度：${percentCompleted} %`)
           }
         }
-        if (this.isDev(context)) {
-          axiosOptions.url = server_address_dev + url
+        if (this.getServiceType(context) === 'test') {
+          axiosOptions.url = server_address_test + url
+        } else if (this.getServiceType(context) === 'development') {
+          axiosOptions.url = server_address_development + url
         } else {
-          axiosOptions.url = server_address + url
+          axiosOptions.url = server_address_production + url
         }
         let formData = new FormData()
         formData.append('file', file)
@@ -194,22 +203,30 @@ export default {
         return FileAxios(axiosOptions)
       },
       // 判断当前是否为测试服访问
-      isDev: function (context) {
+      getServiceType: function (context) {
         let serviceType = this.getRequestAuto('serviceType') || context.$store.state.auth.serviceType
-        if (serviceType === 'dev') {
+        if (serviceType === 'test') {
           context.$store.commit('updateAuth', {
             secret: context.$store.state.auth.secret,
             token: context.$store.state.auth.token,
-            serviceType: 'dev'
+            serviceType: 'test'
           })
-          return true
+          return 'test'
+        } else if (serviceType === 'development') {
+          context.$store.commit('updateAuth', {
+            secret: context.$store.state.auth.secret,
+            token: context.$store.state.auth.token,
+            serviceType: 'development'
+          })
+          return 'development'
+        } else {
+          context.$store.commit('updateAuth', {
+            secret: context.$store.state.auth.secret,
+            token: context.$store.state.auth.token,
+            serviceType: 'production'
+          })
+          return 'production'
         }
-        context.$store.commit('updateAuth', {
-          secret: context.$store.state.auth.secret,
-          token: context.$store.state.auth.token,
-          serviceType: 'www'
-        })
-        return false
       },
       // 判断url中是否包含用户登陆认证信息
       hasAuthInfoInUrl: function () {

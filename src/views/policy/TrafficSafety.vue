@@ -38,7 +38,7 @@ export default {
     methods: {
         readFinish: function() {
             this.$comfun.showLoading(this, 'applyRuleRead', false)
-            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+            this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 type: 'traffic'
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')

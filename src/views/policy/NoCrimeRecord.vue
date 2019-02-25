@@ -72,7 +72,7 @@ export default {
         },
         uploadCardFile: function(file, callBack, errorCallBack) {
             this.$comfun.showLoading(this, 'uploadCardFile', false)
-            this.$comfun.http_file(this, 'file', file).then((request) => {
+            this.$comfun.http_file(this, this.$api.file, file).then((request) => {
                 this.$comfun.hideLoading('uploadCardFile')
                 if (request.data.status == 'OK') {
                     callBack(request.data.data.path)
@@ -90,7 +90,7 @@ export default {
                 return false
             }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
-            this.$comfun.http_post(this, 'api/member/applyRuleRead', {
+            this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 type: 'crime',
                 'crime.path': this.$store.state.driverRecruitData.policyDataInfo.noCrimeRecord
             }).then((request) => {

@@ -2,28 +2,28 @@
   <div class="about">
     <div class="title">平台优势</div>
     <div class="advantage">
-      <img v-lazy="'http://img4.duitang.com/uploads/item/201402/14/20140214120558_2f4NN.jpeg'">
+      <img v-lazy="require('@/assets/presentation_1.png')">
       <div class="dec">
         <span>低门槛</span>
         <span>司机需要驾照及三年以上驾龄</span>
       </div>
     </div>
     <div class="advantage">
-      <img v-lazy="'http://s9.knowsky.com/bizhi/l/20100615/20109119%20%286%29.jpg'">
+      <img v-lazy="require('@/assets/presentation_2.png')">
       <div class="dec">
         <span>低成本</span>
         <span>车险、车辆维修费由平台承担</span>
       </div>
     </div>
     <div class="advantage">
-      <img v-lazy="'http://img.article.pchome.net/00/50/59/93/pic_lib/wm/02.jpg'">
+      <img v-lazy="require('@/assets/presentation_3.png')">
       <div class="dec">
         <span>更便捷</span>
         <span>所有运营手续及证件由平台统一办理</span>
       </div>
     </div>
     <div class="advantage">
-      <img v-lazy="'http://att.bbs.duowan.com/forum/201309/27/121732olrimy3dkxgrmdyl.jpg'">
+      <img v-lazy="require('@/assets/presentation_4.png')">
       <div class="dec">
         <span>收入有保障</span>
         <span>有奖励、有提成、有补贴，多劳多得</span>
