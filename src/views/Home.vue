@@ -188,26 +188,26 @@ export default {
 <style lang="less" scoped>
 .home {
   overflow: none;
+  padding-bottom: 3rem;
 }
 
 .recruitCover {
   width: 100vw;
-  height: 88vh;
+  height: 85vh;
 }
 
 .signInDriver {
-  position: relative;
+  position: fixed;
   display: block;
-  width: 92vw;
+  width: 100vw;
   background: #33374b;
   color: #ffffff;
   text-align: center;
-  left: 4vw;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
-  margin-top: 0.8rem;
+  left: 0;
+  bottom: 0;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
   font-size: 0.8rem;
-  border-radius: 2px;
   box-shadow: 0px 0px 2px #4e4e4ea6;
 }
 </style>

@@ -15,7 +15,7 @@ export default {
     name: 'leaveDeclare',
     data() {
         return {
-            canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
+            canReadFinishTime: 10, // 可以点击阅读完毕的倒计时
             userInfo: null,
             leaveYear: null,
             leaveMonth: null,
@@ -39,7 +39,7 @@ export default {
         }, 1000)
     },
     beforeRouteLeave(to, from, next) {
-        if (this.currentPicker && this.currentPicker.cancelled !== true) this.currentPicker.destory()
+        // if (this.currentPicker && this.currentPicker.cancelled !== true) this.currentPicker.destory()
         if (this.currentPromptDialog) this.currentPromptDialog.destory()
         next()
     },

@@ -21,7 +21,7 @@ export default {
     name: 'noCrimeRecord',
     data() {
         return {
-            canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
+            canReadFinishTime: 10, // 可以点击阅读完毕的倒计时
             userInfo: null,
             noCrimeRecord: null,
             noCrimeRecordBase64: null

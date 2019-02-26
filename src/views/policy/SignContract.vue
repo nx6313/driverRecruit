@@ -19,7 +19,7 @@ export default {
     name: 'signContract',
     data() {
         return {
-            canReadFinishTime: 60, // 可以点击签字完毕确认的倒计时
+            canReadFinishTime: 10, // 可以点击签字完毕确认的倒计时
             userInfo: null,
             signImgData: null
         }

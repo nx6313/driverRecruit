@@ -40,7 +40,7 @@ export default {
 
 <style lang="less" scoped>
 .about {
-  padding: 1.4rem 1.6rem;
+  padding: 1rem 1.6rem 1.4rem;
   .title {
     text-align: center;
     font-weight: bold;

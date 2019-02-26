@@ -61,7 +61,7 @@ export default {
                 },
                 {
                     id: 'departure',
-                    title: '无法提交《离职证明》申明',
+                    title: '提交《离职证明》申明',
                     read: false,
                     route: '/policy/leaveDeclare',
                     edit: true

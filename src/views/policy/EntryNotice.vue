@@ -66,7 +66,7 @@ export default {
     name: 'entryNotice',
     data() {
         return {
-            canReadFinishTime: 60, // 可以点击上传且阅读完毕的倒计时
+            canReadFinishTime: 10, // 可以点击上传且阅读完毕的倒计时
             userInfo: null,
             doItems: [
                 {
@@ -452,7 +452,6 @@ export default {
     }
     .inputWrap {
         position: relative;
-        width: 24rem;
         left: 0;
         right: 0;
         margin: 0 auto;

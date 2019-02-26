@@ -14,7 +14,7 @@ export default {
     name: 'trafficSafety',
     data() {
         return {
-            canReadFinishTime: 60, // 可以点击阅读完毕的倒计时
+            canReadFinishTime: -1, // 可以点击阅读完毕的倒计时
             userInfo: null
         }
     },
