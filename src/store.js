@@ -98,7 +98,8 @@ const store = new Vuex.Store({
           heart: null,
           xLight: null,
           noCrimeRecord: null,
-          signContract: null
+          signContract: null,
+          leaveDeclare: null
         }
       },
       getters: {

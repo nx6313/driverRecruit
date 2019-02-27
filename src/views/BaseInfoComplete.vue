@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { SOME_RULES } from '@/utils/rules'
 import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
@@ -78,9 +79,13 @@ export default {
     toNext: function() {
       // 判断用户填写的完善信息是否完整
       if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
+      if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '姓名中不能含有特殊字符'); return false }
       if (this.input1[2].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的身份证号'); return false }
+      if (!SOME_RULES.idCard.test(this.input1[2].model.trim())) { this.$comfun.showToast(this, '请输入正确的身份证号'); return false }
       if (this.input1[3].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的现居住地'); return false }
+      if (SOME_RULES.emoji.test(this.input1[3].model.trim())) { this.$comfun.showToast(this, '现居住地中不能含有特殊字符'); return false }
       if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的手机号'); return false }
+      if (!SOME_RULES.phone.test(this.input1[5].model.trim())) { this.$comfun.showToast(this, '请输入正确的手机号'); return false }
       if (this.input1[6].model.trim() == '') { this.$comfun.showToast(this, '请先输入您收到的短信验证码'); return false }
       this.$comfun.showLoading(this, 'applyDriverSmsCode', false)
       this.$comfun.http_post(this, this.$api.applyDriverSmsCode, {

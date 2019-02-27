@@ -1,10 +1,26 @@
 <template>
-    <!-- 无法提交《离职证明》申明 -->
+    <!-- 提交《离职证明》申明 -->
     <div class="leaveDeclare" v-if="userInfo">
-        <div class="policyContentWrap">
-            <p>本人 <u> {{userInfo.personName}} </u>，身份证号码 <u> {{userInfo.idcarNo}} </u>，确认已于 <span :class="leaveYear ? 'notEmpty' : 'empty'" v-html="leaveYear ? leaveYear : ''" @click="selectPicker('year')"></span> 年 <span :class="leaveMonth ? 'notEmpty' : 'empty'" v-html="leaveMonth ? leaveMonth : ''" @click="selectPicker('month')"></span> 月 <span :class="leaveDay ? 'notEmpty' : 'empty'" v-html="leaveDay ? leaveDay : ''" @click="selectPicker('day')"></span> 日与之前原单位 <span :class="leaveCompany ? 'notEmpty' : 'empty'" v-html="leaveCompany ? leaveCompany : ''" @click="toInput('company')"></span>公司 解除 / 终止劳动关系，且无任何经济纠纷，由于 <span :class="leaveReason ? 'notEmpty' : 'empty'" v-html="leaveReason ? leaveReason : ''" @click="toInput('reason')"></span> 原因，无法提交《离职证明》，今后如因此出现任何问题，本人自行负责，与贵公司无任何权利义务之争。</p>
-            <span class="statement">特此声明！</span>
-        </div>
+        <template v-if="hasLeaveDeclare">
+            <div :class="['cardWrap', 'leaveDeclareWrap', leaveDeclareBase64 == null ? 'normalCardWrap' : '']">
+                <input type="file" class="fileInput" title="请选择《离职证明》申明照片" accept="image/*" @change="selectFile($event, 'leave_declare')">
+                <img class="cardDisplay showBorder" v-lazy="require('@/assets/no_crime.png')">
+                <span v-if="leaveDeclareBase64 != null" class="imgPreview hasBorder" :style="leaveDeclareBase64 != null ? { 'background-image': `url(${leaveDeclareBase64})` } : {}"></span>
+            </div>
+            <span class="uploadTip">上传《离职证明》申明</span>
+            <div class="uploadTipLinkWrap">
+                <span class="uploadTipLink" @click="hasLeaveDeclare = false">无法提交《离职证明》申明？</span>
+            </div>
+        </template>
+        <template v-if="!hasLeaveDeclare">
+            <div class="policyContentWrap">
+                <p>本人 <u> {{userInfo.personName}} </u>，身份证号码 <u> {{userInfo.idcarNo}} </u>，确认已于 <span :class="leaveYear ? 'notEmpty' : 'empty'" v-html="leaveYear ? leaveYear : ''" @click="selectPicker('year')"></span> 年 <span :class="leaveMonth ? 'notEmpty' : 'empty'" v-html="leaveMonth ? leaveMonth : ''" @click="selectPicker('month')"></span> 月 <span :class="leaveDay ? 'notEmpty' : 'empty'" v-html="leaveDay ? leaveDay : ''" @click="selectPicker('day')"></span> 日与之前原单位 <span :class="leaveCompany ? 'notEmpty' : 'empty'" v-html="leaveCompany ? leaveCompany : ''" @click="toInput('company')"></span>公司 解除 / 终止劳动关系，且无任何经济纠纷，由于 <span :class="leaveReason ? 'notEmpty' : 'empty'" v-html="leaveReason ? leaveReason : ''" @click="toInput('reason')"></span> 原因，无法提交《离职证明》，今后如因此出现任何问题，本人自行负责，与贵公司无任何权利义务之争。</p>
+                <span class="statement">特此声明！</span>
+            </div>
+            <div class="uploadTipLinkWrap">
+                <span class="uploadTipLink" @click="hasLeaveDeclare = true">可以提交《离职证明》申明？</span>
+            </div>
+        </template>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
     </div>
@@ -23,7 +39,10 @@ export default {
             leaveCompany: null,
             leaveReason: null,
             currentPicker: null,
-            currentPromptDialog: null
+            currentPromptDialog: null,
+            leaveDeclare: null,
+            leaveDeclareBase64: null,
+            hasLeaveDeclare: true
         }
     },
     mounted() {
@@ -44,6 +63,45 @@ export default {
         next()
     },
     methods: {
+        selectFile: function(event, type) {
+            if (type == 'leave_declare') {
+                this.leaveDeclare = event.target.files[0]
+                this.imgPreview(this.leaveDeclare, type)
+            }
+        },
+        imgPreview: function(file, type) {
+            if (!window.FileReader) return false
+            let reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onloadend = (event) => {
+                if (type == 'leave_declare') {
+                    this.uploadCardFile(this.leaveDeclare, (path) => {
+                        this.leaveDeclareBase64 = event.target.result
+                        this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                            key: 'leaveDeclare',
+                            value: path
+                        })
+                    }, () => {
+                        this.leaveDeclare = null
+                        this.leaveDeclareBase64 = null
+                    })
+                }
+            }
+        },
+        uploadCardFile: function(file, callBack, errorCallBack) {
+            this.$comfun.showLoading(this, 'uploadCardFile', false)
+            this.$comfun.http_file(this, this.$api.file, file).then((request) => {
+                this.$comfun.hideLoading('uploadCardFile')
+                if (request.data.status == 'OK') {
+                    callBack(request.data.data.path)
+                } else {
+                    this.$comfun.showToast(this, request.data.msg || '发生了未知的错误')
+                    errorCallBack()
+                }
+            }, error => {
+                errorCallBack()
+            })
+        },
         selectPicker: function(type) {
             if (type == 'year') {
                 let yearPickerData = []
@@ -101,6 +159,7 @@ export default {
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 type: 'departure',
+                'departure.leave_declare': this.$store.state.driverRecruitData.policyDataInfo.leaveDeclare,
                 'departure.leave_year': this.leaveYear,
                 'departure.leave_month': this.leaveMonth,
                 'departure.leave_date': this.leaveDay,
@@ -120,6 +179,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.leaveDeclare {
+    position: relative;
+}
+
 .policyContentWrap {
     position: relative;
     padding: 1rem 1rem 0.7rem;
@@ -179,5 +242,102 @@ export default {
 
 .readFinishTimeDown {
     background: #969696;
+}
+
+.cardWrap {
+    width: 13rem;
+    position: relative;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    .fileInput {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+    }
+    .cardDisplay {
+        position: relative;
+        width: 100%;
+        pointer-events: none;
+    }
+    .showBorder {
+        border: 1px dashed #c6c6c6;
+        padding: 0.2rem;
+        width: calc(100% - 0.4rem - 2px);
+    }
+    .imgPreview {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        background-color: #ffffff;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+    .hasBorder {
+        width: calc(100% - 0.4rem + 2px);
+        height: calc(100% - 0.4rem - 2px - 1px);
+        top: calc(1px + 0.1rem);
+        left: calc(1px + 0.1rem);
+        border-radius: 2px;
+    }
+}
+
+.normalCardWrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 2.8rem;
+    background-image: url('./../../assets/icon_upload_camera.png');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center;
+    pointer-events: none;
+}
+
+.leaveDeclareWrap {
+    margin-top: 0.8rem;
+}
+
+.uploadTip {
+    display: block;
+    text-align: center;
+    font-size: 0.92rem;
+    margin-top: 0.2rem;
+}
+
+.uploadTipLinkWrap {
+    text-align: center;
+    margin-top: 6rem;
+    margin-bottom: 2rem;
+}
+
+.uploadTipLink {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    font-size: 0.6rem;
+    color: #0078ff;
+}
+
+.uploadTipLink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: #0078ff;
 }
 </style>
