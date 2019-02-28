@@ -193,7 +193,7 @@ export default {
 
 .recruitCover {
   width: 100vw;
-  height: 85vh;
+  height: calc(100vh - 6.5rem);
 }
 
 .signInDriver {
