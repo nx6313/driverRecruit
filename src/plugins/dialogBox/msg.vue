@@ -57,6 +57,7 @@ export default {
   animation-duration: 0.2s;
   -vendor-animation-delay: 0.1s;
   animation-delay: 0.1s;
+  display: none;
 }
 .msg-content {
   position: fixed;

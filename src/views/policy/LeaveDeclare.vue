@@ -2,9 +2,13 @@
     <!-- 提交《离职证明》申明 -->
     <div class="leaveDeclare" v-if="userInfo">
         <template v-if="hasLeaveDeclare">
+            <div class="policyContentWrap">
+                <p>本人 <u> {{userInfo.personName}} </u>，身份证号码 <u> {{userInfo.idcarNo}} </u>，确认已于 <span :class="leaveYear ? 'notEmpty' : 'empty'" v-html="leaveYear ? leaveYear : ''" @click="selectPicker('year')"></span> 年 <span :class="leaveMonth ? 'notEmpty' : 'empty'" v-html="leaveMonth ? leaveMonth : ''" @click="selectPicker('month')"></span> 月 <span :class="leaveDay ? 'notEmpty' : 'empty'" v-html="leaveDay ? leaveDay : ''" @click="selectPicker('day')"></span> 日与之前原单位 <span :class="leaveCompany ? 'notEmpty' : 'empty'" v-html="leaveCompany ? leaveCompany : ''" @click="toInput('company')"></span>公司 解除 / 终止劳动关系，且无任何经济纠纷。</p>
+                <span class="statement">特此声明！</span>
+            </div>
             <div :class="['cardWrap', 'leaveDeclareWrap', leaveDeclareBase64 == null ? 'normalCardWrap' : '']">
                 <input type="file" class="fileInput" title="请选择《离职证明》申明照片" accept="image/*" @change="selectFile($event, 'leave_declare')">
-                <img class="cardDisplay showBorder" v-lazy="require('@/assets/no_crime.png')">
+                <img class="cardDisplay showBorder" v-lazy="require('@/assets/leave_prove.png')">
                 <span v-if="leaveDeclareBase64 != null" class="imgPreview hasBorder" :style="leaveDeclareBase64 != null ? { 'background-image': `url(${leaveDeclareBase64})` } : {}"></span>
             </div>
             <span class="uploadTip">上传《离职证明》申明</span>
@@ -250,6 +254,7 @@ export default {
     left: 0;
     right: 0;
     margin: 0 auto;
+    clear: both;
     .fileInput {
         position: absolute;
         width: 100%;

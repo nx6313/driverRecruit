@@ -1,7 +1,18 @@
 <template>
     <div class="datumShow">
         <div ref="downloadPdfTables" class="dataTableContent">
-            <table class="data-table" border="0" cellspacing="0" cellpadding="0">
+            <div v-html="tableHtmlData"></div>
+        </div>
+        <span ref="downloadPdfBtn" class="downloadDocFile" @click="tDocx">下载 pdf 文档</span>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'datumShow',
+    data() {
+        return {
+            tableHtmlData: `<table class="data-table" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <th width="100" rowspan="7">基<br>础<br>信<br>息</th>
                     <th>姓名</th>
@@ -17,7 +28,7 @@
                     <td>sdad</td>
                     <td>sdad</td>
                     <td>sdad</td>
-                    <td rowspan="6">sdad</td>
+                    <td rowspan="6"><div style="background-image: url('https://dccx-oss.oss-cn-shanghai.aliyuncs.com/000263d7-9f67-4aa8-8519-ff4d8da03808.jpg'); background-position: center; background-size: cover; width: 200px; height: 100px;"></div></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">居住地</td>
@@ -85,17 +96,11 @@
                     <td width="100" class="bold">签名时间</td>
                     <td colspan="4">2018.08.06 12:06:28</td>
                     <td width="100" class="bold">签名图</td>
-                    <td colspan="4"><img v-lazy="require('@/assets/logo.png')"></td>
+                    <td colspan="4"><img src="https://dccx-oss.oss-cn-shanghai.aliyuncs.com/000263d7-9f67-4aa8-8519-ff4d8da03808.jpg"></td>
                 </tr>
-            </table>
-        </div>
-        <span ref="downloadPdfBtn" class="downloadDocFile" @click="tDocx">下载 pdf 文档</span>
-    </div>
-</template>
-
-<script>
-export default {
-    name: 'datumShow',
+            </table>`
+        }
+    },
     mounted() {
         let textArr = ['18652142598', '大昌出行']
         let textShadeWrap = document.createElement('div')

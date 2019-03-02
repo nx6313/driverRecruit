@@ -606,7 +606,9 @@ export default {
       convertPdf: function(pdfFileName, toPdfDom) {
         if (toPdfDom == undefined) toPdfDom = document.body.parentElement
         html2Canvas(toPdfDom, {
-          allowTaint: true
+          // useCORS: true,
+          allowTaint: true,
+          logging: false
         }).then(canvas => {
           let contentWidth = canvas.width
           let contentHeight = canvas.height

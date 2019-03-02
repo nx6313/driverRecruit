@@ -65,3 +65,7 @@
 .data-table td.bold {
     font-weight: bold;
 }
+
+table img {
+    width: 200px;
+}

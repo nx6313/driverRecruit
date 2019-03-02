@@ -127,7 +127,7 @@ let router = new Router({
       name: 'leaveDeclare',
       component: () => import('./views/policy/LeaveDeclare.vue'),
       meta: {
-        title: '无法提交《离职证明》申明',
+        title: '提交《离职证明》申明',
         pageBg: '#f0eed7'
       }
     },

@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <img class="recruitCover" alt="RecruitCover" v-lazy="require('@/assets/start_recruit.jpg')">
-    <router-link :to="getLinkTo" class="signInDriver" tag="span">注册成为网约车司机</router-link>
+    <router-link v-if="getLinkTo !== '/'" :to="getLinkTo" class="signInDriver" tag="span">注册成为网约车司机</router-link>
+    <span v-if="getLinkTo === '/'" class="signInDriver" @click="refPage">注册成为网约车司机</span>
     <Presentation/>
   </div>
 </template>
@@ -15,6 +16,7 @@ export default {
   components: {
     Presentation
   },
+  inject: ['reload'],
   data() {
     return {
       userDriverRecruitState: -1,
@@ -32,8 +34,6 @@ export default {
         RULE_NO_PASS_CAN_UPDATE: 43 // 该用户提交的规则资料未通过审核，可修改后重新提交
       }
     }
-  },
-  mounted() {
   },
   created() {
     this.$store.dispatch('clearAll')
@@ -180,6 +180,9 @@ export default {
           }
         }
       })
+    },
+    refPage: function() {
+      this.reload()
     }
   }
 }
