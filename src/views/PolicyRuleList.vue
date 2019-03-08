@@ -89,7 +89,10 @@ export default {
         })
         // 更新文件阅读状态
         this.$comfun.showLoading(this, 'policyListStateUpdate', false)
-        this.$comfun.http_post(this, this.$api.applyIsRuleRead).then((request) => {
+        this.$comfun.http_post(this, this.$api.applyIsRuleRead, {
+            phone: this.$store.state.userBaseInfo.phone,
+            d_type: this.$store.state.userBaseInfo.dType
+        }).then((request) => {
             this.$comfun.hideLoading('policyListStateUpdate')
             if (request.data.status == 'OK') {
                 let requestData = request.data.data

@@ -50,28 +50,29 @@ export default {
         {
           label: '手机号',
           hint: '请输入您的手机号',
-          type: 'sendSmsCode',
-          send: (phone) => {
-            return this.$comfun.http_post(this, this.$api.applySms, {
-              phone: phone
-            })
-          },
-          callBack: (request) => {
-            if (request.data.status == 'OK') {
-              this.$comfun.showToast(this, '验证码短信已发送，请注意查收')
-            } else {
-              this.$comfun.showToast(this, request.data.msg)
-            }
-          },
-          model: ''
-        },
-        {
-          label: '验证码',
-          hint: '请输入您的现居住地',
-          type: 'smsCodeText',
-          codeCount: 6,
-          model: ''
+          type: 'text',
+          // send: (phone) => {
+          //   return this.$comfun.http_post(this, this.$api.applySms, {
+          //     phone: phone
+          //   })
+          // },
+          // callBack: (request) => {
+          //   if (request.data.status == 'OK') {
+          //     this.$comfun.showToast(this, '验证码短信已发送，请注意查收')
+          //   } else {
+          //     this.$comfun.showToast(this, request.data.msg)
+          //   }
+          // },
+          model: this.$store.state.userBaseInfo.phone,
+          readOnly: true
         }
+        // {
+        //   label: '验证码',
+        //   hint: '请输入您的现居住地',
+        //   type: 'smsCodeText',
+        //   codeCount: 6,
+        //   model: ''
+        // }
       ]
     }
   },
@@ -84,22 +85,24 @@ export default {
       if (!SOME_RULES.idCard.test(this.input1[2].model.trim())) { this.$comfun.showToast(this, '请输入正确的身份证号'); return false }
       if (this.input1[3].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的现居住地'); return false }
       if (SOME_RULES.emoji.test(this.input1[3].model.trim())) { this.$comfun.showToast(this, '现居住地中不能含有特殊字符'); return false }
-      if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的手机号'); return false }
-      if (!SOME_RULES.phone.test(this.input1[5].model.trim())) { this.$comfun.showToast(this, '请输入正确的手机号'); return false }
-      if (this.input1[6].model.trim() == '') { this.$comfun.showToast(this, '请先输入您收到的短信验证码'); return false }
-      this.$comfun.showLoading(this, 'applyDriverSmsCode', false)
-      this.$comfun.http_post(this, this.$api.applyDriverSmsCode, {
-        phone: this.input1[5].model.trim(),
-        sms_code: this.input1[6].model.trim()
-      }).then((request) => {
-        this.$comfun.hideLoading('applyDriverSmsCode')
-        if (request.data.status == 'OK') {
-          this.saveUserBaseInfo()
-          this.$router.push('/cardInfo')
-        } else {
-          this.$comfun.showToast(this, request.data.msg)
-        }
-      })
+      // if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的手机号'); return false }
+      // if (!SOME_RULES.phone.test(this.input1[5].model.trim())) { this.$comfun.showToast(this, '请输入正确的手机号'); return false }
+      // if (this.input1[6].model.trim() == '') { this.$comfun.showToast(this, '请先输入您收到的短信验证码'); return false }
+      // this.$comfun.showLoading(this, 'applyDriverSmsCode', false)
+      // this.$comfun.http_post(this, this.$api.applyDriverSmsCode, {
+      //   phone: this.input1[5].model.trim(),
+      //   sms_code: this.input1[6].model.trim()
+      // }).then((request) => {
+      //   this.$comfun.hideLoading('applyDriverSmsCode')
+      //   if (request.data.status == 'OK') {
+      //     this.saveUserBaseInfo()
+      //     this.$router.push('/cardInfo')
+      //   } else {
+      //     this.$comfun.showToast(this, request.data.msg)
+      //   }
+      // })
+      this.saveUserBaseInfo()
+      this.$router.push('/cardInfo')
     },
     saveUserBaseInfo: function() {
       this.$store.commit('setDriverRecruitData_BaseInfoComplete', {
@@ -109,8 +112,8 @@ export default {
           idcarNo: this.input1[2].model.trim(),
           addressDetail: this.input1[3].model.trim(),
           driverlicenseNo: this.input1[4].model.trim(),
-          phone: this.input1[5].model.trim(),
-          smsCode: this.input1[6].model.trim()
+          phone: this.input1[5].model.trim()
+          // smsCode: this.input1[6].model.trim()
         }
       })
     }

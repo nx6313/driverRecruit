@@ -23,7 +23,7 @@
     <template v-if="inputs.length > 0">
       <div v-for="(input, index) in inputs" v-bind:key="index" :class="['formInputItem', `input-item-${index}`]">
         <span class="inputLabel">{{input.label}}</span>
-        <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model">
+        <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true">
         <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'"/>
         <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
           <VueGroupButton v-for="(select, selectIndex) in input.range" v-bind:key="selectIndex" class="selectBtnItem round" :value="select.name">{{select.value}}</VueGroupButton>
@@ -74,7 +74,8 @@ export default {
     },
     inputs: {
       /**
-       * label、model、hint、type(text、radio、switch、select、sendSmsCode、smsCodeText)、range(对于select)、send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)
+       * label、model、hint、type(text、radio、switch、select、sendSmsCode、smsCodeText)、range(对于select)、
+       * send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)、readOnly(对于text)
        */
       default() {
         return []

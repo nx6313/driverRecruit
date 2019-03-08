@@ -47,9 +47,9 @@ body, html {
 }
 
 div.react-confirm-alert-overlay {
-  background: #2c2c2c6c !important;
+  background: rgba(61, 61, 61, 0.4) !important;
   div.react-confirm-alert-body {
-    width: 70vw !important;
+    width: 80vw !important;
     padding: 10px !important;
     border-radius: 4px !important;
     font-size: 0.6rem;

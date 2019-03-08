@@ -1,28 +1,28 @@
 <template>
-  <div class="home">
-    <img class="recruitCover" alt="RecruitCover" v-lazy="require('@/assets/start_recruit.jpg')">
-    <router-link v-if="getLinkTo !== '/'" :to="getLinkTo" class="signInDriver" tag="span">注册成为网约车司机</router-link>
-    <span v-if="getLinkTo === '/'" class="signInDriver" @click="refPage">注册成为网约车司机</span>
-    <Presentation/>
+  <div class="fullTimeHome" :style="{ transform: `translateY(-${coverTranslateY}rem)` }">
+    <img class="recruitCover" alt="RecruitCover" v-lazy="require('@/assets/full_time_home.jpg')" v-touch:moveUpDown="toNextPage">
+    <div class="arrowTipWrap" v-if="coverTranslateY == 0">
+      <p class="arrowIcon"></p>
+    </div>
+    <div class="btnWrap">
+      <span class="btn" @click="toDetailPage">了解详情</span>
+    </div>
   </div>
 </template>
 
 <script>
-import Presentation from '@/components/Presentation.vue'
 import { SOME_RULES } from '@/utils/rules'
 
 export default {
-  name: 'home',
-  components: {
-    Presentation
-  },
+  name: 'fullTimeHome',
   inject: ['reload'],
   data() {
     return {
-      userDriverRecruitState: -1,
+      coverTranslateY: 0,
+      userDriverRecruitState: -10,
       driverRecruitState: {
         USER_IS_DRIVER: 0, // 该用户已经是司机了
-        NORMAL: 10, // 该用户还未提交任何资料
+        NORMAL: -1, // 该用户还未提交任何资料
         AUDITING: 20, // 该用户提交的资料正在审核中
         AUDIT_PASS: 21, // 该用户提交的资料审核已通过，通知其来公司面试
         AUDIT_NO_PASS: 22, // 该用户提交的资料审核未通过
@@ -36,25 +36,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('clearAll')
     this.$store.commit('setDriverRecruitStateRule', {
       stateRule: this.driverRecruitState
     })
-    if (!this.$comfun.hasAuthInfo(this)) {
-      let myreg = SOME_RULES.phone
-      this.$comfun.showDialogWithPrompt(this, '网址内未发现必要的参数', '是否需要登陆一个账号进行测试使用？此操作将会发送手机验证码', true, '请输入您的测试账号', myreg, '账号格式正确', '请输入正确的手机号', (phoneNumber) => {
-        this.getSms(phoneNumber)
-      }, (verify) => {
-        if (verify.result) {
-          verify.btns.okBtn[0].innerText = '发送短信验证码'
-        } else {
-          verify.btns.okBtn[0].innerText = '确认'
-        }
-      })
-    } else {
-      // url中有必要的参数
-      this.getUserDriverRecruit()
-    }
+    this.getUserDriverRecruit()
   },
   computed: {
     getLinkTo: function() {
@@ -97,61 +82,15 @@ export default {
     }
   },
   methods: {
-    getSms: function(phone) {
-      this.$comfun.showLoading(this, 'getSms', false)
-      this.$comfun.http_get(this, this.$api.getSms, {
-        phone: phone
-      }).then((request) => {
-        this.$comfun.hideLoading('getSms')
-        if (request.data.status == 'OK') {
-          this.$comfun.showToast(this, '验证码短信已发送，请注意查收')
-          this.$comfun.showDialogWithPrompt(this, '请输入您收到的短信验证码', undefined, false, '输入短信验证码', undefined, undefined, undefined, (smsCode) => {
-            this.loginBySms(phone, smsCode)
-          })
-        } else {
-          this.$comfun.showToast(this, request.data.msg)
-        }
-      })
-    },
-    loginBySms: function(phone, smsCode) {
-      if (!smsCode) {
-        this.$comfun.showToast(this, '验证码不能为空')
-        return false
-      }
-      this.$comfun.showLoading(this, 'loginBySms', false)
-      this.$comfun.http_post(this, this.$api.loginBySms, {
-        phone: phone,
-        smsCode: smsCode,
-        landingIp: '',
-        port: '',
-        landingIMEI: '',
-        landingIMSI: '',
-        macAddress: '',
-        landingLatitude: 0.0,
-        landingLongitude: 0.0
-      }).then((request) => {
-        this.$comfun.hideLoading('loginBySms')
-        if (request.data.status == 'OK') {
-          this.$store.commit('updateAuth', {
-            secret: request.data.data.secret,
-            token: request.data.data.token,
-            serviceType: this.$store.state.auth.serviceType
-          })
-          this.getUserDriverRecruit()
-        } else {
-          this.$comfun.showToast(this, request.data.msg)
-          this.$comfun.showDialogWithPrompt(this, '请重新输入您收到的短信验证码', undefined, false, '输入短信验证码', undefined, undefined, undefined, (smsCode) => {
-            this.loginBySms(phone, this.$comfun.encryptedData(smsCode))
-          })
-        }
-      })
-    },
     getUserDriverRecruit: function() {
       this.$comfun.showLoading(this, 'applyDriver', false)
-      this.$comfun.http_post(this, this.$api.applyDriver).then((request) => {
+      this.$comfun.http_post(this, this.$api.applyDriver, {
+        phone: this.$store.state.userBaseInfo.phone,
+        d_type: this.$store.state.userBaseInfo.dType
+      }).then((request) => {
         this.$comfun.hideLoading('applyDriver')
         // eslint-disable-next-line
-        console.log(request.data.msg)
+        console.log('专职司机', request.data)
         if (request.data.status == 'OK') {
           this.userDriverRecruitState = request.data.data.state
           this.$store.commit('updateDriverRecruitState', {
@@ -173,44 +112,110 @@ export default {
           })
         } else {
           this.$comfun.showToast(this, request.data.msg)
-          if (!this.$comfun.hasAuthInfo(this)) {
-            this.$comfun.showDialog('提示信息', '用户司机招募初始化信息获取失败，需要重新获取吗？', () => {
-              this.getUserDriverRecruit()
-            })
-          }
         }
       })
     },
-    refPage: function() {
-      this.reload()
+    toNextPage: function(distance) {
+      if (distance < 0) {
+        this.coverTranslateY = 6
+      } else {
+        this.coverTranslateY = 0
+      }
+    },
+    toDetailPage: function() {
+      if (this.getLinkTo == '/') {
+        this.reload()
+      } else {
+        this.$router.push(this.getLinkTo)
+      }
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.home {
-  overflow: none;
-  padding-bottom: 3rem;
+.fullTimeHome {
+  font-size: 0;
+  transition: all 0.4s;
 }
 
 .recruitCover {
   width: 100vw;
-  height: calc(100vh - 6.5rem);
+  height: 100vh;
 }
 
-.signInDriver {
-  position: fixed;
-  display: block;
-  width: 100vw;
-  background: #33374b;
-  color: #ffffff;
-  text-align: center;
+.arrowTipWrap {
+  position: absolute;
   left: 0;
-  bottom: 0;
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
-  font-size: 0.8rem;
-  box-shadow: 0px 0px 2px #4e4e4ea6;
+  right: 0;
+  margin: 0 auto;
+  bottom: 6.2rem;
+  width: 5rem;
+  height: 5rem;
+  pointer-events: none;
+  .arrowIcon {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 4rem;
+    height: 4rem;
+    margin: auto;
+    pointer-events: none;
+    background-image: url('./../assets/arrows.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    animation: st 1.5s infinite ease-in-out;
+  }
+}
+
+.btnWrap {
+  position: relative;
+  height: 6rem;
+  color: #ffffff;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  .btn {
+    position: relative;
+    margin-top: 1.8rem;
+    height: 2rem;
+    line-height: 2rem;
+    font-size: 0.9rem;
+    display: inline-block;
+    padding: 0 1rem;
+    border-radius: 4px;
+    background: #E3B142;
+    color: #242424;
+    border: 1px solid #242424;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    text-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px;
+    box-shadow: rgba(255, 255, 255, 0.25) 0px 1px 0px, inset rgba(255, 255, 255, 0.25) 0px 1px 0px, inset rgba(0, 0, 0, 0.25) 0px 0px 0px, inset rgba(255, 255, 255, 0.03) 0px 20px 0px, inset rgba(0, 0, 0, 0.15) 0px -20px 20px, inset rgba(255, 255, 255, 0.05) 0px 20px 20px;
+    transition: all 0.1s linear;
+  }
+  .btn:nth-of-type(n + 2) {
+    margin-left: 2rem;
+  }
+}
+
+@keyframes st {
+  0%, 30% {
+    opacity: 0;
+    transform: translate(0,10px);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(0,0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0,-8px);
+  }
 }
 </style>

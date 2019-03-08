@@ -91,6 +91,8 @@ export default {
             }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
+                phone: this.$store.state.userBaseInfo.phone,
+                d_type: this.$store.state.userBaseInfo.dType,
                 type: 'crime',
                 'crime.path': this.$store.state.driverRecruitData.policyDataInfo.noCrimeRecord
             }).then((request) => {

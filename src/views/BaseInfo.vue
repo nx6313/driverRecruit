@@ -73,6 +73,7 @@ export default {
       }
       let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       this.$comfun.http_post(this, this.$api.applyInfo, {
+        'apply.d_type': this.$store.state.userBaseInfo.dType,
         'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
         'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
         'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
@@ -89,8 +90,8 @@ export default {
         'apply.idcar_no': this.$store.state.driverRecruitData.baseInfoComplete.idcarNo,
         'apply.address_detail': this.$store.state.driverRecruitData.baseInfoComplete.addressDetail,
         'apply.driverlicense_no': this.$store.state.driverRecruitData.baseInfoComplete.driverlicenseNo,
-        'apply.phone': this.$store.state.driverRecruitData.baseInfoComplete.phone,
-        'sms_code': this.$store.state.driverRecruitData.baseInfoComplete.smsCode
+        'apply.phone': this.$store.state.driverRecruitData.baseInfoComplete.phone
+        // 'sms_code': this.$store.state.driverRecruitData.baseInfoComplete.smsCode
       }).then((request) => {
         this.$comfun.hideLoading('baseInfoApplyInfo')
         if (request.data.status == 'OK') {

@@ -30,7 +30,7 @@ Axios.interceptors.response.use((response) => {
     loader.hide()
   })
   loadingManager.clear()
-  if (String(error).indexOf('timeout') >= 0) {
+  if (error.message.includes('timeout')) {
     DialogMsg.installMsg({
       msg: '请求超时',
       duration: 2000
@@ -41,6 +41,7 @@ Axios.interceptors.response.use((response) => {
       duration: 2000
     })
   }
+  if (loginDialog != null) loginDialog.destory()
   return Promise.reject(error)
 })
 const FileAxios = axios.create({
@@ -53,7 +54,7 @@ FileAxios.interceptors.response.use((response) => {
     loader.hide()
   })
   loadingManager.clear()
-  if (String(error).indexOf('timeout') >= 0) {
+  if (error.message.includes('timeout')) {
     DialogMsg.installMsg({
       msg: '文件上传超时',
       duration: 2000
@@ -86,6 +87,7 @@ var key = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 var iv = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 
 var loadingManager = new Map() // 管理loading对象
+var loginDialog = null // 用户登录弹窗
 
 export default {
   install: function (Vue) {
@@ -98,16 +100,16 @@ export default {
           secret = this.getRequestAuto('secret')
           context.$store.commit('updateAuth', {
             secret: secret,
-            token: token,
-            serviceType: context.$store.state.auth.serviceType
+            token: token
           })
         }
-        console.log(`发起get请求，${url} - token：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - secret：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
-          'devicetype': 5,
-          'token': !this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token,
-          'secret': !this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret
+          'devicetype': 5
+        }
+        if (this.hasAuthInfoInUrl() || (context.$store.state.auth.token != null && context.$store.state.auth.secret != null)) {
+          headers['token'] = token || context.$store.state.auth.token
+          headers['secret'] = secret || context.$store.state.auth.secret
         }
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
         var axiosOptions = {
@@ -134,16 +136,16 @@ export default {
           secret = this.getRequestAuto('secret')
           context.$store.commit('updateAuth', {
             secret: secret,
-            token: token,
-            serviceType: context.$store.state.auth.serviceType
+            token: token
           })
         }
-        console.log(`发起post请求，${url} - token：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token} - secret：${!this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret}`)
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
-          'devicetype': 5,
-          'token': !this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token,
-          'secret': !this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret
+          'devicetype': 5
+        }
+        if (this.hasAuthInfoInUrl() || (context.$store.state.auth.token != null && context.$store.state.auth.secret != null)) {
+          headers['token'] = token || context.$store.state.auth.token
+          headers['secret'] = secret || context.$store.state.auth.secret
         }
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
         var axiosOptions = {
@@ -170,15 +172,16 @@ export default {
           secret = this.getRequestAuto('secret')
           context.$store.commit('updateAuth', {
             secret: secret,
-            token: token,
-            serviceType: context.$store.state.auth.serviceType
+            token: token
           })
         }
         var headers = {
           'appType': 2, // 请求的类型 1：司机、2：普通会员
-          'devicetype': 5,
-          'token': !this.hasAuthInfoInUrl() ? context.$store.state.auth.token : token,
-          'secret': !this.hasAuthInfoInUrl() ? context.$store.state.auth.secret : secret
+          'devicetype': 5
+        }
+        if (this.hasAuthInfoInUrl() || (context.$store.state.auth.token != null && context.$store.state.auth.secret != null)) {
+          headers['token'] = token || context.$store.state.auth.token
+          headers['secret'] = secret || context.$store.state.auth.secret
         }
         headers['Content-Type'] = 'multipart/form-data'
         var axiosOptions = {
@@ -206,24 +209,18 @@ export default {
       getServiceType: function (context) {
         let serviceType = this.getRequestAuto('serviceType') || context.$store.state.auth.serviceType
         if (serviceType === 'test') {
-          context.$store.commit('updateAuth', {
-            secret: context.$store.state.auth.secret,
-            token: context.$store.state.auth.token,
-            serviceType: 'test'
+          context.$store.commit('updateServiceType', {
+            type: 'test'
           })
           return 'test'
         } else if (serviceType === 'development') {
-          context.$store.commit('updateAuth', {
-            secret: context.$store.state.auth.secret,
-            token: context.$store.state.auth.token,
-            serviceType: 'development'
+          context.$store.commit('updateServiceType', {
+            type: 'development'
           })
           return 'development'
         } else {
-          context.$store.commit('updateAuth', {
-            secret: context.$store.state.auth.secret,
-            token: context.$store.state.auth.token,
-            serviceType: 'production'
+          context.$store.commit('updateServiceType', {
+            type: 'production'
           })
           return 'production'
         }
@@ -250,7 +247,7 @@ export default {
           canCancel: canCancelFlag,
           onCancel: onCancelCallBack,
           color: '#C51A20',
-          loader: 'dots', // spinner 、 dots 、 bars
+          loader: 'bars', // spinner 、 dots 、 bars
           backgroundColor: '#2C2C2C',
           opacity: 0.4
         })
@@ -317,6 +314,37 @@ export default {
           isMultiline: isMultiline
         })
         return dialogPrompt
+      },
+      // 显示提示用户登陆的dialog弹出框
+      showDialogForLogin: function (context, title, message, rule, ruleOkTip, ruleErrorTip, sendSmsCodeCallBack, okCallBack) {
+        if (title === undefined) title = '未定义标题'
+        if (sendSmsCodeCallBack === undefined) sendSmsCodeCallBack = () => {}
+        if (okCallBack === undefined) okCallBack = () => {}
+        let btns = [
+          {
+            label: '取消登录',
+            onClick: () => {}
+          },
+          {
+            label: '确认登录',
+            onClick: (phone, code) => {
+              loginDialog = null
+              return okCallBack(phone, code)
+            }
+          }
+        ]
+        loginDialog = context.$dialog_prompt({
+          title: title,
+          msg: message,
+          showCancel: true,
+          rule: rule,
+          ruleOkTip: ruleOkTip,
+          ruleErrorTip: ruleErrorTip,
+          buttons: btns,
+          sendSmsCodeCallBack: sendSmsCodeCallBack,
+          isLogin: true
+        })
+        return loginDialog
       },
       // 显示Toast
       showToast: function(context, msg, duration) {

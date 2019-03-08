@@ -1,5 +1,8 @@
 export const SOME_MUTATION = {
-    updateAuth: 'updateAuth', // 更新用户登陆认证信息  secret、token、serviceType -> 服务器类型 正式服:www or 测试服:dev
+    updateServiceType: 'updateServiceType', // 更新服务器类型 生产服务器:development 、 预生产服务器:production 、 测试服:test
+    updateAuth: 'updateAuth', // 更新用户登陆认证信息  secret、token
+    updateUserBaseInfoPhone: 'updateUserBaseInfoPhone', // 更新用户基本信息 - 手机号
+    updateUserBaseInfoDType: 'updateUserBaseInfoDType', // 更新用户基本信息 - 所选招募类型
     updateDriverRecruitState: 'updateDriverRecruitState', // 更新用户司机招募相关状态
     setDriverRecruitStateRule: 'setDriverRecruitStateRule', // 设置用户司机招募状态规则
     setDriverRecruitData_CardInfo: 'setDriverRecruitData_CardInfo', // 设置用户司机招募证件照片

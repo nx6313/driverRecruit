@@ -39,6 +39,8 @@ export default {
         readFinish: function() {
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
+                phone: this.$store.state.userBaseInfo.phone,
+                d_type: this.$store.state.userBaseInfo.dType,
                 type: 'overall'
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')

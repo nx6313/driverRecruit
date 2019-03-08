@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VConsole from '@/utils/vconsole.js'
 import { SOME_MUTATION } from '@/utils/mutation-types'
 
 Vue.use(Vuex)
@@ -27,22 +26,56 @@ const store = new Vuex.Store({
     }
   },
   modules: {
+    // 服务器类型 生产服务器:development 、 预生产服务器:production 、 测试服:test
+    serviceType: {
+      state: {
+        type: null
+      },
+      getters: {},
+      mutations: {
+        [SOME_MUTATION.updateServiceType] (state, payload) {
+          state.type = payload.type
+        }
+      },
+      actions: {}
+    },
     // 用户auth登陆认证信息
     auth: {
       state: {
         secret: null,
-        token: null,
-        serviceType: null // 服务器类型 正式服:www or 测试服:dev
+        token: null
       },
       getters: {},
       mutations: {
         [SOME_MUTATION.updateAuth] (state, payload) {
           state.secret = payload.secret
           state.token = payload.token
-          state.serviceType = payload.serviceType
         }
       },
       actions: {}
+    },
+    // 用户选择司机招募的类型以及用户手机号信息
+    userBaseInfo: {
+      state: {
+        phone: null,
+        dType: null
+      },
+      getters: {},
+      mutations: {
+        [SOME_MUTATION.updateUserBaseInfoPhone] (state, payload) {
+          state.phone = payload.phone
+        },
+        [SOME_MUTATION.updateUserBaseInfoDType] (state, payload) {
+          state.dType = payload.dType
+        }
+      },
+      actions: {
+        // eslint-disable-next-line
+        clearUserBaseInfo({ commit, state }) {
+          state.phone = null
+          state.dType = null
+        }
+      }
     },
     // 用户司机招募相关状态
     driverRecruit: {
@@ -77,8 +110,8 @@ const store = new Vuex.Store({
           idcarNo: null,
           addressDetail: null,
           driverlicenseNo: null,
-          phone: null,
-          smsCode: null
+          phone: null
+          // smsCode: null
         },
         auditState: {
           state: null,
@@ -152,7 +185,5 @@ const store = new Vuex.Store({
     }
   }
 })
-
-Vue.use(VConsole, { vuexStore: store })
 
 export default store

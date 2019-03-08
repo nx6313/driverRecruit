@@ -162,6 +162,8 @@ export default {
             // }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
+                phone: this.$store.state.userBaseInfo.phone,
+                d_type: this.$store.state.userBaseInfo.dType,
                 type: 'departure',
                 'departure.leave_declare': this.$store.state.driverRecruitData.policyDataInfo.leaveDeclare,
                 'departure.leave_year': this.leaveYear,

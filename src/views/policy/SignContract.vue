@@ -87,17 +87,20 @@ export default {
             }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
+                phone: this.$store.state.userBaseInfo.phone,
+                d_type: this.$store.state.userBaseInfo.dType,
                 type: 'signature',
                 'signature.path': this.$store.state.driverRecruitData.policyDataInfo.signContract
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
+                    this.$comfun.showToast(this, '签约单提交成功')
                     this.$store.commit('setDriverRecruitData_PolicyListUpdateReadStatus', {
                         index: this.$store.state.driverRecruitData.policyList.map(v => { return v.id }).indexOf(this.$route.query.policyId),
                         key: 'read',
                         value: true
                     })
-                    this.$router.back()
+                    this.$router.replace('/fullTimeHome')
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
                 }

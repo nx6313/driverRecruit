@@ -279,6 +279,8 @@ export default {
             }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
+                phone: this.$store.state.userBaseInfo.phone,
+                d_type: this.$store.state.userBaseInfo.dType,
                 type: 'induction',
                 'induction.photo': this.$store.state.driverRecruitData.policyDataInfo.userPhoto,
                 'induction.bankcar': this.$store.state.driverRecruitData.policyDataInfo.salaryCard,

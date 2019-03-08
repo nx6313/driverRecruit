@@ -33,6 +33,57 @@ export default {
 		})
 		vconsole.addPlugin(vuexPlugin)
 
+		let testPlugin = new VConsole.VConsolePlugin('plugin_test', '测试')
+		testPlugin.on('renderTab', function(callback) {
+			let testDomHtml = getTestDomHtml(options.vuexStore.state)
+			let html = `<div id="testVConsoleDataWrap" style="padding: 10px 10px 0;">${testDomHtml}</div`
+			callback(html)
+		})
+		testPlugin.on('addTool', function(callback) {
+			callback([
+				{
+					name: '重置测试数据',
+					global: false,
+					onClick: function() {
+						let curServerType = options.vuexStore.state.serviceType.type
+						options.vuexStore.dispatch('clearAll')
+						options.vuexStore.commit('updateServiceType', {
+							type: curServerType
+						})
+						options.router.replace('/')
+						setTimeout(() => {
+							let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
+							testUserPhone.value = options.vuexStore.state.userBaseInfo.phone || ''
+						}, 100)
+						options.showToast({
+							msg: '测试数据重置完成，并已跳转至首页'
+						})
+					}
+				}
+			])
+		})
+		testPlugin.on('show', function() {
+			let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
+			testUserPhone.value = options.vuexStore.state.userBaseInfo.phone || ''
+			let btnSaveUserPhone = vconsole.$dom.querySelector('input#btnSaveUserPhone')
+			btnSaveUserPhone.addEventListener('click', () => {
+				let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
+				if (testUserPhone.value != '') {
+					options.vuexStore.commit('updateUserBaseInfoPhone', {
+						phone: testUserPhone.value
+					})
+				} else {
+					options.vuexStore.commit('updateUserBaseInfoPhone', {
+						phone: null
+					})
+				}
+				options.showToast({
+					msg: '数据更新成功'
+				})
+			}, false)
+		})
+		vconsole.addPlugin(testPlugin)
+
 		vconsole.setOption('onReady', ()=> {
 			let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
 			if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
@@ -253,6 +304,16 @@ let getObjectNextDataHtml = function(vconsole, data, level) {
 	}
 	return dataTreeHtml
 }
+
+// 获取测试DOM树
+let getTestDomHtml = function(vuexData) {
+	let labelStyle = `style="margin-right: 6px;"`
+	let inputStyle = `style="border: none; padding: 4px 10px;"`
+	let inputListHtml = `<div><label for="testUserPhone" ${labelStyle}>测试用户手机号</label><input id="testUserPhone" type="text" placeholder="输入测试用户手机号" value="${vuexData.userBaseInfo.phone != null ? vuexData.userBaseInfo.phone : ''}" ${inputStyle}/></div>`
+	inputListHtml += `<div><input id="btnSaveUserPhone" type="button" value="保存"/></div>`
+	return `<div style="line-height: 30px;">${inputListHtml}</div>`
+}
+
 
 // 初始化改写console方法
 let initConsoleMethod = function(vconsole) {
