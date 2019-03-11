@@ -74,7 +74,7 @@ export default {
             }
         },
         imgPreview: function(file, type) {
-            if (!window.FileReader) return false
+            if (!file || !window.FileReader) return false
             let reader = new FileReader()
             reader.readAsDataURL(file)
             reader.onloadend = (event) => {

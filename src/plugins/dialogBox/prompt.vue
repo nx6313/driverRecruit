@@ -187,7 +187,7 @@ export default {
     },
     sendLoginSmsCode() {
       if (this.rule != undefined && !this.isOkForRule) {
-        this.$comfun.showToast(this, "请先输入您的登录账号");
+        this.$comfun.showToast(this, "请输入正确的登录账号");
         return false;
       }
       this.sendSmsCodeCallBack(this.promptInput.trim())

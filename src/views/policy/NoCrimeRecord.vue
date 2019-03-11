@@ -9,7 +9,7 @@
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/no_crime.png')">
             <span v-if="noCrimeRecordBase64 != null" class="imgPreview hasBorder" :style="noCrimeRecordBase64 != null ? { 'background-image': `url(${noCrimeRecordBase64})` } : {}"></span>
         </div>
-        <span class="uploadTip">上传犯罪记录证明</span>
+        <span class="uploadTip">上传无犯罪记录证明</span>
         <router-link to="/policy/noCrimeRecordDec" class="uploadTipLink" tag="span">如何申请 “ 无犯罪记录证明 ”</router-link>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
@@ -52,7 +52,7 @@ export default {
             }
         },
         imgPreview: function(file, type) {
-            if (!window.FileReader) return false
+            if (!file || !window.FileReader) return false
             let reader = new FileReader()
             reader.readAsDataURL(file)
             reader.onloadend = (event) => {

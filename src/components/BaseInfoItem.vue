@@ -1,5 +1,5 @@
 <template>
-  <div class="baseInfoItem">
+  <div class="baseInfoItem" :style="inputs.length == 0 ? { paddingBottom: '1.2rem' } : {}">
     <div class="itemTitleWrap">
       <img class="itemTitleIcon" v-lazy="titleIcon">
       <span class="itemTitleContent">{{title}}</span>
@@ -22,9 +22,9 @@
     </template>
     <template v-if="inputs.length > 0">
       <div v-for="(input, index) in inputs" v-bind:key="index" :class="['formInputItem', `input-item-${index}`]">
-        <span class="inputLabel">{{input.label}}</span>
-        <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true">
-        <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'"/>
+        <span v-if="input.label" class="inputLabel">{{input.label}}</span>
+        <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}">
+        <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'" :style="input.label === undefined ? { left: '1.6rem' } : {}"/>
         <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
           <VueGroupButton v-for="(select, selectIndex) in input.range" v-bind:key="selectIndex" class="selectBtnItem round" :value="select.name">{{select.value}}</VueGroupButton>
         </VueGroup>
@@ -39,6 +39,9 @@
         </div>
       </div>
     </template>
+    <p class="slotWrap animated fadeIn" v-if="hasSlot" :style="slotStyle">
+      <slot></slot>
+    </p>
   </div>
 </template>
 
@@ -71,6 +74,14 @@ export default {
     },
     isMultiple: {
       default: false
+    },
+    hasSlot: {
+      default: false
+    },
+    slotStyle: {
+      default() {
+        return {}
+      }
     },
     inputs: {
       /**
@@ -277,7 +288,6 @@ export default {
 
 <style lang="less" scoped>
 .baseInfoItem {
-  padding-bottom: 1.2rem;
   background: #ffffff;
 }
 .itemTitleWrap {
@@ -475,7 +485,6 @@ export default {
   background: #f5f5f5;
 }
 .formInputItem:nth-last-of-type(1)::after {
-  content: '';
   height: 0;
 }
 
@@ -513,5 +522,11 @@ export default {
     opacity: 1;
     transform: translate(0, 0);
   }
+}
+
+.slotWrap {
+  position: relative;
+  padding: 0;
+  margin: 0;
 }
 </style>

@@ -6,7 +6,7 @@
     </div>
     <div class="btnWrap">
       <span class="btn" @click="toDetailPage">我要租车</span>
-      <span class="btn" @click="toDetailPage">了解详情</span>
+      <span class="btn" @click="toDetailPage">已成功办理租车业务</span>
     </div>
   </div>
 </template>
@@ -14,6 +14,7 @@
 <script>
 export default {
   name: 'rentCarHome',
+  inject: ['reload'],
   data() {
     return {
       coverTranslateY: 0

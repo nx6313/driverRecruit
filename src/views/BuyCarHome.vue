@@ -5,8 +5,8 @@
       <p class="arrowIcon"></p>
     </div>
     <div class="btnWrap">
-      <span class="btn" @click="toDetailPage">我要买车</span>
-      <span class="btn" @click="toDetailPage">了解详情</span>
+      <span class="btn" @click="toDetailPage">我要购车</span>
+      <span class="btn" @click="toDetailPage">已成功办理购车业务</span>
     </div>
   </div>
 </template>

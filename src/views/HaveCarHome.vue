@@ -5,7 +5,7 @@
       <p class="arrowIcon"></p>
     </div>
     <div class="btnWrap">
-      <span class="btn" @click="toDetailPage">了解详情</span>
+      <span class="btn" @click="toDetailPage">我要加盟</span>
     </div>
   </div>
 </template>
@@ -44,7 +44,9 @@ export default {
         this.coverTranslateY = 0
       }
     },
-    toDetailPage: function() {}
+    toDetailPage: function() {
+      this.$router.replace('/haveCar/baseInfo1')
+    }
   }
 }
 </script>

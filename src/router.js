@@ -100,6 +100,7 @@ let router = new Router({
         }
       }
     },
+    /** 专职自营司机相关页面 */
     {
       path: '/baseInfoComplete',
       name: 'baseInfoComplete',
@@ -404,6 +405,56 @@ let router = new Router({
       component: () => import('./views/DatumShow.vue'),
       meta: {
         title: '司机招募已提交资料预览'
+      }
+    },
+    /** 带车加盟相关页面 */
+    {
+      path: '/haveCar/baseInfo1',
+      name: 'haveCarBaseInfo1',
+      component: () => import('./views/haveCar/BaseInfo1.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '基础信息'
+      }
+    },
+    {
+      path: '/haveCar/baseInfo2',
+      name: 'haveCarBaseInfo2',
+      component: () => import('./views/haveCar/BaseInfo2.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '证件上传'
+      }
+    },
+    {
+      path: '/haveCar/flow',
+      name: 'haveCarFlow',
+      component: () => import('./views/haveCar/Flow.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '网约车从业资格证办理流程',
+        pageBg: '#ffffff'
       }
     }
   ]

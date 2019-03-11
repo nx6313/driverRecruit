@@ -42,6 +42,46 @@
         </div>
       </div>
     </div>
+    <div class="cardItemWrap">
+      <span>请拍摄行驶证并上传</span>
+      <div class="cardWrap">
+        <div class="cardOneWrap">
+          <div class="fileWrap">
+            <input type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
+            <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
+          </div>
+          <span class="cardTitle">上传行驶证正面照</span>
+        </div>
+        <div class="cardOneWrap">
+          <div class="fileWrap">
+            <input type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
+            <span v-if="driveCardBBase64 != null" class="imgPreview hasBorder" :style="driveCardBBase64 != null ? { 'background-image': `url(${driveCardBBase64})` } : {}"></span>
+          </div>
+          <span class="cardTitle">上传行驶证副页</span>
+        </div>
+      </div>
+    </div>
+    <div class="cardItemWrap">
+      <span>请拍摄人车合影照片并上传</span>
+      <div class="cardWrap">
+        <div class="cardOneWrap">
+          <div class="fileWrap">
+            <input type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
+            <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
+          </div>
+          <span class="cardTitle">上传人车合影照片</span>
+        </div>
+        <div class="cardOneWrap">
+          <div class="fileWrap">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
+          </div>
+          <span class="cardTitle">人车合影示范照片</span>
+        </div>
+      </div>
+    </div>
     <div class="cardTipWrap">
       <div class="cardTip">
         <img v-lazy="require('@/assets/card_ok.jpg')">
@@ -60,23 +100,29 @@
         <span>闪光强烈</span>
       </div>
     </div>
-    <span class="toNextStep" @click="toNext">下一步</span>
+    <span class="toSubmitStep" @click="toSubmit">加入去赚钱</span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'cardInfo',
+  name: 'haveCarBaseInfo2',
   data() {
     return {
       idCardA: null,
       idCardB: null,
       driveCardA: null,
       driveCardB: null,
+      runCardA: null,
+      runCardB: null,
+      peopleCarPhoto: null,
       idCardABase64: null,
       idCardBBase64: null,
       driveCardABase64: null,
-      driveCardBBase64: null
+      driveCardBBase64: null,
+      runCardABase64: null,
+      runCardBBase64: null,
+      peopleCarPhotoBase64: null
     }
   },
   created() {
@@ -110,13 +156,9 @@ export default {
         if (type == 'id_card_a') {
           this.uploadCardFile(this.idCardA, (path) => {
             this.idCardABase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfo', {
-              cardInfo: {
-                idCardA: path,
-                idCardB: this.$store.state.driverRecruitData.cardInfo.idCardB,
-                driveCardA: this.$store.state.driverRecruitData.cardInfo.driveCardA,
-                driveCardB: this.$store.state.driverRecruitData.cardInfo.driveCardB
-              }
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'idCardA',
+              value: path
             })
           }, () => {
             this.idCardA = null
@@ -125,13 +167,9 @@ export default {
         } else if (type == 'id_card_b') {
           this.uploadCardFile(this.idCardB, (path) => {
             this.idCardBBase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfo', {
-              cardInfo: {
-                idCardA: this.$store.state.driverRecruitData.cardInfo.idCardA,
-                idCardB: path,
-                driveCardA: this.$store.state.driverRecruitData.cardInfo.driveCardA,
-                driveCardB: this.$store.state.driverRecruitData.cardInfo.driveCardB
-              }
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'idCardB',
+              value: path
             })
           }, () => {
             this.idCardB = null
@@ -140,13 +178,9 @@ export default {
         } else if (type == 'drive_card_a') {
           this.uploadCardFile(this.driveCardA, (path) => {
             this.driveCardABase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfo', {
-              cardInfo: {
-                idCardA: this.$store.state.driverRecruitData.cardInfo.idCardA,
-                idCardB: this.$store.state.driverRecruitData.cardInfo.idCardB,
-                driveCardA: path,
-                driveCardB: this.$store.state.driverRecruitData.cardInfo.driveCardB
-              }
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'driveCardA',
+              value: path
             })
           }, () => {
             this.driveCardA = null
@@ -155,13 +189,9 @@ export default {
         } else if (type == 'drive_card_b') {
           this.uploadCardFile(this.driveCardB, (path) => {
             this.driveCardBBase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfo', {
-              cardInfo: {
-                idCardA: this.$store.state.driverRecruitData.cardInfo.idCardA,
-                idCardB: this.$store.state.driverRecruitData.cardInfo.idCardB,
-                driveCardA: this.$store.state.driverRecruitData.cardInfo.driveCardA,
-                driveCardB: path
-              }
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'driveCardB',
+              value: path
             })
           }, () => {
             this.driveCardB = null
@@ -184,7 +214,7 @@ export default {
           errorCallBack()
       })
     },
-    toNext: function() {
+    toSubmit: function() {
       if (this.$store.getters.cardIsComplete) {
         this.$router.push('/baseInfo')
       } else {
@@ -282,7 +312,7 @@ export default {
   }
 }
 
-.toNextStep {
+.toSubmitStep {
   position: relative;
   display: block;
   width: calc(100% - 2.4rem);

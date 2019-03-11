@@ -101,7 +101,10 @@ const store = new Vuex.Store({
           idCardA: null,
           idCardB: null,
           driveCardA: null,
-          driveCardB: null
+          driveCardB: null,
+          runCardA: null,
+          runCardB: null,
+          peopleCarPhoto: null
         },
         baseInfo: null,
         baseInfoComplete: {
@@ -132,7 +135,8 @@ const store = new Vuex.Store({
           xLight: null,
           noCrimeRecord: null,
           signContract: null,
-          leaveDeclare: null
+          leaveDeclare: null,
+          certification: null
         }
       },
       getters: {
@@ -143,6 +147,9 @@ const store = new Vuex.Store({
       mutations: {
         [SOME_MUTATION.setDriverRecruitData_CardInfo] (state, payload) {
           state.cardInfo = payload.cardInfo
+        },
+        [SOME_MUTATION.setDriverRecruitData_CardInfoByKey] (state, payload) {
+          state.cardInfo[payload.key] = payload.value
         },
         [SOME_MUTATION.setDriverRecruitData_BaseInfo] (state, payload) {
           state.baseInfo = payload.baseInfo
