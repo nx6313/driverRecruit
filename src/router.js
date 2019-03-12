@@ -456,6 +456,138 @@ let router = new Router({
         title: '网约车从业资格证办理流程',
         pageBg: '#ffffff'
       }
+    },
+    /** 购车加盟相关页面 */
+    {
+      path: '/buyCar/intention',
+      name: 'buyCarIntention',
+      component: () => import('./views/buyCar/Intention.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '购车意向提交'
+      }
+    },
+    {
+      path: '/buyCar/baseInfo1',
+      name: 'buyCarBaseInfo1',
+      component: () => import('./views/buyCar/BaseInfo1.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '基础信息'
+      }
+    },
+    {
+      path: '/buyCar/baseInfo2',
+      name: 'buyCarBaseInfo2',
+      component: () => import('./views/buyCar/BaseInfo2.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '证件上传'
+      }
+    },
+    {
+      path: '/buyCar/flow',
+      name: 'buyCarFlow',
+      component: () => import('./views/buyCar/Flow.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '网约车从业资格证办理流程',
+        pageBg: '#ffffff'
+      }
+    },
+    /** 租车加盟相关页面 */
+    {
+      path: '/rentCar/intention',
+      name: 'rentCarIntention',
+      component: () => import('./views/rentCar/Intention.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '租车意向提交'
+      }
+    },
+    {
+      path: '/rentCar/baseInfo1',
+      name: 'rentCarBaseInfo1',
+      component: () => import('./views/rentCar/BaseInfo1.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '基础信息'
+      }
+    },
+    {
+      path: '/rentCar/baseInfo2',
+      name: 'rentCarBaseInfo2',
+      component: () => import('./views/rentCar/BaseInfo2.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '证件上传'
+      }
+    },
+    {
+      path: '/rentCar/flow',
+      name: 'rentCarFlow',
+      component: () => import('./views/rentCar/Flow.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '网约车从业资格证办理流程',
+        pageBg: '#ffffff'
+      }
     }
   ]
 })

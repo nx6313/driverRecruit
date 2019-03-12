@@ -5,7 +5,7 @@
       <p class="arrowIcon"></p>
     </div>
     <div class="btnWrap">
-      <span class="btn" @click="toDetailPage">我要购车</span>
+      <span class="btn" @click="toBuyCarPage">我要购车</span>
       <span class="btn" @click="toDetailPage">已成功办理购车业务</span>
     </div>
   </div>
@@ -45,7 +45,12 @@ export default {
         this.coverTranslateY = 0
       }
     },
-    toDetailPage: function() {}
+    toBuyCarPage: function() {
+      this.$router.push('/buyCar/intention')
+    },
+    toDetailPage: function() {
+      this.$router.push('/buyCar/baseInfo1')
+    }
   }
 }
 </script>

@@ -5,7 +5,7 @@
       <p class="arrowIcon"></p>
     </div>
     <div class="btnWrap">
-      <span class="btn" @click="toDetailPage">我要租车</span>
+      <span class="btn" @click="toRentCarPage">我要租车</span>
       <span class="btn" @click="toDetailPage">已成功办理租车业务</span>
     </div>
   </div>
@@ -46,7 +46,12 @@ export default {
         this.coverTranslateY = 0
       }
     },
-    toDetailPage: function() {}
+    toRentCarPage: function() {
+      this.$router.push('/rentCar/intention')
+    },
+    toDetailPage: function() {
+      this.$router.push('/rentCar/baseInfo1')
+    }
   }
 }
 </script>

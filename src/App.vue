@@ -39,6 +39,9 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   user-select: none;
+  textarea {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  }
 }
 
 body, html {

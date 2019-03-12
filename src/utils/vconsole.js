@@ -1,5 +1,6 @@
 const VConsole = require('vconsole')
 const regC = /^[\s\S]*((%c)[\s\S]*)+$/
+const isTest = true
 
 export default {
 	// eslint-disable-next-line
@@ -81,45 +82,114 @@ export default {
 					msg: '数据更新成功'
 				})
 			}, false)
+			let btntoIndex = vconsole.$dom.querySelector('input#btntoIndex')
+			btntoIndex.addEventListener('click', () => {
+				options.router.replace('/')
+				setTimeout(() => {
+					let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
+					testUserPhone.value = options.vuexStore.state.userBaseInfo.phone || ''
+				}, 100)
+				options.showToast({
+					msg: '已跳转至首页'
+				})
+			}, false)
+			let btnChangeToRentCar = vconsole.$dom.querySelector('input#btnChangeToRentCar')
+			btnChangeToRentCar.addEventListener('click', () => {
+				if (!options.vuexStore.state.userBaseInfo.phone) {
+					options.showToast({
+						msg: '请先填写测试用户手机号'
+					})
+					return false
+				}
+				options.router.replace('/rentCarHome')
+				options.showToast({
+					msg: '已跳转至租车加盟首页'
+				})
+			}, false)
+			let btnChangeToBuyCar = vconsole.$dom.querySelector('input#btnChangeToBuyCar')
+			btnChangeToBuyCar.addEventListener('click', () => {
+				if (!options.vuexStore.state.userBaseInfo.phone) {
+					options.showToast({
+						msg: '请先填写测试用户手机号'
+					})
+					return false
+				}
+				options.router.replace('/buyCarHome')
+				options.showToast({
+					msg: '已跳转至购车加盟首页'
+				})
+			}, false)
+			let btnChangeToFullTime = vconsole.$dom.querySelector('input#btnChangeToFullTime')
+			btnChangeToFullTime.addEventListener('click', () => {
+				if (!options.vuexStore.state.userBaseInfo.phone) {
+					options.showToast({
+						msg: '请先填写测试用户手机号'
+					})
+					return false
+				}
+				options.router.replace('/fullTimeHome')
+				options.showToast({
+					msg: '已跳转至自营专职司机招募首页'
+				})
+			}, false)
+			let btnChangeToHaveCar = vconsole.$dom.querySelector('input#btnChangeToHaveCar')
+			btnChangeToHaveCar.addEventListener('click', () => {
+				if (!options.vuexStore.state.userBaseInfo.phone) {
+					options.showToast({
+						msg: '请先填写测试用户手机号'
+					})
+					return false
+				}
+				options.router.replace('/haveCarHome')
+				options.showToast({
+					msg: '已跳转至带车加盟首页'
+				})
+			}, false)
 		})
 		vconsole.addPlugin(testPlugin)
 
 		vconsole.setOption('onReady', ()=> {
 			let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
 			if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
-			if (process.env.NODE_ENV == 'production') {
+			if (!isTest && process.env.NODE_ENV == 'production') {
 				// 生产环境，隐藏日志面板控制开关
 				vconsole.hideSwitch()
 				// 添加一个很小的隐藏区域用于打开日志面板
 				let minSwitchArea = document.createElement('div')
 				minSwitchArea.id = '__minVcSwitch'
-				minSwitchArea.style = `position: fixed; left: 0; bottom: calc(50vh - 50px); width: 8px; height: 100px; border-radius: 0 50px 50px 0; z-index: 999999; touch-action: none;`
+				minSwitchArea.style = `position: fixed; left: 0; bottom: calc(50vh - 50px); width: 20px; height: 100px; border-radius: 0 50px 50px 0; z-index: 999999; touch-action: none;`
 				document.body.parentNode.appendChild(minSwitchArea)
 				let minSwitchClickArea = document.createElement('div')
 				minSwitchClickArea.id = '__minVcClickSwitch'
 				minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; line-height: 30px; text-align: center; font-size: 10px; font-weight: bold; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none; color: #ffffff;`
 				document.body.parentNode.appendChild(minSwitchClickArea)
-				let touchDistance = 0
+				let touchDistanceX = 0
+				let touchDistanceY = 0
 				let startTouchX = null
+				let startTouchY = null
 				let hasShowVcClickSpan = false
 				let clickMinClickSwitchTimer = null
 				let hideClickSpanTime = 1400
 				vconsole.$.bind(minSwitchArea, 'touchstart', function(event) {
-					touchDistance = 0
+					touchDistanceX = 0
+					touchDistanceY = 0
 					startTouchX = null
+					startTouchY = null
 					hasShowVcClickSpan = false
 					minSwitchClickArea.innerText = ''
 					clearTimeout(clickMinClickSwitchTimer)
 					if (event.touches.length == 1) {
 						startTouchX = event.touches[0].pageX
+						startTouchY = event.touches[0].pageY
 					}
 				})
 				vconsole.$.bind(minSwitchArea, 'touchmove', function(event) {
 					event.preventDefault()
 					event.stopPropagation()
 					if (event.touches.length == 1) {
-						touchDistance = event.touches[0].pageX - startTouchX
-						if (hasShowVcClickSpan === false && touchDistance > document.body.clientWidth - 10) {
+						touchDistanceX = event.touches[0].pageX - startTouchX
+						touchDistanceY = event.touches[0].pageY - startTouchY
+						if (hasShowVcClickSpan === false && touchDistanceX > document.body.clientWidth - 10 && Math.abs(touchDistanceY) < 10) {
 							hasShowVcClickSpan = true
 							minSwitchClickArea.style.display = 'block'
 							minSwitchClickArea.innerText = ''
@@ -132,7 +202,8 @@ export default {
 				})
 				vconsole.$.bind(minSwitchArea, 'touchend', function(event) {
 					event.preventDefault()
-					touchDistance = 0
+					touchDistanceX = 0
+					touchDistanceY = 0
 					startTouchX = null
 					hasShowVcClickSpan = false
 					minSwitchClickArea.innerText = ''
@@ -152,7 +223,7 @@ export default {
 					}, hideClickSpanTime)
 					clickMinSwitchCount++
 					minSwitchClickArea.innerText = clickMinSwitchCount
-					if (clickMinSwitchCount > 400) {
+					if (clickMinSwitchCount > 20) {
 						vconsole.show()
 						clickMinSwitchCount = 0
 						minSwitchClickArea.style.display = 'none'
@@ -307,10 +378,18 @@ let getObjectNextDataHtml = function(vconsole, data, level) {
 
 // 获取测试DOM树
 let getTestDomHtml = function(vuexData) {
-	let labelStyle = `style="margin-right: 6px;"`
-	let inputStyle = `style="border: none; padding: 4px 10px;"`
+	let labelStyle = `style="margin-right: 6px; color: #052937;"`
+	let inputStyle = `style="border: none; padding: 4px 10px; color: #052937;"`
+	let lineStyle = `style="width: 100%; height: 1px; background: #B4B4B4; margin: 0.6rem 0;"`
+	let btnStyle = `style="border: 1px solid #303030; padding: 0.2rem 0.4rem; border-radius: 4px; background: #E4E9ED; color: #353535; font-weight: bold;"`
 	let inputListHtml = `<div><label for="testUserPhone" ${labelStyle}>测试用户手机号</label><input id="testUserPhone" type="text" placeholder="输入测试用户手机号" value="${vuexData.userBaseInfo.phone != null ? vuexData.userBaseInfo.phone : ''}" ${inputStyle}/></div>`
-	inputListHtml += `<div><input id="btnSaveUserPhone" type="button" value="保存"/></div>`
+	inputListHtml += `<div><input id="btnSaveUserPhone" type="button" value="保存数据" ${btnStyle}/></div>`
+	inputListHtml += `<div ${lineStyle}></div>`
+	inputListHtml += `<div><input id="btntoIndex" type="button" value="跳转至司机招募首页" ${btnStyle}/></div>`
+	inputListHtml += `<div ${lineStyle}></div>`
+	inputListHtml += `<div>用户手机号不为空时，可成功进行切换操作。此操作不会判断该用户是否已经是司机。</div>`
+	inputListHtml += `<div><input id="btnChangeToRentCar" type="button" value="切换为 租车加盟" ${btnStyle}/>&nbsp;&nbsp;<input id="btnChangeToBuyCar" type="button" value="切换为 购车加盟" ${btnStyle}/>&nbsp;&nbsp;
+		<input id="btnChangeToFullTime" type="button" value="切换为 专职自营司机招募" ${btnStyle}/>&nbsp;&nbsp;<input id="btnChangeToHaveCar" type="button" value="切换为 带车加盟" ${btnStyle}/></div>`
 	return `<div style="line-height: 30px;">${inputListHtml}</div>`
 }
 

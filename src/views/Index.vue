@@ -376,8 +376,8 @@ export default {
     text-align: center;
     .newsBannerWrap {
       position: relative;
-      height: 1.6rem;
-      line-height: 1.6rem;
+      height: 1.8rem;
+      line-height: 1.9rem;
       .newsTxt {
         background: #ffffff;
         font-size: 0.88rem;

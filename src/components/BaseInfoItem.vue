@@ -21,9 +21,10 @@
       </div>
     </template>
     <template v-if="inputs.length > 0">
-      <div v-for="(input, index) in inputs" v-bind:key="index" :class="['formInputItem', `input-item-${index}`]">
+      <div v-for="(input, index) in inputs" v-bind:key="index" :class="['formInputItem', `input-item-${index}`, input.type == 'textarea' ? 'formInputItemIsTextArea' : '']">
         <span v-if="input.label" class="inputLabel">{{input.label}}</span>
         <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}">
+        <textarea class="textInput" v-if="input.type == 'textarea'" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}"></textarea>
         <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'" :style="input.label === undefined ? { left: '1.6rem' } : {}"/>
         <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
           <VueGroupButton v-for="(select, selectIndex) in input.range" v-bind:key="selectIndex" class="selectBtnItem round" :value="select.name">{{select.value}}</VueGroupButton>
@@ -85,7 +86,7 @@ export default {
     },
     inputs: {
       /**
-       * label、model、hint、type(text、radio、switch、select、sendSmsCode、smsCodeText)、range(对于select)、
+       * label、model、hint、type(text、textarea、radio、switch、select、sendSmsCode、smsCodeText)、range(对于select)、
        * send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)、readOnly(对于text)
        */
       default() {
@@ -486,6 +487,36 @@ export default {
 }
 .formInputItem:nth-last-of-type(1)::after {
   height: 0;
+}
+.formInputItemIsTextArea {
+  height: 10rem;
+  .inputLabel {
+    position: absolute;
+    display: inline-block;
+    font-size: 0.94rem;
+    left: 1rem;
+    height: 1.2rem;
+    top: 1rem;
+    bottom: 0;
+    margin: 0;
+  }
+  .textInput {
+    position: absolute;
+    top: 2.4rem;
+    bottom: 0;
+    left: 0.4rem;
+    display: block;
+    width: calc(100% - 0.8rem - 00.6rem - 0.6rem);
+    border: none;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    font-size: 0.9rem;
+    outline: none;
+    resize: none;
+    margin-bottom: 0.8rem;
+  }
 }
 
 @keyframes codeBoxInput {
