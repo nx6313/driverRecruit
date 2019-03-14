@@ -306,7 +306,7 @@ export default {
     right: 0;
     margin: auto;
     width: 2.8rem;
-    background-image: url('./../../assets/icon_upload_camera.png');
+    background-image: url('./../../../assets/icon_upload_camera.png');
     background-repeat: no-repeat;
     background-size: 100% auto;
     background-position: center;

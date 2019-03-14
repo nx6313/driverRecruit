@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { SOME_RULES } from '@/utils/rules'
 import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
@@ -63,7 +64,7 @@ export default {
       input2: [
         {
           type: 'radio',
-          range: [ { name: '已有', value: '已有' }, { name: '正在办理中', value: '正在办理中' }, { name: '暂无', value: '暂无' } ],
+          range: [ { name: '1', value: '已有' }, { name: '2', value: '正在办理中' }, { name: '0', value: '暂无' } ],
           model: ''
         }
       ]
@@ -115,10 +116,43 @@ export default {
       })
     },
     toFlow: function() {
-      this.$router.push('/haveCar/flow')
+      this.$router.replace('/haveCar/flow')
     },
     toNext: function() {
-      this.$router.push('/haveCar/baseInfo2')
+      if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
+      if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '姓名中不能含有特殊字符'); return false }
+      if (this.input1[4].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的现居住地'); return false }
+      if (SOME_RULES.emoji.test(this.input1[4].model.trim())) { this.$comfun.showToast(this, '现居住地中不能含有特殊字符'); return false }
+      if (this.input2[0].model.trim() == '') { this.$comfun.showToast(this, '请先选择您是否拥有网约车司机从业资格证'); return false }
+      if (this.input2[0].model.trim() == '1' && this.$store.state.driverRecruitData.baseInfoComplete.certificationCard == null) { this.$comfun.showToast(this, '请先上传您的网约车司机从业资格证'); return false }
+      this.saveBaseInfo1()
+      this.$router.replace('/haveCar/baseInfo2')
+    },
+    saveBaseInfo1: function() {
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'personName',
+        value: this.input1[0].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'personSex',
+        value: this.input1[1].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'phone',
+        value: this.input1[2].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'driverType',
+        value: this.$store.state.userBaseInfo.dType
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'addressDetail',
+        value: this.input1[4].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'certificationType',
+        value: this.input2[0].model.trim()
+      })
     }
   },
   watch: {

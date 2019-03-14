@@ -102,9 +102,9 @@ let router = new Router({
     },
     /** 专职自营司机相关页面 */
     {
-      path: '/baseInfoComplete',
+      path: '/fullTime/baseInfoComplete',
       name: 'baseInfoComplete',
-      component: () => import('./views/BaseInfoComplete.vue'),
+      component: () => import('./views/fullTime/BaseInfoComplete.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null || store.state.driverRecruitData.auditState.state == null) {
@@ -118,9 +118,9 @@ let router = new Router({
       }
     },
     {
-      path: '/cardInfo',
+      path: '/fullTime/cardInfo',
       name: 'cardInfo',
-      component: () => import('./views/CardInfo.vue'),
+      component: () => import('./views/fullTime/CardInfo.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null || store.state.driverRecruitData.auditState.state == null) {
@@ -134,9 +134,9 @@ let router = new Router({
       }
     },
     {
-      path: '/baseInfo',
+      path: '/fullTime/baseInfo',
       name: 'baseInfo',
-      component: () => import('./views/BaseInfo.vue'),
+      component: () => import('./views/fullTime/BaseInfo.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null || store.state.driverRecruitData.auditState.state == null) {
@@ -150,9 +150,9 @@ let router = new Router({
       }
     },
     {
-      path: '/auditResult',
+      path: '/fullTime/auditResult',
       name: 'auditResult',
-      component: () => import('./views/AuditResult.vue'),
+      component: () => import('./views/fullTime/AuditResult.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -166,9 +166,9 @@ let router = new Router({
       }
     },
     {
-      path: '/complete',
+      path: '/fullTime/complete',
       name: 'complete',
-      component: () => import('./views/Complete.vue'),
+      component: () => import('./views/fullTime/Complete.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -198,21 +198,26 @@ let router = new Router({
       }
     },
     {
-      path: '/policyRuleList',
+      path: '/fullTime/policyRuleList',
       name: 'policyRuleList',
-      component: () => import('./views/PolicyRuleList.vue'),
+      component: () => import('./views/fullTime/PolicyRuleList.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone != null) {
           if (store.state.driverRecruitData.policyList != null) {
             let allIsRead = true
+            let notNeedUpdate = true
             for (let policyIndex in store.state.driverRecruitData.policyList) {
               if (!store.state.driverRecruitData.policyList[policyIndex].read) {
                 allIsRead = false
                 break
               }
+              if (store.state.driverRecruitData.policyList[policyIndex].needUpdate) {
+                notNeedUpdate = false
+                break
+              }
             }
-            if (allIsRead) {
+            if (allIsRead && notNeedUpdate) {
               next('/')
             } else {
               next()
@@ -230,9 +235,9 @@ let router = new Router({
     },
     // 政策文件说明开始
     {
-      path: '/policy/emolumentSecrecy',
+      path: '/fullTime/policy/emolumentSecrecy',
       name: 'emolumentSecrecy',
-      component: () => import('./views/policy/EmolumentSecrecy.vue'),
+      component: () => import('./views/fullTime/policy/EmolumentSecrecy.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -247,9 +252,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/entryNotice',
+      path: '/fullTime/policy/entryNotice',
       name: 'entryNotice',
-      component: () => import('./views/policy/EntryNotice.vue'),
+      component: () => import('./views/fullTime/policy/EntryNotice.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -263,9 +268,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/leaveDeclare',
+      path: '/fullTime/policy/leaveDeclare',
       name: 'leaveDeclare',
-      component: () => import('./views/policy/LeaveDeclare.vue'),
+      component: () => import('./views/fullTime/policy/LeaveDeclare.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -280,9 +285,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/noCrimeRecord',
+      path: '/fullTime/policy/noCrimeRecord',
       name: 'noCrimeRecord',
-      component: () => import('./views/policy/NoCrimeRecord.vue'),
+      component: () => import('./views/fullTime/policy/NoCrimeRecord.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -297,9 +302,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/noCrimeRecordDec',
+      path: '/fullTime/policy/noCrimeRecordDec',
       name: 'noCrimeRecordDec',
-      component: () => import('./views/policy/NoCrimeRecordDec.vue'),
+      component: () => import('./views/fullTime/policy/NoCrimeRecordDec.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -314,9 +319,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/noPartTimeJob',
+      path: '/fullTime/policy/noPartTimeJob',
       name: 'noPartTimeJob',
-      component: () => import('./views/policy/NoPartTimeJob.vue'),
+      component: () => import('./views/fullTime/policy/NoPartTimeJob.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -331,9 +336,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/qualification',
+      path: '/fullTime/policy/qualification',
       name: 'qualification',
-      component: () => import('./views/policy/Qualification.vue'),
+      component: () => import('./views/fullTime/policy/Qualification.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -348,9 +353,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/signContract',
+      path: '/fullTime/policy/signContract',
       name: 'signContract',
-      component: () => import('./views/policy/SignContract.vue'),
+      component: () => import('./views/fullTime/policy/SignContract.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -365,9 +370,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/trafficSafety',
+      path: '/fullTime/policy/trafficSafety',
       name: 'trafficSafety',
-      component: () => import('./views/policy/TrafficSafety.vue'),
+      component: () => import('./views/fullTime/policy/TrafficSafety.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {
@@ -382,9 +387,9 @@ let router = new Router({
       }
     },
     {
-      path: '/policy/workClothes',
+      path: '/fullTime/policy/workClothes',
       name: 'workClothes',
-      component: () => import('./views/policy/WorkClothes.vue'),
+      component: () => import('./views/fullTime/policy/WorkClothes.vue'),
       beforeEnter: (to, from, next) => {
         refForVuexData()
         if (store.state.userBaseInfo.phone == null) {

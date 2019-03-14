@@ -131,6 +131,9 @@ export default {
     this.idCardBBase64 = this.$store.state.driverRecruitData.cardInfo.idCardB
     this.driveCardABase64 = this.$store.state.driverRecruitData.cardInfo.driveCardA
     this.driveCardBBase64 = this.$store.state.driverRecruitData.cardInfo.driveCardB
+    this.runCardABase64 = this.$store.state.driverRecruitData.cardInfo.runCardA
+    this.runCardBBase64 = this.$store.state.driverRecruitData.cardInfo.runCardB
+    this.peopleCarPhotoBase64 = this.$store.state.driverRecruitData.cardInfo.peopleCarPhoto
   },
   methods: {
     selectFile: function(event, type) {
@@ -146,6 +149,15 @@ export default {
       } else if (type == 'drive_card_b') {
         this.driveCardB = event.target.files[0]
         this.imgPreview(this.driveCardB, type)
+      } else if (type == 'run_card_a') {
+        this.runCardA = event.target.files[0]
+        this.imgPreview(this.runCardA, type)
+      } else if (type == 'run_card_b') {
+        this.runCardB = event.target.files[0]
+        this.imgPreview(this.runCardB, type)
+      } else if (type == 'people_car_photo') {
+        this.peopleCarPhoto = event.target.files[0]
+        this.imgPreview(this.peopleCarPhoto, type)
       }
     },
     imgPreview: function(file, type) {
@@ -197,6 +209,39 @@ export default {
             this.driveCardB = null
             this.driveCardBBase64 = null
           })
+        } else if (type == 'run_card_a') {
+          this.uploadCardFile(this.runCardA, (path) => {
+            this.runCardABase64 = event.target.result
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'runCardA',
+              value: path
+            })
+          }, () => {
+            this.runCardA = null
+            this.runCardABase64 = null
+          })
+        } else if (type == 'run_card_b') {
+          this.uploadCardFile(this.runCardB, (path) => {
+            this.runCardBBase64 = event.target.result
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'runCardB',
+              value: path
+            })
+          }, () => {
+            this.runCardB = null
+            this.runCardBBase64 = null
+          })
+        } else if (type == 'people_car_photo') {
+          this.uploadCardFile(this.peopleCarPhoto, (path) => {
+            this.peopleCarPhotoBase64 = event.target.result
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'peopleCarPhoto',
+              value: path
+            })
+          }, () => {
+            this.peopleCarPhoto = null
+            this.peopleCarPhotoBase64 = null
+          })
         }
       }
     },
@@ -215,8 +260,8 @@ export default {
       })
     },
     toSubmit: function() {
-      if (this.$store.getters.cardIsComplete) {
-        this.$router.push('/baseInfo')
+      if (this.$store.getters.cardIsCompleteForJoinIn) {
+        // this.$router.replace('/baseInfo')
       } else {
         this.$comfun.showToast(this, '请您先选择所有需要的证件照')
       }

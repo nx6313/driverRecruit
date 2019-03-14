@@ -5,7 +5,8 @@ const isTest = true
 export default {
 	// eslint-disable-next-line
 	install: function (Vue, options) {
-		let vconsole = new VConsole()
+		console.log('开始装载日志插件')
+		let vconsole = new VConsole({defaultPlugins: ['system', 'network']}) // ['system', 'network', 'element', 'storage']
 		initConsoleMethod(vconsole)
 
 		let vuexPlugin = new VConsole.VConsolePlugin('plugin_vuex', 'Vuex')
@@ -81,6 +82,7 @@ export default {
 				options.showToast({
 					msg: '数据更新成功'
 				})
+				vconsole.hide()
 			}, false)
 			let btntoIndex = vconsole.$dom.querySelector('input#btntoIndex')
 			btntoIndex.addEventListener('click', () => {
@@ -92,6 +94,7 @@ export default {
 				options.showToast({
 					msg: '已跳转至首页'
 				})
+				vconsole.hide()
 			}, false)
 			let btnChangeToRentCar = vconsole.$dom.querySelector('input#btnChangeToRentCar')
 			btnChangeToRentCar.addEventListener('click', () => {
@@ -101,10 +104,14 @@ export default {
 					})
 					return false
 				}
+        options.vuexStore.commit('updateUserBaseInfoDType', {
+          dType: '4'
+        })
 				options.router.replace('/rentCarHome')
 				options.showToast({
 					msg: '已跳转至租车加盟首页'
 				})
+				vconsole.hide()
 			}, false)
 			let btnChangeToBuyCar = vconsole.$dom.querySelector('input#btnChangeToBuyCar')
 			btnChangeToBuyCar.addEventListener('click', () => {
@@ -114,10 +121,14 @@ export default {
 					})
 					return false
 				}
+        options.vuexStore.commit('updateUserBaseInfoDType', {
+          dType: '2'
+        })
 				options.router.replace('/buyCarHome')
 				options.showToast({
 					msg: '已跳转至购车加盟首页'
 				})
+				vconsole.hide()
 			}, false)
 			let btnChangeToFullTime = vconsole.$dom.querySelector('input#btnChangeToFullTime')
 			btnChangeToFullTime.addEventListener('click', () => {
@@ -127,10 +138,14 @@ export default {
 					})
 					return false
 				}
+        options.vuexStore.commit('updateUserBaseInfoDType', {
+          dType: '1'
+        })
 				options.router.replace('/fullTimeHome')
 				options.showToast({
 					msg: '已跳转至自营专职司机招募首页'
 				})
+				vconsole.hide()
 			}, false)
 			let btnChangeToHaveCar = vconsole.$dom.querySelector('input#btnChangeToHaveCar')
 			btnChangeToHaveCar.addEventListener('click', () => {
@@ -140,121 +155,127 @@ export default {
 					})
 					return false
 				}
+        options.vuexStore.commit('updateUserBaseInfoDType', {
+          dType: '3'
+        })
 				options.router.replace('/haveCarHome')
 				options.showToast({
 					msg: '已跳转至带车加盟首页'
 				})
+				vconsole.hide()
 			}, false)
 		})
 		vconsole.addPlugin(testPlugin)
 
-		vconsole.setOption('onReady', ()=> {
-			let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
-			if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
-			if (!isTest && process.env.NODE_ENV == 'production') {
-				// 生产环境，隐藏日志面板控制开关
-				vconsole.hideSwitch()
-				// 添加一个很小的隐藏区域用于打开日志面板
-				let minSwitchArea = document.createElement('div')
-				minSwitchArea.id = '__minVcSwitch'
-				minSwitchArea.style = `position: fixed; left: 0; bottom: calc(50vh - 50px); width: 20px; height: 100px; border-radius: 0 50px 50px 0; z-index: 999999; touch-action: none;`
-				document.body.parentNode.appendChild(minSwitchArea)
-				let minSwitchClickArea = document.createElement('div')
-				minSwitchClickArea.id = '__minVcClickSwitch'
-				minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; line-height: 30px; text-align: center; font-size: 10px; font-weight: bold; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none; color: #ffffff;`
-				document.body.parentNode.appendChild(minSwitchClickArea)
-				let touchDistanceX = 0
-				let touchDistanceY = 0
-				let startTouchX = null
-				let startTouchY = null
-				let hasShowVcClickSpan = false
-				let clickMinClickSwitchTimer = null
-				let hideClickSpanTime = 1400
-				vconsole.$.bind(minSwitchArea, 'touchstart', function(event) {
-					touchDistanceX = 0
-					touchDistanceY = 0
-					startTouchX = null
-					startTouchY = null
-					hasShowVcClickSpan = false
-					minSwitchClickArea.innerText = ''
-					clearTimeout(clickMinClickSwitchTimer)
-					if (event.touches.length == 1) {
-						startTouchX = event.touches[0].pageX
-						startTouchY = event.touches[0].pageY
-					}
-				})
-				vconsole.$.bind(minSwitchArea, 'touchmove', function(event) {
-					event.preventDefault()
-					event.stopPropagation()
-					if (event.touches.length == 1) {
-						touchDistanceX = event.touches[0].pageX - startTouchX
-						touchDistanceY = event.touches[0].pageY - startTouchY
-						if (hasShowVcClickSpan === false && touchDistanceX > document.body.clientWidth - 10 && Math.abs(touchDistanceY) < 10) {
-							hasShowVcClickSpan = true
-							minSwitchClickArea.style.display = 'block'
-							minSwitchClickArea.innerText = ''
-							clearTimeout(clickMinClickSwitchTimer)
-							clickMinClickSwitchTimer = setTimeout(() => {
-								minSwitchClickArea.style.display = 'none'
-							}, hideClickSpanTime)
-						}
-					}
-				})
-				vconsole.$.bind(minSwitchArea, 'touchend', function(event) {
-					event.preventDefault()
-					touchDistanceX = 0
-					touchDistanceY = 0
-					startTouchX = null
-					hasShowVcClickSpan = false
-					minSwitchClickArea.innerText = ''
-				})
-				let clickMinSwitchTime = null
-				let clickMinSwitchCount = 0
-				vconsole.$.bind(minSwitchClickArea, 'touchmove', function(event) {
-					event.preventDefault()
-					clearTimeout(clickMinSwitchTime)
-					clickMinSwitchTime = setTimeout(() => {
-						clickMinSwitchCount = 0
-					}, 400)
-					clearTimeout(clickMinClickSwitchTimer)
-					clickMinClickSwitchTimer = setTimeout(() => {
-						minSwitchClickArea.style.display = 'none'
+		vconsole.setOption({
+			onReady: ()=> {
+				let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
+				if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
+				if (!isTest && process.env.NODE_ENV == 'production') {
+					// 生产环境，隐藏日志面板控制开关
+					vconsole.hideSwitch()
+					// 添加一个很小的隐藏区域用于打开日志面板
+					let minSwitchArea = document.createElement('div')
+					minSwitchArea.id = '__minVcSwitch'
+					minSwitchArea.style = `position: fixed; left: 0; bottom: calc(50vh - 50px); width: 20px; height: 100px; border-radius: 0 50px 50px 0; z-index: 999999; touch-action: none;`
+					document.body.parentNode.appendChild(minSwitchArea)
+					let minSwitchClickArea = document.createElement('div')
+					minSwitchClickArea.id = '__minVcClickSwitch'
+					minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; line-height: 30px; text-align: center; font-size: 10px; font-weight: bold; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none; color: #ffffff;`
+					document.body.parentNode.appendChild(minSwitchClickArea)
+					let touchDistanceX = 0
+					let touchDistanceY = 0
+					let startTouchX = null
+					let startTouchY = null
+					let hasShowVcClickSpan = false
+					let clickMinClickSwitchTimer = null
+					let hideClickSpanTime = 1400
+					vconsole.$.bind(minSwitchArea, 'touchstart', function(event) {
+						touchDistanceX = 0
+						touchDistanceY = 0
+						startTouchX = null
+						startTouchY = null
+						hasShowVcClickSpan = false
 						minSwitchClickArea.innerText = ''
-					}, hideClickSpanTime)
-					clickMinSwitchCount++
-					minSwitchClickArea.innerText = clickMinSwitchCount
-					if (clickMinSwitchCount > 20) {
-						vconsole.show()
-						clickMinSwitchCount = 0
-						minSwitchClickArea.style.display = 'none'
-						minSwitchClickArea.innerText = ''
-						clearTimeout(clickMinSwitchTime)
 						clearTimeout(clickMinClickSwitchTimer)
-					}
-				})
-				vconsole.$.bind(minSwitchClickArea, 'touchend', function(event) {
-					event.preventDefault()
-					clearTimeout(clickMinSwitchTime)
-					clickMinSwitchCount = 0
-					clearTimeout(clickMinClickSwitchTimer)
-					minSwitchClickArea.style.display = 'none'
-					minSwitchClickArea.innerText = ''
-				})
-				vconsole.$.bind(minSwitchClickArea, 'touchcancel', function(event) {
-					event.preventDefault()
-					clearTimeout(clickMinSwitchTime)
-					clickMinSwitchCount = 0
-					clearTimeout(clickMinClickSwitchTimer)
-					minSwitchClickArea.style.display = 'none'
-					minSwitchClickArea.innerText = ''
-				})
+						if (event.touches.length == 1) {
+							startTouchX = event.touches[0].pageX
+							startTouchY = event.touches[0].pageY
+						}
+					})
+					vconsole.$.bind(minSwitchArea, 'touchmove', function(event) {
+						event.preventDefault()
+						event.stopPropagation()
+						if (event.touches.length == 1) {
+							touchDistanceX = event.touches[0].pageX - startTouchX
+							touchDistanceY = event.touches[0].pageY - startTouchY
+							if (hasShowVcClickSpan === false && touchDistanceX > document.body.clientWidth - 10 && Math.abs(touchDistanceY) < 10) {
+								hasShowVcClickSpan = true
+								minSwitchClickArea.style.display = 'block'
+								minSwitchClickArea.innerText = ''
+								clearTimeout(clickMinClickSwitchTimer)
+								clickMinClickSwitchTimer = setTimeout(() => {
+									minSwitchClickArea.style.display = 'none'
+								}, hideClickSpanTime)
+							}
+						}
+					})
+					vconsole.$.bind(minSwitchArea, 'touchend', function(event) {
+						event.preventDefault()
+						touchDistanceX = 0
+						touchDistanceY = 0
+						startTouchX = null
+						hasShowVcClickSpan = false
+						minSwitchClickArea.innerText = ''
+					})
+					let clickMinSwitchTime = null
+					let clickMinSwitchCount = 0
+					vconsole.$.bind(minSwitchClickArea, 'touchmove', function(event) {
+						event.preventDefault()
+						clearTimeout(clickMinSwitchTime)
+						clickMinSwitchTime = setTimeout(() => {
+							clickMinSwitchCount = 0
+						}, 400)
+						clearTimeout(clickMinClickSwitchTimer)
+						clickMinClickSwitchTimer = setTimeout(() => {
+							minSwitchClickArea.style.display = 'none'
+							minSwitchClickArea.innerText = ''
+						}, hideClickSpanTime)
+						clickMinSwitchCount++
+						minSwitchClickArea.innerText = clickMinSwitchCount
+						if (clickMinSwitchCount > 20) {
+							vconsole.show()
+							clickMinSwitchCount = 0
+							minSwitchClickArea.style.display = 'none'
+							minSwitchClickArea.innerText = ''
+							clearTimeout(clickMinSwitchTime)
+							clearTimeout(clickMinClickSwitchTimer)
+						}
+					})
+					vconsole.$.bind(minSwitchClickArea, 'touchend', function(event) {
+						event.preventDefault()
+						clearTimeout(clickMinSwitchTime)
+						clickMinSwitchCount = 0
+						clearTimeout(clickMinClickSwitchTimer)
+						minSwitchClickArea.style.display = 'none'
+						minSwitchClickArea.innerText = ''
+					})
+					vconsole.$.bind(minSwitchClickArea, 'touchcancel', function(event) {
+						event.preventDefault()
+						clearTimeout(clickMinSwitchTime)
+						clickMinSwitchCount = 0
+						clearTimeout(clickMinClickSwitchTimer)
+						minSwitchClickArea.style.display = 'none'
+						minSwitchClickArea.innerText = ''
+					})
+				}
+				initSpecialVConsole(vconsole)
 			}
-			initSpecialVConsole(vconsole)
 		})
 
-		Vue.prototype.$vconsole = vconsole
+		// Vue.prototype.$vconsole = vconsole
 		Vue.prototype.$vctool = vconsole.tool
-		Vue.prototype.$vcdom = vconsole.$
+		// Vue.prototype.$vcdom = vconsole.$
 	}
 }
 
@@ -400,15 +421,19 @@ let initConsoleMethod = function(vconsole) {
 	const conLog = console.log
 	// eslint-disable-next-line
 	console.log = function() {
-		conLog.apply(this, arguments)
+		try {
+			conLog.apply(this, arguments)
+		} catch(er) {
+			// eslint-disable-next-line
+		}
 		if (vconsole != null && !vconsole.$dom) return
 		let isC = false
 		let spanCHtml = ''
 		let spanHtmlCount = 0
 		let cStyles = []
 		let currentTexts = []
-		for (let index in arguments) {
-			try {
+		try {
+			for (let index in arguments) {
 				currentTexts.push(arguments[index])
 				if (index == 0 && arguments[index] && regC.test(arguments[index].trim())) {
 					isC = true
@@ -426,9 +451,9 @@ let initConsoleMethod = function(vconsole) {
 				} else if (index > 0 && isC) {
 					cStyles.push(arguments[index])
 				}
-			} catch(e) {
-				// eslint-disable-next-line
 			}
+		} catch(e) {
+			// eslint-disable-next-line
 		}
 		if (isC) {
 			for (let styleIndex = 0; styleIndex < spanHtmlCount; styleIndex++) {

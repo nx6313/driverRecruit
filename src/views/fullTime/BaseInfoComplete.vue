@@ -96,13 +96,13 @@ export default {
       //   this.$comfun.hideLoading('applyDriverSmsCode')
       //   if (request.data.status == 'OK') {
       //     this.saveUserBaseInfo()
-      //     this.$router.push('/cardInfo')
+      //     this.$router.replace('/fullTime/cardInfo')
       //   } else {
       //     this.$comfun.showToast(this, request.data.msg)
       //   }
       // })
       this.saveUserBaseInfo()
-      this.$router.push('/cardInfo')
+      this.$router.replace('/fullTime/cardInfo')
     },
     saveUserBaseInfo: function() {
       this.$store.commit('setDriverRecruitData_BaseInfoComplete', {

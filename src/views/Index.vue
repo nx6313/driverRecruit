@@ -203,20 +203,20 @@ export default {
         })
         if (this.userIsDriver === true) {
           // 已经是司机了
-          this.$router.replace('/isDriver')
+          this.$router.push('/isDriver')
         } else if (this.userIsDriver === false) {
           if (key === '1') {
             // 自营专职加盟
-            this.$router.replace('/fullTimeHome')
+            this.$router.push('/fullTimeHome')
           } else if (key === '2') {
             // 购车加盟
-            this.$router.replace('/buyCarHome')
+            this.$router.push('/buyCarHome')
           } else if (key === '3') {
             // 带车加盟
-            this.$router.replace('/haveCarHome')
+            this.$router.push('/haveCarHome')
           } else if (key === '4') {
             // 租车加盟
-            this.$router.replace('/rentCarHome')
+            this.$router.push('/rentCarHome')
           }
         } else {
           this.isDriver(this.$store.state.userBaseInfo.phone)
@@ -332,7 +332,7 @@ export default {
       justify-content: space-between;
       align-content: space-between;
       align-items: center;
-      height: 8.4rem;
+      height: 8.8rem;
       margin-top: 2rem;
       margin-bottom: 0.9rem;
       .selecterItemWrap {

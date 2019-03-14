@@ -15,10 +15,24 @@ export default {
   name: 'haveCarHome',
   data() {
     return {
-      coverTranslateY: 0
+      coverTranslateY: 0,
+      userDriverRecruitState: -10,
+      driverRecruitState: {
+        USER_IS_DRIVER: 0, // 该用户已经是司机了
+        NORMAL: -1, // 该用户还未提交任何资料
+        AUDITING: 120, // 该用户提交的资料正在审核中
+        AUDIT_PASS: 121, // 该用户提交的资料审核已通过
+        AUDIT_NO_PASS: 123, // 该用户提交的资料审核未通过，且不能修改
+        INTERVIEW_PASS: 124, // 该用户提交的资料审核未通过，可以修改
+        RULE_HAS_RUZHI: 151, // 该用户已入职
+        RULE_NO_RUZHI: 152 // 该用户通过所有审核，单还未入职
+      }
     }
   },
   created() {
+    this.$store.commit('setDriverRecruitStateRule', {
+      stateRule: this.driverRecruitState
+    })
     this.getUserDriverRecruit()
   },
   methods: {
@@ -32,6 +46,10 @@ export default {
         // eslint-disable-next-line
         console.log('带车加盟', request.data)
         if (request.data.status == 'OK') {
+          this.userDriverRecruitState = request.data.data.state
+          this.$store.commit('updateDriverRecruitState', {
+            state: request.data.data.state
+          })
         } else {
           this.$comfun.showToast(this, request.data.msg)
         }
@@ -45,7 +63,11 @@ export default {
       }
     },
     toDetailPage: function() {
-      this.$router.replace('/haveCar/baseInfo1')
+      let linkTo = '/haveCarHome'
+      if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
+        linkTo = '/haveCar/baseInfo1'
+      }
+      this.$router.replace(linkTo)
     }
   }
 }

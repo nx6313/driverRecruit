@@ -2,11 +2,11 @@
     <div class="policyRuleList">
         <div v-for="(policy, policyIndex) in policyData" v-bind:key="policyIndex" :class="['policyItemWrap', `policyItem_${policyIndex}`]" @click="toPolicyDetail(policy.id)">
             <span class="policyTitle">
-                <span :class="['titlePoint', policy.read ? 'titlePointHasRead' : '']"></span>
+                <span :class="['titlePoint', policy.read ? (policy.needUpdate ? 'titlePointNeedUpdate' : 'titlePointHasRead') : '']"></span>
                 {{policy.title}}
                 <img class="needWrite" v-lazy="require('@/assets/policy_edit.png')" v-if="policy.edit">
             </span>
-            <span :class="['policyRead', policy.read ? 'policyReadHasRead' : '']"><img class="hasRead" v-lazy="require('@/assets/icon_has_read.png')" v-if="policy.read">{{policy.read ? '已阅读' : '未阅读'}}</span>
+            <span :class="['policyRead', policy.read ? 'policyReadHasRead' : '']"><img class="hasRead" v-lazy="require('@/assets/icon_has_read.png')" v-if="policy.read && !policy.needUpdate"><img class="hasRead" v-lazy="require('@/assets/icon_need_update.png')" v-if="policy.needUpdate">{{policy.read ? (policy.needUpdate ? '请修改' : '已阅读') : '未阅读'}}</span>
         </div>
     </div>
 </template>
@@ -21,63 +21,72 @@ export default {
                     id: 'induction',
                     title: '入职须知',
                     read: false,
-                    route: '/policy/entryNotice',
+                    needUpdate: false,
+                    route: '/fullTime/policy/entryNotice',
                     edit: true
                 },
                 {
                     id: 'crime',
                     title: '无犯罪记录声明',
                     read: false,
-                    route: '/policy/noCrimeRecord',
+                    needUpdate: false,
+                    route: '/fullTime/policy/noCrimeRecord',
                     edit: true
                 },
                 {
                     id: 'compensation',
                     title: '薪酬保密承诺书',
                     read: false,
-                    route: '/policy/emolumentSecrecy',
+                    needUpdate: false,
+                    route: '/fullTime/policy/emolumentSecrecy',
                     edit: false
                 },
                 {
                     id: 'traffic',
                     title: '驾驶人员交通安全承诺书',
                     read: false,
-                    route: '/policy/trafficSafety',
+                    needUpdate: false,
+                    route: '/fullTime/policy/trafficSafety',
                     edit: false
                 },
                 {
                     id: 'qualification',
                     title: '申报网约车驾驶员资格证承诺书',
                     read: false,
-                    route: '/policy/qualification',
+                    needUpdate: false,
+                    route: '/fullTime/policy/qualification',
                     edit: false
                 },
                 {
                     id: 'overall',
                     title: '工衣西服费用申明',
                     read: false,
-                    route: '/policy/workClothes',
+                    needUpdate: false,
+                    route: '/fullTime/policy/workClothes',
                     edit: false
                 },
                 {
                     id: 'departure',
                     title: '提交《离职证明》申明',
                     read: false,
-                    route: '/policy/leaveDeclare',
+                    needUpdate: false,
+                    route: '/fullTime/policy/leaveDeclare',
                     edit: true
                 },
                 {
                     id: 'porttime',
                     title: '无兼职工作申明',
                     read: false,
-                    route: '/policy/noPartTimeJob',
+                    needUpdate: false,
+                    route: '/fullTime/policy/noPartTimeJob',
                     edit: false
                 },
                 {
                     id: 'signature',
                     title: '专职司机文件签约单',
                     read: false,
-                    route: '/policy/signContract',
+                    needUpdate: false,
+                    route: '/fullTime/policy/signContract',
                     edit: true
                 }
             ]
@@ -98,7 +107,12 @@ export default {
                 let requestData = request.data.data
                 for (let polictIndex in this.policyData) {
                     if (parseInt(requestData[this.policyData[polictIndex].id]) === 1) {
+                        // 已阅读
                         this.policyData[polictIndex].read = true
+                    } else if (parseInt(requestData[this.policyData[polictIndex].id]) === -1) {
+                        // 需要修改
+                        this.policyData[polictIndex].read = true
+                        this.policyData[polictIndex].needUpdate = true
                     }
                 }
                 this.$store.commit('setDriverRecruitData_PolicyList', {
@@ -112,8 +126,8 @@ export default {
     methods: {
         toPolicyDetail: function(policyId) {
             let policyInfo = this.policyData[this.policyData.map(v => { return v.id }).indexOf(policyId)]
-            if (!policyInfo.read) {
-                this.$router.push({ path: policyInfo.route, query: { policyId: policyId } })
+            if (!policyInfo.read || policyInfo.needUpdate) {
+                this.$router.replace({ path: policyInfo.route, query: { policyId: policyId } })
             } else {
                 this.$comfun.showToast(this, '该规则您已阅读，请查看其他规则')
             }
@@ -144,6 +158,9 @@ export default {
         }
         .titlePointHasRead {
             background: #5ac79d;
+        }
+        .titlePointNeedUpdate {
+            background: #c75a5a;
         }
         .needWrite {
             display: inline-block;

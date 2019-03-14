@@ -44,14 +44,23 @@ export default {
     methods: {
         toSign: function() {
             let allIsRead = true
+            let notNeedUpdate = true
             for (let policyIndex in this.$store.state.driverRecruitData.policyList) {
                 if (policyIndex < this.$store.state.driverRecruitData.policyList.length - 1 && !this.$store.state.driverRecruitData.policyList[policyIndex].read) {
                     allIsRead = false
                     break
                 }
+                if (policyIndex < this.$store.state.driverRecruitData.policyList.length - 1 && this.$store.state.driverRecruitData.policyList[policyIndex].needUpdate) {
+                    notNeedUpdate = false
+                    break
+                }
             }
             if (!allIsRead) {
                 this.$comfun.showToast(this, '请您先阅读其他的所有政策声明')
+                return false
+            }
+            if (!notNeedUpdate) {
+                this.$comfun.showToast(this, '请您先修改其他被驳回的政策声明')
                 return false
             }
             this.$comfun.showSignPanel(this, (base64, imgFile) => {

@@ -359,7 +359,7 @@ export default {
         top: 0;
         bottom: 0;
         margin: auto 0;
-        background-image: url('./../../assets/arrows.png');
+        background-image: url('./../../../assets/arrows.png');
         background-repeat: no-repeat;
         background-size: 100% auto;
         background-position: center;
@@ -378,13 +378,13 @@ export default {
     bottom: 0;
     margin: auto 0;
     width: 1rem;
-    background-image: url('./../../assets/icon_policy_file_up.jpg');
+    background-image: url('./../../../assets/icon_policy_file_up.jpg');
     background-repeat: no-repeat;
     background-size: 100% auto;
     background-position: center;
 }
 .isOk::before {
-    background-image: url('./../../assets/icon_policy_file_up_success.jpg');
+    background-image: url('./../../../assets/icon_policy_file_up_success.jpg');
 }
 .doItemUnfoldWrap {
     .cardWrap {
@@ -440,7 +440,7 @@ export default {
         right: 0;
         margin: auto;
         width: 2.8rem;
-        background-image: url('./../../assets/icon_upload_camera.png');
+        background-image: url('./../../../assets/icon_upload_camera.png');
         background-repeat: no-repeat;
         background-size: 100% auto;
         background-position: center;

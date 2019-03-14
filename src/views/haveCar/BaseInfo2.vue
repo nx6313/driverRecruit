@@ -131,6 +131,9 @@ export default {
     this.idCardBBase64 = this.$store.state.driverRecruitData.cardInfo.idCardB
     this.driveCardABase64 = this.$store.state.driverRecruitData.cardInfo.driveCardA
     this.driveCardBBase64 = this.$store.state.driverRecruitData.cardInfo.driveCardB
+    this.runCardABase64 = this.$store.state.driverRecruitData.cardInfo.runCardA
+    this.runCardBBase64 = this.$store.state.driverRecruitData.cardInfo.runCardB
+    this.peopleCarPhotoBase64 = this.$store.state.driverRecruitData.cardInfo.peopleCarPhoto
   },
   methods: {
     selectFile: function(event, type) {
@@ -146,6 +149,15 @@ export default {
       } else if (type == 'drive_card_b') {
         this.driveCardB = event.target.files[0]
         this.imgPreview(this.driveCardB, type)
+      } else if (type == 'run_card_a') {
+        this.runCardA = event.target.files[0]
+        this.imgPreview(this.runCardA, type)
+      } else if (type == 'run_card_b') {
+        this.runCardB = event.target.files[0]
+        this.imgPreview(this.runCardB, type)
+      } else if (type == 'people_car_photo') {
+        this.peopleCarPhoto = event.target.files[0]
+        this.imgPreview(this.peopleCarPhoto, type)
       }
     },
     imgPreview: function(file, type) {
@@ -197,6 +209,39 @@ export default {
             this.driveCardB = null
             this.driveCardBBase64 = null
           })
+        } else if (type == 'run_card_a') {
+          this.uploadCardFile(this.runCardA, (path) => {
+            this.runCardABase64 = event.target.result
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'runCardA',
+              value: path
+            })
+          }, () => {
+            this.runCardA = null
+            this.runCardABase64 = null
+          })
+        } else if (type == 'run_card_b') {
+          this.uploadCardFile(this.runCardB, (path) => {
+            this.runCardBBase64 = event.target.result
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'runCardB',
+              value: path
+            })
+          }, () => {
+            this.runCardB = null
+            this.runCardBBase64 = null
+          })
+        } else if (type == 'people_car_photo') {
+          this.uploadCardFile(this.peopleCarPhoto, (path) => {
+            this.peopleCarPhotoBase64 = event.target.result
+            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+              key: 'peopleCarPhoto',
+              value: path
+            })
+          }, () => {
+            this.peopleCarPhoto = null
+            this.peopleCarPhotoBase64 = null
+          })
         }
       }
     },
@@ -215,8 +260,32 @@ export default {
       })
     },
     toSubmit: function() {
-      if (this.$store.getters.cardIsComplete) {
-        this.$router.push('/baseInfo')
+      if (this.$store.getters.cardIsCompleteForJoinIn) {
+        this.$comfun.showLoading(this, 'baseInfoApplyInfoForJoinIn', false)
+        this.$comfun.http_post(this, this.$api.applyInfo, {
+          'apply.d_type': this.$store.state.userBaseInfo.dType,
+          'apply.person_name': this.$store.state.driverRecruitData.baseInfoComplete.personName,
+          'apply.person_sex': this.$store.state.driverRecruitData.baseInfoComplete.personSex,
+          'apply.phone': this.$store.state.driverRecruitData.baseInfoComplete.phone,
+          'apply.address_detail': this.$store.state.driverRecruitData.baseInfoComplete.addressDetail,
+          'apply.is_have_qualification': this.$store.state.driverRecruitData.baseInfoComplete.certificationType,
+          'apply.qualification_certificate': this.$store.state.driverRecruitData.baseInfoComplete.certificationCard,
+          'apply.is_help_qualification': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification,
+          'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
+          'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
+          'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
+          'apply.driverlicense_reverse': this.$store.state.driverRecruitData.cardInfo.driveCardB,
+          'apply.drivinglicense_positive': this.$store.state.driverRecruitData.cardInfo.runCardA,
+          'apply.drivinglicense_reverse': this.$store.state.driverRecruitData.cardInfo.runCardB,
+          'apply.car_personal_pic': this.$store.state.driverRecruitData.cardInfo.peopleCarPhoto
+        }).then((request) => {
+          this.$comfun.hideLoading('baseInfoApplyInfoForJoinIn')
+          if (request.data.status == 'OK') {
+            // this.$router.replace('/baseInfo')
+          } else {
+            this.$comfun.showToast(this, request.data.msg)
+          }
+        })
       } else {
         this.$comfun.showToast(this, '请您先选择所有需要的证件照')
       }

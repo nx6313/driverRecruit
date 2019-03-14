@@ -113,8 +113,18 @@ const store = new Vuex.Store({
           idcarNo: null,
           addressDetail: null,
           driverlicenseNo: null,
-          phone: null
-          // smsCode: null
+          phone: null,
+          driverType: null,
+          certificationType: null,
+          certificationCard: null,
+          needHelpGetcertification: null
+        },
+        intentionInfo: {
+          city: null,
+          company: null,
+          principal: null,
+          contact: null,
+          useCarCause: null
         },
         auditState: {
           state: null,
@@ -135,13 +145,16 @@ const store = new Vuex.Store({
           xLight: null,
           noCrimeRecord: null,
           signContract: null,
-          leaveDeclare: null,
-          certification: null
+          leaveDeclare: null
         }
       },
       getters: {
         cardIsComplete(state) {
           return state.cardInfo.idCardA != null && state.cardInfo.idCardB != null && state.cardInfo.driveCardA != null && state.cardInfo.driveCardB != null
+        },
+        cardIsCompleteForJoinIn(state) {
+          return state.cardInfo.idCardA != null && state.cardInfo.idCardB != null && state.cardInfo.driveCardA != null && state.cardInfo.driveCardB != null && 
+            state.cardInfo.runCardA != null && state.cardInfo.runCardB != null && state.cardInfo.peopleCarPhoto != null
         }
       },
       mutations: {
@@ -156,6 +169,15 @@ const store = new Vuex.Store({
         },
         [SOME_MUTATION.setDriverRecruitData_BaseInfoComplete] (state, payload) {
           state.baseInfoComplete = payload.baseInfoComplete
+        },
+        [SOME_MUTATION.setDriverRecruitData_BaseInfoCompleteByKey] (state, payload) {
+          state.baseInfoComplete[payload.key] = payload.value
+        },
+        [SOME_MUTATION.setDriverRecruitData_IntentionInfo] (state, payload) {
+          state.intentionInfo = payload.intentionInfo
+        },
+        [SOME_MUTATION.setDriverRecruitData_IntentionInfoByKey] (state, payload) {
+          state.intentionInfo[payload.key] = payload.value
         },
         [SOME_MUTATION.setDriverRecruitData_AuditState] (state, payload) {
           state.auditState = payload.auditState

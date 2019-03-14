@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { SOME_RULES } from '@/utils/rules'
 import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
@@ -26,7 +27,7 @@ export default {
         },
         {
           label: '单位名称',
-          hint: '请输入您的单位名称',
+          hint: '请输入您的单位名称（可不填）',
           type: 'text',
           model: ''
         },
@@ -54,7 +55,25 @@ export default {
     }
   },
   methods: {
-    toSubmit: function() {}
+    toSubmit: function() {
+      if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您所在的城市'); return false }
+      if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '城市中不能含有特殊字符'); return false }
+      if (this.input1[1].model.trim() != '' && SOME_RULES.emoji.test(this.input1[1].model.trim())) { this.$comfun.showToast(this, '单位名称中不能含有特殊字符'); return false }
+      if (this.input1[2].model.trim() == '') { this.$comfun.showToast(this, '请先输入负责人姓名'); return false }
+      if (SOME_RULES.emoji.test(this.input1[2].model.trim())) { this.$comfun.showToast(this, '负责人姓名中不能含有特殊字符'); return false }
+      if (this.input1[3].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的联系方式'); return false }
+      if (!SOME_RULES.phone.test(this.input1[3].model.trim())) { this.$comfun.showToast(this, '请输入正确的联系方式'); return false }
+      this.$store.commit('setDriverRecruitData_IntentionInfo', {
+        intentionInfo: {
+          city: this.input1[0].model.trim(),
+          company: this.input1[1].model.trim(),
+          principal: this.input1[2].model.trim(),
+          contact: this.input1[3].model.trim(),
+          useCarCause: this.input1[4].model.trim()
+        }
+      })
+      this.$router.back()
+    }
   }
 }
 </script>

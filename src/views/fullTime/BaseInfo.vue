@@ -107,7 +107,7 @@ export default {
             }
           })
           // 基本信息资料提交成功，跳转到信息展示页面
-          this.$router.replace('/auditResult')
+          this.$router.replace('/fullTime/auditResult')
         } else {
           this.$comfun.showToast(this, request.data.msg)
         }

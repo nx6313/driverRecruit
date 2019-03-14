@@ -24,7 +24,13 @@ export default {
     }
   },
   methods: {
-    iKnow: function() {}
+    iKnow: function() {
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'needHelpGetcertification',
+        value: this.needHelp ? '1' : '0'
+      })
+      this.$router.back()
+    }
   }
 }
 </script>

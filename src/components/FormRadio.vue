@@ -1,7 +1,7 @@
 <template>
     <div class="radioWrap">
         <div v-for="(radio, radioIndex) in radios" v-bind:key="radioIndex" class="radioBtnItem" :value="radio.name" @click="selectThis(radio)">
-            <span :class="['radioSelect', radio.value === value ? 'isSelected' : '']"></span>
+            <span :class="['radioSelect', radio.name === value ? 'isSelected' : '']"></span>
             <span class="radioTxt">{{radio.value}}</span>
         </div>
     </div>
@@ -22,7 +22,7 @@ export default {
     },
     methods: {
         selectThis: function(radio) {
-            this.$emit('input', radio.value)
+            this.$emit('input', radio.name)
         }
     }
 }

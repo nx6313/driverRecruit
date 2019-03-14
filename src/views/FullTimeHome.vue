@@ -31,7 +31,9 @@ export default {
         RULEING: 40, // 该用户提交的规则资料正在审核中
         RULE_PASS: 41, // 该用户提交的规则资料已通过审核
         RULE_NO_PASS_NO_UPDATE: 42, // 该用户提交的规则资料未通过审核，不可修改
-        RULE_NO_PASS_CAN_UPDATE: 43 // 该用户提交的规则资料未通过审核，可修改后重新提交
+        RULE_NO_PASS_CAN_UPDATE: 43, // 该用户提交的规则资料未通过审核，可修改后重新提交
+        RULE_HAS_RUZHI: 51, // 该用户已入职
+        RULE_NO_RUZHI: 52 // 该用户通过所有审核，单还未入职
       }
     }
   },
@@ -46,37 +48,43 @@ export default {
       let link = '/'
       if (this.userDriverRecruitState == this.driverRecruitState.USER_IS_DRIVER) {
         // 该用户已经是司机了
-        link = '/complete'
+        link = '/fullTime/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
         // 该用户还未提交任何资料
-        link = '/baseInfoComplete'
+        link = '/fullTime/baseInfoComplete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDITING) {
         // 该用户提交的资料正在审核中
-        link = '/auditResult'
+        link = '/fullTime/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS) {
         // 该用户提交的资料审核已通过，通知其来公司面试
-        link = '/auditResult'
+        link = '/fullTime/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_NO_PASS) {
         // 该用户提交的资料审核未通过
-        link = '/auditResult'
+        link = '/fullTime/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_PASS) {
         // 该用户已通过公司面试，需要阅读具体规则
-        link = '/policyRuleList'
+        link = '/fullTime/policyRuleList'
       } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_NO_PASS) {
         // 该用户未通过公司面试
-        link = '/complete'
+        link = '/fullTime/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULEING) {
         // 该用户提交的规则资料正在审核中
-        link = '/complete'
+        link = '/fullTime/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_PASS) {
         // 该用户提交的规则资料已通过审核
-        link = '/complete'
+        link = '/fullTime/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_PASS_NO_UPDATE) {
         // 该用户提交的规则资料未通过审核，不可修改
-        link = '/complete'
+        link = '/fullTime/complete'
       } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_PASS_CAN_UPDATE) {
         // 该用户提交的规则资料未通过审核，可修改后重新提交
-        link = '/complete'
+        link = '/fullTime/complete'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_HAS_RUZHI) {
+        // 该用户已入职
+        link = '/fullTime/complete'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.RULE_NO_RUZHI) {
+        // 该用户通过所有审核，单还未入职
+        link = '/fullTime/complete'
       }
       return link
     }
@@ -126,7 +134,7 @@ export default {
       if (this.getLinkTo == '/') {
         this.reload()
       } else {
-        this.$router.push(this.getLinkTo)
+        this.$router.replace(this.getLinkTo)
       }
     }
   }

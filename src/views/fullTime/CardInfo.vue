@@ -186,7 +186,7 @@ export default {
     },
     toNext: function() {
       if (this.$store.getters.cardIsComplete) {
-        this.$router.push('/baseInfo')
+        this.$router.replace('/fullTime/baseInfo')
       } else {
         this.$comfun.showToast(this, '请您先选择所有需要的证件照')
       }

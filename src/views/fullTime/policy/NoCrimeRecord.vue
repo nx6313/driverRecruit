@@ -10,7 +10,7 @@
             <span v-if="noCrimeRecordBase64 != null" class="imgPreview hasBorder" :style="noCrimeRecordBase64 != null ? { 'background-image': `url(${noCrimeRecordBase64})` } : {}"></span>
         </div>
         <span class="uploadTip">上传无犯罪记录证明</span>
-        <router-link to="/policy/noCrimeRecordDec" class="uploadTipLink" tag="span">如何申请 “ 无犯罪记录证明 ”</router-link>
+        <router-link to="/fullTime/policy/noCrimeRecordDec" class="uploadTipLink" tag="span">如何申请 “ 无犯罪记录证明 ”</router-link>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
     </div>
@@ -184,7 +184,7 @@ body, html {
     right: 0;
     margin: auto;
     width: 2.8rem;
-    background-image: url('./../../assets/icon_upload_camera.png');
+    background-image: url('./../../../assets/icon_upload_camera.png');
     background-repeat: no-repeat;
     background-size: 100% auto;
     background-position: center;
