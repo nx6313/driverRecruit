@@ -72,7 +72,23 @@ export default {
           useCarCause: this.input1[4].model.trim()
         }
       })
-      this.$router.back()
+      this.$comfun.showLoading(this, 'saveApplyDriverIntentionForJoinIn', false)
+      this.$comfun.http_post(this, this.$api.saveApplyDriverIntention, {
+        // 'intention.d_type': this.$store.state.userBaseInfo.dType,
+        'intention.city': this.input1[0].model.trim(),
+        'intention.company_name': this.input1[1].model.trim(),
+        'intention.leader': this.input1[2].model.trim(),
+        'intention.phone': this.input1[3].model.trim(),
+        'intention.car_demand': this.input1[4].model.trim()
+      }).then((request) => {
+        this.$comfun.hideLoading('saveApplyDriverIntentionForJoinIn')
+        if (request.data.status == 'OK') {
+          this.$comfun.showToast(this, '意向资料提交成功')
+          this.$router.back()
+        } else {
+          this.$comfun.showToast(this, request.data.msg)
+        }
+      })
     }
   }
 }

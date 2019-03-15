@@ -18,5 +18,7 @@ export default {
     // 获取司机招募规则阅读状态信息
     applyIsRuleRead: 'member/api/member/applyIsRuleRead',
     // 更新司机招募某一条规则阅读状态并提交相关信息
-    applyRuleRead: 'member/api/member/applyRuleRead'
+    applyRuleRead: 'member/api/member/applyRuleRead',
+    // 提交加盟车一项数据信息
+    saveApplyDriverIntention: 'member/api/member/saveApplyDriverIntention'
 }

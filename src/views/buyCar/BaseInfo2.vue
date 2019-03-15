@@ -49,7 +49,7 @@
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
-            <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
+            <span v-if="runCardABase64 != null" class="imgPreview hasBorder" :style="runCardABase64 != null ? { 'background-image': `url(${runCardABase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传行驶证正面照</span>
         </div>
@@ -57,7 +57,7 @@
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
-            <span v-if="driveCardBBase64 != null" class="imgPreview hasBorder" :style="driveCardBBase64 != null ? { 'background-image': `url(${driveCardBBase64})` } : {}"></span>
+            <span v-if="runCardBBase64 != null" class="imgPreview hasBorder" :style="runCardBBase64 != null ? { 'background-image': `url(${runCardBBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传行驶证副页</span>
         </div>
@@ -70,13 +70,13 @@
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
-            <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
+            <span v-if="peopleCarPhotoBase64 != null" class="imgPreview hasBorder" :style="peopleCarPhotoBase64 != null ? { 'background-image': `url(${peopleCarPhotoBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传人车合影照片</span>
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/people_car_photo.png')">
           </div>
           <span class="cardTitle">人车合影示范照片</span>
         </div>
@@ -261,7 +261,32 @@ export default {
     },
     toSubmit: function() {
       if (this.$store.getters.cardIsCompleteForJoinIn) {
-        // this.$router.replace('/baseInfo')
+        this.$comfun.showLoading(this, 'baseInfoApplyInfoForJoinIn', false)
+        this.$comfun.http_post(this, this.$api.applyInfo, {
+          'apply.d_type': this.$store.state.userBaseInfo.dType,
+          'apply.person_name': this.$store.state.driverRecruitData.baseInfoComplete.personName,
+          'apply.person_sex': this.$store.state.driverRecruitData.baseInfoComplete.personSex,
+          'apply.phone': this.$store.state.driverRecruitData.baseInfoComplete.phone,
+          'apply.address_detail': this.$store.state.driverRecruitData.baseInfoComplete.addressDetail,
+          'apply.is_have_qualification': this.$store.state.driverRecruitData.baseInfoComplete.certificationType || '0',
+          'apply.qualification_certificate': this.$store.state.driverRecruitData.baseInfoComplete.certificationCard,
+          'apply.is_help_qualification': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification,
+          'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
+          'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
+          'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
+          'apply.driverlicense_reverse': this.$store.state.driverRecruitData.cardInfo.driveCardB,
+          'apply.drivinglicense_positive': this.$store.state.driverRecruitData.cardInfo.runCardA,
+          'apply.drivinglicense_reverse': this.$store.state.driverRecruitData.cardInfo.runCardB,
+          'apply.car_personal_pic': this.$store.state.driverRecruitData.cardInfo.peopleCarPhoto
+        }).then((request) => {
+          this.$comfun.hideLoading('baseInfoApplyInfoForJoinIn')
+          if (request.data.status == 'OK') {
+            this.$comfun.showToast(this, '资料提交成功，请您耐心等待通知')
+            this.$router.back()
+          } else {
+            this.$comfun.showToast(this, request.data.msg)
+          }
+        })
       } else {
         this.$comfun.showToast(this, '请您先选择所有需要的证件照')
       }

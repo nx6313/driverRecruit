@@ -23,6 +23,11 @@ export default {
       needHelp: false
     }
   },
+  mounted() {
+    if (this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification == 1) {
+      this.needHelp = true
+    }
+  },
   methods: {
     iKnow: function() {
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {

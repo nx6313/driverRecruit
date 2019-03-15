@@ -8,7 +8,9 @@
 export default {
   provide() {
     return {
-      reload: this.reload
+      reload: this.reload,
+      savePageData: this.savePageData,
+      getPageData: this.getPageData
     }
   },
   data() {
@@ -22,6 +24,14 @@ export default {
       this.$nextTick(() => {
         this.isRouterAlive = true
       })
+    },
+    savePageData() {
+      this.$store.commit('setPageData', {
+        data: this.$children[0].$data
+      })
+    },
+    getPageData() {
+      return this.$store.state.pageData.data
     }
   }
 }

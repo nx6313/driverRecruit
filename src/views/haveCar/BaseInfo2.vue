@@ -49,7 +49,7 @@
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
-            <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
+            <span v-if="runCardABase64 != null" class="imgPreview hasBorder" :style="runCardABase64 != null ? { 'background-image': `url(${runCardABase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传行驶证正面照</span>
         </div>
@@ -57,7 +57,7 @@
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
-            <span v-if="driveCardBBase64 != null" class="imgPreview hasBorder" :style="driveCardBBase64 != null ? { 'background-image': `url(${driveCardBBase64})` } : {}"></span>
+            <span v-if="runCardBBase64 != null" class="imgPreview hasBorder" :style="runCardBBase64 != null ? { 'background-image': `url(${runCardBBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传行驶证副页</span>
         </div>
@@ -70,13 +70,13 @@
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
-            <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
+            <span v-if="peopleCarPhotoBase64 != null" class="imgPreview hasBorder" :style="peopleCarPhotoBase64 != null ? { 'background-image': `url(${peopleCarPhotoBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传人车合影照片</span>
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/people_car_photo.png')">
           </div>
           <span class="cardTitle">人车合影示范照片</span>
         </div>
@@ -270,7 +270,7 @@ export default {
           'apply.address_detail': this.$store.state.driverRecruitData.baseInfoComplete.addressDetail,
           'apply.is_have_qualification': this.$store.state.driverRecruitData.baseInfoComplete.certificationType,
           'apply.qualification_certificate': this.$store.state.driverRecruitData.baseInfoComplete.certificationCard,
-          'apply.is_help_qualification': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification,
+          'apply.is_help_qualification': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification || '0',
           'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
           'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
           'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
@@ -281,7 +281,8 @@ export default {
         }).then((request) => {
           this.$comfun.hideLoading('baseInfoApplyInfoForJoinIn')
           if (request.data.status == 'OK') {
-            // this.$router.replace('/baseInfo')
+            this.$comfun.showToast(this, '资料提交成功，请您耐心等待通知')
+            this.$router.back()
           } else {
             this.$comfun.showToast(this, request.data.msg)
           }

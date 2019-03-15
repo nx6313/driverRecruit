@@ -20,6 +20,7 @@ import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
   name: 'buyCarBaseInfo1',
+  inject: ['savePageData', 'getPageData'],
   components: {
     BaseInfoItem
   },
@@ -75,6 +76,18 @@ export default {
       return this.input2[0].model
     }
   },
+  mounted() {
+    if (this.$route.meta.keepData === true) {
+      let pageData = this.getPageData()
+      this.certification = pageData.certification
+      this.certificationBase64 = pageData.certificationBase64
+      this.showCertificationUpload = pageData.showCertificationUpload
+      this.input1[0].model = pageData.input1[0].model
+      this.input1[1].model = pageData.input1[1].model
+      this.input1[4].model = pageData.input1[4].model
+      this.input2[0].model = pageData.input2[0].model
+    }
+  },
   methods: {
     selectFile: function(event, type) {
       if (type == 'certification_record') {
@@ -116,7 +129,8 @@ export default {
       })
     },
     toFlow: function() {
-      this.$router.replace('/haveCar/flow')
+      this.savePageData()
+      this.$router.push('/buyCar/flow')
     },
     toNext: function() {
       if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
@@ -126,7 +140,7 @@ export default {
       if (this.input2[0].model.trim() == '') { this.$comfun.showToast(this, '请先选择您是否拥有网约车司机从业资格证'); return false }
       if (this.input2[0].model.trim() == '已有' && this.$store.state.driverRecruitData.baseInfoComplete.certificationCard == null) { this.$comfun.showToast(this, '请先上传您的网约车司机从业资格证'); return false }
       this.saveBaseInfo1()
-      this.$router.replace('/haveCar/baseInfo2')
+      this.$router.replace('/buyCar/baseInfo2')
     },
     saveBaseInfo1: function() {
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {

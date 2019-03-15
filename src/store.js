@@ -211,6 +211,19 @@ const store = new Vuex.Store({
           state.baseInfoComplete = null
         }
       }
+    },
+    // 页面缓存数据
+    pageData: {
+      state: {
+        data: null
+      },
+      getters: {},
+      mutations: {
+        [SOME_MUTATION.setPageData] (state, payload) {
+          state.data = payload.data
+        }
+      },
+      actions: {}
     }
   }
 })

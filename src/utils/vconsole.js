@@ -1,6 +1,7 @@
+const Shake = require('shake.js')
 const VConsole = require('vconsole')
 const regC = /^[\s\S]*((%c)[\s\S]*)+$/
-const isTest = true
+const isTest = false
 
 export default {
 	// eslint-disable-next-line
@@ -174,100 +175,14 @@ export default {
 				if (!isTest && process.env.NODE_ENV == 'production') {
 					// 生产环境，隐藏日志面板控制开关
 					vconsole.hideSwitch()
-					// 添加一个很小的隐藏区域用于打开日志面板
-					let minSwitchArea = document.createElement('div')
-					minSwitchArea.id = '__minVcSwitch'
-					minSwitchArea.style = `position: fixed; left: 0; bottom: calc(50vh - 50px); width: 20px; height: 100px; border-radius: 0 50px 50px 0; z-index: 999999; touch-action: none;`
-					document.body.parentNode.appendChild(minSwitchArea)
-					let minSwitchClickArea = document.createElement('div')
-					minSwitchClickArea.id = '__minVcClickSwitch'
-					minSwitchClickArea.style = `position: fixed; left: calc(50vw - 15px); bottom: 60px; width: 30px; height: 30px; line-height: 30px; text-align: center; font-size: 10px; font-weight: bold; border-radius: 50px; z-index: 999999; touch-action: none; background-color: rgba(0, 0, 0, .4); display: none; color: #ffffff;`
-					document.body.parentNode.appendChild(minSwitchClickArea)
-					let touchDistanceX = 0
-					let touchDistanceY = 0
-					let startTouchX = null
-					let startTouchY = null
-					let hasShowVcClickSpan = false
-					let clickMinClickSwitchTimer = null
-					let hideClickSpanTime = 1400
-					vconsole.$.bind(minSwitchArea, 'touchstart', function(event) {
-						touchDistanceX = 0
-						touchDistanceY = 0
-						startTouchX = null
-						startTouchY = null
-						hasShowVcClickSpan = false
-						minSwitchClickArea.innerText = ''
-						clearTimeout(clickMinClickSwitchTimer)
-						if (event.touches.length == 1) {
-							startTouchX = event.touches[0].pageX
-							startTouchY = event.touches[0].pageY
-						}
-					})
-					vconsole.$.bind(minSwitchArea, 'touchmove', function(event) {
-						event.preventDefault()
-						event.stopPropagation()
-						if (event.touches.length == 1) {
-							touchDistanceX = event.touches[0].pageX - startTouchX
-							touchDistanceY = event.touches[0].pageY - startTouchY
-							if (hasShowVcClickSpan === false && touchDistanceX > document.body.clientWidth - 10 && Math.abs(touchDistanceY) < 10) {
-								hasShowVcClickSpan = true
-								minSwitchClickArea.style.display = 'block'
-								minSwitchClickArea.innerText = ''
-								clearTimeout(clickMinClickSwitchTimer)
-								clickMinClickSwitchTimer = setTimeout(() => {
-									minSwitchClickArea.style.display = 'none'
-								}, hideClickSpanTime)
-							}
-						}
-					})
-					vconsole.$.bind(minSwitchArea, 'touchend', function(event) {
-						event.preventDefault()
-						touchDistanceX = 0
-						touchDistanceY = 0
-						startTouchX = null
-						hasShowVcClickSpan = false
-						minSwitchClickArea.innerText = ''
-					})
-					let clickMinSwitchTime = null
-					let clickMinSwitchCount = 0
-					vconsole.$.bind(minSwitchClickArea, 'touchmove', function(event) {
-						event.preventDefault()
-						clearTimeout(clickMinSwitchTime)
-						clickMinSwitchTime = setTimeout(() => {
-							clickMinSwitchCount = 0
-						}, 400)
-						clearTimeout(clickMinClickSwitchTimer)
-						clickMinClickSwitchTimer = setTimeout(() => {
-							minSwitchClickArea.style.display = 'none'
-							minSwitchClickArea.innerText = ''
-						}, hideClickSpanTime)
-						clickMinSwitchCount++
-						minSwitchClickArea.innerText = clickMinSwitchCount
-						if (clickMinSwitchCount > 20) {
-							vconsole.show()
-							clickMinSwitchCount = 0
-							minSwitchClickArea.style.display = 'none'
-							minSwitchClickArea.innerText = ''
-							clearTimeout(clickMinSwitchTime)
-							clearTimeout(clickMinClickSwitchTimer)
-						}
-					})
-					vconsole.$.bind(minSwitchClickArea, 'touchend', function(event) {
-						event.preventDefault()
-						clearTimeout(clickMinSwitchTime)
-						clickMinSwitchCount = 0
-						clearTimeout(clickMinClickSwitchTimer)
-						minSwitchClickArea.style.display = 'none'
-						minSwitchClickArea.innerText = ''
-					})
-					vconsole.$.bind(minSwitchClickArea, 'touchcancel', function(event) {
-						event.preventDefault()
-						clearTimeout(clickMinSwitchTime)
-						clickMinSwitchCount = 0
-						clearTimeout(clickMinClickSwitchTimer)
-						minSwitchClickArea.style.display = 'none'
-						minSwitchClickArea.innerText = ''
-					})
+					// let mShakeEvent = new Shake({
+					// 	threshold: 10,
+					// 	timeout: 20000
+					// })
+					// mShakeEvent.start()
+					// window.addEventListener('shake', () => {
+					// 	shakeEventDidOccur(vconsole)
+					// }, false)
 				}
 				initSpecialVConsole(vconsole)
 			}
@@ -414,28 +329,21 @@ let getTestDomHtml = function(vuexData) {
 	return `<div style="line-height: 30px;">${inputListHtml}</div>`
 }
 
-
 // 初始化改写console方法
 let initConsoleMethod = function(vconsole) {
 	// eslint-disable-next-line
-	const conLog = console.log
-	// eslint-disable-next-line
-	console.log = function() {
-		try {
-			conLog.apply(this, arguments)
-		} catch(er) {
-			// eslint-disable-next-line
-		}
-		if (vconsole != null && !vconsole.$dom) return
-		let isC = false
-		let spanCHtml = ''
-		let spanHtmlCount = 0
-		let cStyles = []
-		let currentTexts = []
-		try {
+	console.log = (function(conLog) {
+		return function() {
+			conLog.apply(console, arguments)
+			if (vconsole != null && !vconsole.$dom) return
+			let isC = false
+			let spanCHtml = ''
+			let spanHtmlCount = 0
+			let cStyles = []
+			let currentTexts = []
 			for (let index in arguments) {
 				currentTexts.push(arguments[index])
-				if (index == 0 && arguments[index] && regC.test(arguments[index].trim())) {
+				if (index == 0 && arguments[index] && vconsole.tool.isString(arguments[index]) && regC.test(arguments[index].trim())) {
 					isC = true
 					let spans = arguments[index].split('%c')
 					for (let spanIndex in spans) {
@@ -452,23 +360,26 @@ let initConsoleMethod = function(vconsole) {
 					cStyles.push(arguments[index])
 				}
 			}
-		} catch(e) {
-			// eslint-disable-next-line
-		}
-		if (isC) {
-			for (let styleIndex = 0; styleIndex < spanHtmlCount; styleIndex++) {
-				spanCHtml = spanCHtml.replace(`STYLE_${styleIndex}`, cStyles[styleIndex] + '; padding: 2px 6px; font-size: 12px;')
-			}
-			let vcItemContentDoms = vconsole.$dom.querySelectorAll('.vc-item-content')
-			let replaceDom = null
-			for (let itemContentDomIndex in vcItemContentDoms) {
-				for (let currentTextIndex in currentTexts) {
-					if (vcItemContentDoms[itemContentDomIndex].innerText && vcItemContentDoms[itemContentDomIndex].innerText.indexOf(currentTexts[currentTextIndex]) > 0) {
-						replaceDom = vcItemContentDoms[itemContentDomIndex]
+			if (isC) {
+				for (let styleIndex = 0; styleIndex < spanHtmlCount; styleIndex++) {
+					spanCHtml = spanCHtml.replace(`STYLE_${styleIndex}`, cStyles[styleIndex] + '; padding: 2px 6px; font-size: 12px;')
+				}
+				let vcItemContentDoms = vconsole.$dom.querySelectorAll('.vc-item-content')
+				let replaceDom = null
+				for (let itemContentDomIndex in vcItemContentDoms) {
+					for (let currentTextIndex in currentTexts) {
+						if (vcItemContentDoms[itemContentDomIndex].innerText && vcItemContentDoms[itemContentDomIndex].innerText.indexOf(currentTexts[currentTextIndex]) > 0) {
+							replaceDom = vcItemContentDoms[itemContentDomIndex]
+						}
 					}
 				}
+				if (replaceDom != null) replaceDom.innerHTML = spanCHtml
 			}
-			if (replaceDom != null) replaceDom.innerHTML = spanCHtml
 		}
-	}
+	})(console.log)
+}
+
+// 摇一摇出发事件
+let shakeEventDidOccur = function(vconsole) {
+	vconsole.show()
 }

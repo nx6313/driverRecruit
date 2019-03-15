@@ -147,7 +147,7 @@ export default {
         this.applyDriverSmsCode(phone, code)
       })
     },
-    isDriver: function(phone) {
+    isDriver: function(phone, callBack) {
       this.$comfun.showLoading(this, 'isDriver', false)
       this.$comfun.http_post(this, this.$api.isDriver, {
         phone: phone
@@ -159,6 +159,7 @@ export default {
           } else {
             this.userIsDriver = true
           }
+          if (callBack) callBack()
         } else {
           this.$comfun.showToast(this, request.data.msg)
         }
@@ -219,7 +220,26 @@ export default {
             this.$router.push('/rentCarHome')
           }
         } else {
-          this.isDriver(this.$store.state.userBaseInfo.phone)
+          this.isDriver(this.$store.state.userBaseInfo.phone, () => {
+            if (this.userIsDriver === true) {
+              // 已经是司机了
+              this.$router.push('/isDriver')
+            } else if (this.userIsDriver === false) {
+              if (key === '1') {
+                // 自营专职加盟
+                this.$router.push('/fullTimeHome')
+              } else if (key === '2') {
+                // 购车加盟
+                this.$router.push('/buyCarHome')
+              } else if (key === '3') {
+                // 带车加盟
+                this.$router.push('/haveCarHome')
+              } else if (key === '4') {
+                // 租车加盟
+                this.$router.push('/rentCarHome')
+              }
+            }
+          })
         }
       }
     }
@@ -332,7 +352,7 @@ export default {
       justify-content: space-between;
       align-content: space-between;
       align-items: center;
-      height: 8.8rem;
+      height: 8.6rem;
       margin-top: 2rem;
       margin-bottom: 0.9rem;
       .selecterItemWrap {
@@ -344,6 +364,7 @@ export default {
         color: #ffffff;
         text-align: center;
         padding: 0.4rem 0;
+        height: 3.1rem;
         .selecterItemName {
           display: block;
           font-size: 1rem;
@@ -408,6 +429,7 @@ export default {
       margin-top: 1rem;
       img {
         width: 100%;
+        height: 5.2rem;
       }
       img:nth-of-type(n + 2) {
         margin-top: 0.6rem;

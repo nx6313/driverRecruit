@@ -20,6 +20,7 @@ import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
   name: 'haveCarBaseInfo1',
+  inject: ['savePageData', 'getPageData'],
   components: {
     BaseInfoItem
   },
@@ -75,6 +76,18 @@ export default {
       return this.input2[0].model
     }
   },
+  mounted() {
+    if (this.$route.meta.keepData === true) {
+      let pageData = this.getPageData()
+      this.certification = pageData.certification
+      this.certificationBase64 = pageData.certificationBase64
+      this.showCertificationUpload = pageData.showCertificationUpload
+      this.input1[0].model = pageData.input1[0].model
+      this.input1[1].model = pageData.input1[1].model
+      this.input1[4].model = pageData.input1[4].model
+      this.input2[0].model = pageData.input2[0].model
+    }
+  },
   methods: {
     selectFile: function(event, type) {
       if (type == 'certification_record') {
@@ -116,7 +129,8 @@ export default {
       })
     },
     toFlow: function() {
-      this.$router.replace('/haveCar/flow')
+      this.savePageData()
+      this.$router.push('/haveCar/flow')
     },
     toNext: function() {
       if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }

@@ -212,6 +212,7 @@ export default {
       margin: 0 0.8rem;
       overflow: hidden;
       width: 38%;
+      height: 5.2rem;
       .fileWrap {
         position: relative;
         .fileInput {

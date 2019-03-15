@@ -426,7 +426,8 @@ let router = new Router({
         }
       },
       meta: {
-        title: '基础信息'
+        title: '基础信息',
+        keepAliveName: 'haveCarFlow'
       }
     },
     {
@@ -492,7 +493,8 @@ let router = new Router({
         }
       },
       meta: {
-        title: '基础信息'
+        title: '基础信息',
+        keepAliveName: 'buyCarFlow'
       }
     },
     {
@@ -558,7 +560,8 @@ let router = new Router({
         }
       },
       meta: {
-        title: '基础信息'
+        title: '基础信息',
+        keepAliveName: 'rentCarFlow'
       }
     },
     {
@@ -597,6 +600,13 @@ let router = new Router({
   ]
 })
 router.beforeResolve((to, from, next) => {
+  if (to.meta.keepAliveName) {
+    if (from.name == to.meta.keepAliveName) {
+      to.meta.keepData = true
+    } else {
+      to.meta.keepData = false
+    }
+  }
   refForVuexData()
   document.body.parentNode.style['backgroundImage'] = ''
   document.body.parentNode.style['backgroundRepeat'] = ''

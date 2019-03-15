@@ -1,6 +1,7 @@
 export const SOME_MUTATION = {
     updateServiceType: 'updateServiceType', // 更新服务器类型 生产服务器:development 、 预生产服务器:production 、 测试服:test
     updateAuth: 'updateAuth', // 更新用户登陆认证信息  secret、token
+    setPageData: 'setPageData', // 设置页面缓存数据
     updateUserBaseInfoPhone: 'updateUserBaseInfoPhone', // 更新用户基本信息 - 手机号
     updateUserBaseInfoDType: 'updateUserBaseInfoDType', // 更新用户基本信息 - 所选招募类型
     updateDriverRecruitState: 'updateDriverRecruitState', // 更新用户司机招募相关状态
