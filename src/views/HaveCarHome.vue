@@ -1,6 +1,6 @@
 <template>
   <div class="pageWrap" :style="{ transform: `translateY(-${coverTranslateY}rem)` }">
-    <img class="recruitCover" alt="RecruitCover" v-lazy="require('@/assets/have_car_home.jpg')" v-touch:moveUpDown="toNextPage">
+    <div class="recruitCover" v-lazy:background-image="require('@/assets/have_car_home.jpg')" v-touch:moveUpDown="toNextPage"></div>
     <div class="arrowTipWrap" v-if="coverTranslateY == 0">
       <p class="arrowIcon"></p>
     </div>
@@ -99,6 +99,10 @@ export default {
 .recruitCover {
   width: 100vw;
   height: 100vh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto 100%;
+  background-color: #E6E2E4;
 }
 
 .arrowTipWrap {
