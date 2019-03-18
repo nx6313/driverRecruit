@@ -1,69 +1,67 @@
 <template>
-  <div v-if="isShow" id="dialog-prompt-wrap" class="react-confirm-alert">
-    <div class="react-confirm-alert-overlay-shade" @click="shadeClosePrompt"></div>
-    <div class="react-confirm-alert-overlay animated fadeIn">
-      <div class="react-confirm-alert prompt-content animated fadeIn" ref="prompt-content">
-        <div class="react-confirm-alert-body">
-          <h1 :style="isLogin ? { textAlign: 'center', fontWeight: 'bold' } : {}">{{title}}</h1>
-          {{msg}}
-          <template v-if="isLogin">
-            <div class="send-sms-code-wrap">
-              <input
-                class="react-confirm-alert-prompt"
-                type="text"
-                placeholder="请输入您的登录账号"
-                v-model="promptInput"
-                ref="prompt-input-account"
-              >
-              <span class="send-sms-code-btn" @click="sendLoginSmsCode">发送验证码</span>
-            </div>
+  <div v-if="isShow" id="dialog-prompt-wrap" class="confirm-alert-wrap">
+    <div class="shade animated fadeIn" @click="shadeClosePrompt"></div>
+    <div class="react-confirm-alert-wrap prompt-content animated fadeIn" ref="prompt-content">
+      <div class="react-confirm-alert-body">
+        <h1 :style="isLogin ? { textAlign: 'center', fontWeight: 'bold' } : {}">{{title}}</h1>
+        {{msg}}
+        <template v-if="isLogin">
+          <div class="send-sms-code-wrap">
             <input
               class="react-confirm-alert-prompt"
               type="text"
-              placeholder="请输入您收到的短信验证码"
-              v-model="promptCodeInput"
-              ref="prompt-input-code"
-            >
-            <div v-if="rule !== undefined && hasStartInput" class="ruleTip">
-              <span v-if="isOkForRule" class="ok">{{ruleOkTip}}</span>
-              <span v-if="!isOkForRule" class="error">{{ruleErrorTip}}</span>
-            </div>
-          </template>
-          <template v-if="!isLogin">
-            <input
-              v-if="!isMultiline"
-              class="react-confirm-alert-prompt"
-              type="text"
-              :placeholder="hint"
+              placeholder="请输入您的登录账号"
               v-model="promptInput"
-              ref="prompt-input"
+              ref="prompt-input-account"
             >
-            <textarea
-              v-if="isMultiline"
-              class="react-confirm-alert-prompt multiline"
-              type="text"
-              :placeholder="hint"
-              v-model="promptInput"
-              ref="prompt-input"
-            />
-            <div v-if="rule !== undefined && hasStartInput" class="ruleTip">
-              <span v-if="isOkForRule" class="ok">{{ruleOkTip}}</span>
-              <span v-if="!isOkForRule" class="error">{{ruleErrorTip}}</span>
-            </div>
-          </template>
-          <div class="react-confirm-alert-button-group" :style="isLogin ? { justifyContent: 'space-around' } : {}">
-            <template v-for="(btn, index) in buttons">
-              <button
-                v-bind:todo="btn"
-                v-bind:key="index"
-                @click="clickBtn(index, btn.onClick)"
-                :class="'btn-' + (index == 0 ? 'cancel' : 'ok')"
-                :ref="'btn-' + index"
-                :style="index == 1 && ((rule !== undefined && !isOkForRule) || isLogin) ? { 'background': '#119CAD' } : {}"
-                v-if="(showCancel && index == 0) || index == 1"
-              >{{btn.label}}</button>
-            </template>
+            <span class="send-sms-code-btn" @click="sendLoginSmsCode">发送验证码</span>
           </div>
+          <input
+            class="react-confirm-alert-prompt"
+            type="text"
+            placeholder="请输入您收到的短信验证码"
+            v-model="promptCodeInput"
+            ref="prompt-input-code"
+          >
+          <div v-if="rule !== undefined && hasStartInput" class="ruleTip">
+            <span v-if="isOkForRule" class="ok">{{ruleOkTip}}</span>
+            <span v-if="!isOkForRule" class="error">{{ruleErrorTip}}</span>
+          </div>
+        </template>
+        <template v-if="!isLogin">
+          <input
+            v-if="!isMultiline"
+            class="react-confirm-alert-prompt"
+            type="text"
+            :placeholder="hint"
+            v-model="promptInput"
+            ref="prompt-input"
+          >
+          <textarea
+            v-if="isMultiline"
+            class="react-confirm-alert-prompt multiline"
+            type="text"
+            :placeholder="hint"
+            v-model="promptInput"
+            ref="prompt-input"
+          />
+          <div v-if="rule !== undefined && hasStartInput" class="ruleTip">
+            <span v-if="isOkForRule" class="ok">{{ruleOkTip}}</span>
+            <span v-if="!isOkForRule" class="error">{{ruleErrorTip}}</span>
+          </div>
+        </template>
+        <div class="react-confirm-alert-button-group" :style="isLogin ? { justifyContent: 'space-around' } : {}">
+          <template v-for="(btn, index) in buttons">
+            <button
+              v-bind:todo="btn"
+              v-bind:key="index"
+              @click="clickBtn(index, btn.onClick)"
+              :class="'btn-' + (index == 0 ? 'cancel' : 'ok')"
+              :ref="'btn-' + index"
+              :style="index == 1 && ((rule !== undefined && !isOkForRule) || isLogin) ? { 'background': '#119CAD' } : {}"
+              v-if="(showCancel && index == 0) || index == 1"
+            >{{btn.label}}</button>
+          </template>
         </div>
       </div>
     </div>
@@ -202,24 +200,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.react-confirm-alert {
+.confirm-alert-wrap {
   user-select: none;
-  div.react-confirm-alert-overlay-shade {
+  div.shade {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 98;
+    background: rgba(61, 61, 61, 0.4);
   }
-  div.react-confirm-alert-overlay {
+  div.react-confirm-alert-wrap {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 99;
-    background: #2c2c2c6c;
+    background: rgba(61, 61, 61, 0.4);
     display: flex;
     -webkit-box-pack: center;
     -ms-flex-pack: center;

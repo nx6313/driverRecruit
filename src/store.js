@@ -124,7 +124,10 @@ const store = new Vuex.Store({
           company: null,
           principal: null,
           contact: null,
-          useCarCause: null
+          useCarCause: null,
+          userName: null,
+          introducePeople: null,
+          introduceOther: null
         },
         auditState: {
           state: null,
@@ -223,7 +226,12 @@ const store = new Vuex.Store({
           state.data = payload.data
         }
       },
-      actions: {}
+      actions: {
+        // eslint-disable-next-line
+        clearPageData({ commit, state }) {
+          state.data = null
+        }
+      }
     }
   }
 })

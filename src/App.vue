@@ -10,7 +10,8 @@ export default {
     return {
       reload: this.reload,
       savePageData: this.savePageData,
-      getPageData: this.getPageData
+      getPageData: this.getPageData,
+      clearPageData: this.clearPageData
     }
   },
   data() {
@@ -32,6 +33,9 @@ export default {
     },
     getPageData() {
       return this.$store.state.pageData.data
+    },
+    clearPageData() {
+      this.$store.dispatch('clearPageData')
     }
   }
 }
@@ -57,6 +61,7 @@ export default {
 body, html {
   padding: 0;
   margin: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 div.react-confirm-alert-overlay {

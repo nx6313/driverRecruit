@@ -404,14 +404,6 @@ let router = new Router({
       }
     },
     // 政策文件说明结束
-    {
-      path: '/datumShow',
-      name: 'datumShow',
-      component: () => import('./views/DatumShow.vue'),
-      meta: {
-        title: '司机招募已提交资料预览'
-      }
-    },
     /** 带车加盟相关页面 */
     {
       path: '/haveCar/baseInfo1',
@@ -460,6 +452,23 @@ let router = new Router({
       },
       meta: {
         title: '网约车从业资格证办理流程',
+        pageBg: '#ffffff'
+      }
+    },
+    {
+      path: '/haveCar/auditResult',
+      name: 'haveCarAuditResult',
+      component: () => import('./views/haveCar/AuditResult.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '带车加盟审核结果页',
         pageBg: '#ffffff'
       }
     },
@@ -530,6 +539,23 @@ let router = new Router({
         pageBg: '#ffffff'
       }
     },
+    {
+      path: '/buyCar/auditResult',
+      name: 'buyCarAuditResult',
+      component: () => import('./views/buyCar/AuditResult.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '购车加盟审核结果页',
+        pageBg: '#ffffff'
+      }
+    },
     /** 租车加盟相关页面 */
     {
       path: '/rentCar/intention',
@@ -594,6 +620,23 @@ let router = new Router({
       },
       meta: {
         title: '网约车从业资格证办理流程',
+        pageBg: '#ffffff'
+      }
+    },
+    {
+      path: '/rentCar/auditResult',
+      name: 'rentCarAuditResult',
+      component: () => import('./views/rentCar/AuditResult.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '租车加盟审核结果页',
         pageBg: '#ffffff'
       }
     }

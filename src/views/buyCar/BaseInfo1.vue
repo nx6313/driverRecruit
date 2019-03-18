@@ -20,7 +20,7 @@ import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
   name: 'buyCarBaseInfo1',
-  inject: ['savePageData', 'getPageData'],
+  inject: ['savePageData', 'getPageData', 'clearPageData'],
   components: {
     BaseInfoItem
   },
@@ -34,13 +34,15 @@ export default {
           label: '姓名',
           hint: '请输入您的姓名',
           type: 'text',
-          model: ''
+          model: '',
+          require: true
         },
         {
           label: '性别',
           type: 'radio',
           range: [ { name: '男', value: '男' }, { name: '女', value: '女' } ],
-          model: '男'
+          model: '男',
+          require: true
         },
         {
           label: '手机号码',
@@ -52,14 +54,15 @@ export default {
         {
           label: '司机类型',
           type: 'text',
-          model: '带车加盟',
+          model: '购车加盟',
           readOnly: true
         },
         {
           label: '现居住地',
           hint: '请输入您的现居住地',
           type: 'text',
-          model: ''
+          model: '',
+          require: true
         }
       ],
       input2: [
@@ -87,6 +90,7 @@ export default {
       this.input1[4].model = pageData.input1[4].model
       this.input2[0].model = pageData.input2[0].model
     }
+    this.clearPageData()
   },
   methods: {
     selectFile: function(event, type) {

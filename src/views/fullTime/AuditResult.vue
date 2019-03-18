@@ -62,6 +62,7 @@ export default {
   padding-top: 8rem;
   img {
     width: 8rem;
+    height: 7rem;
     margin-bottom: 1.4rem;
   }
   span {

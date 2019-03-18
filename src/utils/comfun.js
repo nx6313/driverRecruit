@@ -9,17 +9,20 @@ import '@/plugins/comm.css'
 import '@/plugins/animate.css'
 import Dialogbox from '@/plugins/dialogBox/index.js'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
-import html2Canvas from 'html2canvas'
-import JsPDF from 'jspdf'
+// import html2Canvas from 'html2canvas'
+// import JsPDF from 'jspdf'
+import { BASE_URL } from '@/utils/constants'
 
 const Axios = axios.create({
   transformRequest: [function (data) {
     // 将数据转换为表单数据
     let ret = ''
     for (let it in data) {
-      ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      if (data[it]) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      }
     }
-    return ret
+    return ret != '' ? ret.substr(0, ret.length - 1) : ret
   }],
   timeout: 10000
 })
@@ -36,6 +39,8 @@ Axios.interceptors.response.use((response) => {
       duration: 2000
     })
   } else {
+    // eslint-disable-next-line
+    console.log(error)
     DialogMsg.installMsg({
       msg: '请求出错',
       duration: 2000
@@ -74,15 +79,6 @@ Vue.use(Dialogbox)
 const dialogAlert = require('react-confirm-alert')
 const WheelPicker = require('wheel-picker')
 
-// var server_address_production = "http://172.18.2.32:8080/" // 一飞
-// var server_address_production = "http://172.18.2.26:8080/" // 玉慧
-// var server_address_production = "http://172.18.2.21:7777/" // 璐璐
-var server_address_production = "http://172.18.2.14:8080/" // 泽明
-
-var server_address_test = "https://test.dcchuxing.com/" // 测试服务器
-var server_address_development = "https://pre.dcchuxing.com/" // 预生产服务器
-// var server_address_production = "https://www.dcchuxing.com/" // 生产服务器
-
 var key = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 var iv = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 
@@ -117,11 +113,11 @@ export default {
           headers: headers
         }
         if (this.getServiceType(context) === 'test') {
-          axiosOptions.url = server_address_test + url
+          axiosOptions.url = BASE_URL.server_address_test + url
         } else if (this.getServiceType(context) === 'development') {
-          axiosOptions.url = server_address_development + url
+          axiosOptions.url = BASE_URL.server_address_development + url
         } else {
-          axiosOptions.url = server_address_production + url
+          axiosOptions.url = BASE_URL.server_address_production + url
         }
         if (params) {
           axiosOptions.params = params
@@ -153,11 +149,11 @@ export default {
           headers: headers
         }
         if (this.getServiceType(context) === 'test') {
-          axiosOptions.url = server_address_test + url
+          axiosOptions.url = BASE_URL.server_address_test + url
         } else if (this.getServiceType(context) === 'development') {
-          axiosOptions.url = server_address_development + url
+          axiosOptions.url = BASE_URL.server_address_development + url
         } else {
-          axiosOptions.url = server_address_production + url
+          axiosOptions.url = BASE_URL.server_address_production + url
         }
         if (params) {
           axiosOptions.data = params
@@ -194,11 +190,11 @@ export default {
           }
         }
         if (this.getServiceType(context) === 'test') {
-          axiosOptions.url = server_address_test + url
+          axiosOptions.url = BASE_URL.server_address_test + url
         } else if (this.getServiceType(context) === 'development') {
-          axiosOptions.url = server_address_development + url
+          axiosOptions.url = BASE_URL.server_address_development + url
         } else {
-          axiosOptions.url = server_address_production + url
+          axiosOptions.url = BASE_URL.server_address_production + url
         }
         let formData = new FormData()
         formData.append('file', file)
@@ -630,38 +626,38 @@ export default {
           return false
         }
         return true
-      },
-      convertPdf: function(pdfFileName, toPdfDom) {
-        if (toPdfDom == undefined) toPdfDom = document.body.parentElement
-        html2Canvas(toPdfDom, {
-          // useCORS: true,
-          allowTaint: true,
-          logging: false
-        }).then(canvas => {
-          let contentWidth = canvas.width
-          let contentHeight = canvas.height
-          let pageHeight = contentWidth / 592.28 * 841.89
-          let leftHeight = contentHeight
-          let position = 0
-          let imgWidth = 595.28
-          let imgHeight = 592.28 / contentWidth * contentHeight
-          let pageData = canvas.toDataURL('image/jpeg', 1.0)
-          let PDF = new JsPDF('', 'pt', 'a4')
-          if (leftHeight < pageHeight) {
-            PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
-          } else {
-            while (leftHeight > 0) {
-              PDF.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
-              leftHeight -= pageHeight
-              position -= 841.89
-              if (leftHeight > 0) {
-                PDF.addPage()
-              }
-            }
-          }
-          PDF.save(pdfFileName + '.pdf')
-        })
       }
+      // convertPdf: function(pdfFileName, toPdfDom) {
+      //   if (toPdfDom == undefined) toPdfDom = document.body.parentElement
+      //   html2Canvas(toPdfDom, {
+      //     // useCORS: true,
+      //     allowTaint: true,
+      //     logging: false
+      //   }).then(canvas => {
+      //     let contentWidth = canvas.width
+      //     let contentHeight = canvas.height
+      //     let pageHeight = contentWidth / 592.28 * 841.89
+      //     let leftHeight = contentHeight
+      //     let position = 0
+      //     let imgWidth = 595.28
+      //     let imgHeight = 592.28 / contentWidth * contentHeight
+      //     let pageData = canvas.toDataURL('image/jpeg', 1.0)
+      //     let PDF = new JsPDF('', 'pt', 'a4')
+      //     if (leftHeight < pageHeight) {
+      //       PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
+      //     } else {
+      //       while (leftHeight > 0) {
+      //         PDF.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+      //         leftHeight -= pageHeight
+      //         position -= 841.89
+      //         if (leftHeight > 0) {
+      //           PDF.addPage()
+      //         }
+      //       }
+      //     }
+      //     PDF.save(pdfFileName + '.pdf')
+      //   })
+      // }
     }
 
     Object.defineProperty(Vue.prototype, '$comfun', { value: ComFun })

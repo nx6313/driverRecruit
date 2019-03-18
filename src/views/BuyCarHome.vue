@@ -30,7 +30,13 @@ export default {
       }
     }
   },
+  beforeCreate() {
+    this.coverTranslateY = 0
+  },
   created() {
+    this.$store.commit('setDriverRecruitStateRule', {
+      stateRule: this.driverRecruitState
+    })
     this.getUserDriverRecruit()
   },
   methods: {
@@ -48,6 +54,14 @@ export default {
           this.$store.commit('updateDriverRecruitState', {
             state: request.data.data.state
           })
+          let isAuditing = request.data.data.state == this.$store.state.driverRecruit.stateRule.AUDITING
+          let isAuditPass = request.data.data.state == this.$store.state.driverRecruit.stateRule.AUDIT_PASS || request.data.data.state == this.$store.state.driverRecruit.stateRule.RULE_HAS_RUZHI || request.data.data.state == this.$store.state.driverRecruit.stateRule.RULE_NO_RUZHI
+          this.$store.commit('setDriverRecruitData_AuditState', {
+            auditState: {
+              state: isAuditing,
+              auditPass: isAuditPass
+            }
+          })
         } else {
           this.$comfun.showToast(this, request.data.msg)
         }
@@ -61,14 +75,20 @@ export default {
       }
     },
     toBuyCarPage: function() {
-      this.$router.replace('/buyCar/intention')
+      this.$router.push('/buyCar/intention')
+      this.coverTranslateY = 0
     },
     toDetailPage: function() {
       let linkTo = '/buyCarHome'
       if (this.userDriverRecruitState == this.driverRecruitState.NORMAL) {
         linkTo = '/buyCar/baseInfo1'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.AUDITING || this.userDriverRecruitState == this.driverRecruitState.AUDIT_PASS ||
+          this.userDriverRecruitState == this.driverRecruitState.AUDIT_NO_PASS || this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_PASS ||
+          this.userDriverRecruitState == this.driverRecruitState.RULE_HAS_RUZHI || this.userDriverRecruitState == this.driverRecruitState.RULE_NO_RUZHI) {
+        linkTo = '/buyCar/auditResult'
       }
       this.$router.replace(linkTo)
+      this.coverTranslateY = 0
     }
   }
 }
@@ -78,6 +98,7 @@ export default {
 .pageWrap {
   font-size: 0;
   transition: all 0.4s;
+  height: 100vh;
 }
 
 .recruitCover {
@@ -90,7 +111,7 @@ export default {
   left: 0;
   right: 0;
   margin: 0 auto;
-  bottom: 6.2rem;
+  bottom: 0.8rem;
   width: 5rem;
   height: 5rem;
   pointer-events: none;
@@ -105,7 +126,7 @@ export default {
     height: 4rem;
     margin: auto;
     pointer-events: none;
-    background-image: url('./../assets/arrows.png');
+    background-image: url('./../assets/up_to_open.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

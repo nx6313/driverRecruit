@@ -1,6 +1,7 @@
 <template>
   <div class="pageWrap">
-    <BaseInfoItem title="填写资料" :titleIcon="require('@/assets/logo.png')" :inputs="input1"/>
+    <BaseInfoItem title="信息填写" :titleIcon="require('@/assets/logo.png')" :inputs="input1"/>
+    <BaseInfoItem title="您是通过哪种方式得知的消息" :titleIcon="require('@/assets/logo.png')" :inputs="input2"/>
     <div class="tip tipFirst">我们会在三个工作日给您回电，请注意接听电话</div>
     <div class="tip">您也可以拨打电话：<a :href="`tel:${contactPhone}`">{{contactPhone}}</a>（{{contactPeople}}）进行咨询</div>
     <span class="toSubmit" @click="toSubmit">提交</span>
@@ -20,33 +21,30 @@ export default {
     return {
       input1: [
         {
-          label: '城市',
-          hint: '请输入您的所在城市',
+          label: '姓名',
+          hint: '请输入您的姓名',
           type: 'text',
-          model: ''
-        },
-        {
-          label: '单位名称',
-          hint: '请输入您的单位名称（可不填）',
-          type: 'text',
-          model: ''
-        },
-        {
-          label: '负责人',
-          hint: '请输入负责人姓名',
-          type: 'text',
-          model: ''
+          model: '',
+          require: true
         },
         {
           label: '联系方式',
           hint: '请输入您的联系方式',
           type: 'text',
+          model: '',
+          require: true
+        }
+      ],
+      input2: [
+        {
+          label: '他人介绍',
+          hint: '请填写介绍人的姓名及联系方式',
+          type: 'text',
           model: ''
         },
         {
-          label: '用车需求',
-          hint: '请填写您的用车需求',
-          type: 'textarea',
+          label: '其他方式',
+          type: 'text',
           model: ''
         }
       ],
@@ -56,30 +54,27 @@ export default {
   },
   methods: {
     toSubmit: function() {
-      if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您所在的城市'); return false }
-      if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '城市中不能含有特殊字符'); return false }
-      if (this.input1[1].model.trim() != '' && SOME_RULES.emoji.test(this.input1[1].model.trim())) { this.$comfun.showToast(this, '单位名称中不能含有特殊字符'); return false }
-      if (this.input1[2].model.trim() == '') { this.$comfun.showToast(this, '请先输入负责人姓名'); return false }
-      if (SOME_RULES.emoji.test(this.input1[2].model.trim())) { this.$comfun.showToast(this, '负责人姓名中不能含有特殊字符'); return false }
-      if (this.input1[3].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的联系方式'); return false }
-      if (!SOME_RULES.phone.test(this.input1[3].model.trim())) { this.$comfun.showToast(this, '请输入正确的联系方式'); return false }
+      if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
+      if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '姓名中不能含有特殊字符'); return false }
+      if (this.input1[1].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的联系方式'); return false }
+      if (!SOME_RULES.phone.test(this.input1[1].model.trim())) { this.$comfun.showToast(this, '请输入正确的联系方式'); return false }
+      if (this.input2[0].model.trim() != '' && SOME_RULES.emoji.test(this.input2[0].model.trim())) { this.$comfun.showToast(this, '他人介绍中不能含有特殊字符'); return false }
+      if (this.input2[1].model.trim() != '' && SOME_RULES.emoji.test(this.input2[1].model.trim())) { this.$comfun.showToast(this, '其他得知方式中不能含有特殊字符'); return false }
       this.$store.commit('setDriverRecruitData_IntentionInfo', {
         intentionInfo: {
-          city: this.input1[0].model.trim(),
-          company: this.input1[1].model.trim(),
-          principal: this.input1[2].model.trim(),
-          contact: this.input1[3].model.trim(),
-          useCarCause: this.input1[4].model.trim()
+          userName: this.input1[0].model.trim(),
+          contact: this.input1[1].model.trim(),
+          introducePeople: this.input2[0].model.trim(),
+          introduceOther: this.input2[1].model.trim()
         }
       })
       this.$comfun.showLoading(this, 'saveApplyDriverIntentionForJoinIn', false)
       this.$comfun.http_post(this, this.$api.saveApplyDriverIntention, {
-        // 'intention.d_type': this.$store.state.userBaseInfo.dType,
-        'intention.city': this.input1[0].model.trim(),
-        'intention.company_name': this.input1[1].model.trim(),
-        'intention.leader': this.input1[2].model.trim(),
-        'intention.phone': this.input1[3].model.trim(),
-        'intention.car_demand': this.input1[4].model.trim()
+        'intention.d_type': this.$store.state.userBaseInfo.dType,
+        'intention.person_name': this.input1[0].model.trim(),
+        'intention.phone': this.input1[1].model.trim(),
+        'intention.others_introduction': this.input2[0].model.trim(),
+        'intention.others_way': this.input2[1].model.trim()
       }).then((request) => {
         this.$comfun.hideLoading('saveApplyDriverIntentionForJoinIn')
         if (request.data.status == 'OK') {

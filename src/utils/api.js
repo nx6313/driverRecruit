@@ -1,10 +1,10 @@
 export default {
     // 上传文件接口
     file: 'other/file',
-    // // 发送登陆短信验证码
-    // getSms: 'account/api/getSms',
-    // // 通过短信验证码登陆
-    // loginBySms: 'account/api/loginBySms',
+    // 发送登陆短信验证码
+    getSms: 'account/api/getSms',
+    // 通过短信验证码登陆
+    loginBySms: 'account/api/loginBySms',
     // 判断用户是否为司机
     isDriver: 'member/api/member/isDriver',
     // 获取用户当前司机招募的状态

@@ -21,31 +21,36 @@ export default {
           label: '姓名',
           hint: '请输入您的姓名',
           type: 'text',
-          model: ''
+          model: '',
+          require: true
         },
         {
           label: '性别',
           type: 'radio',
           range: [ { name: '男', value: '男' }, { name: '女', value: '女' } ],
-          model: '男'
+          model: '男',
+          require: true
         },
         {
           label: '身份证号',
           hint: '请输入您的身份证号',
           type: 'text',
-          model: ''
+          model: '',
+          require: true
         },
         {
           label: '现居住地',
           hint: '请输入您的现居住地',
           type: 'text',
-          model: ''
+          model: '',
+          require: true
         },
         {
           label: '驾驶证',
           type: 'radio',
           range: [ { name: 'C1', value: 'C1' }, { name: 'C2', value: 'C2' } ],
-          model: 'C1'
+          model: 'C1',
+          require: true
         },
         {
           label: '手机号',

@@ -13,6 +13,8 @@ import VConsole from '@/utils/vconsole.js'
 import Api from '@/utils/api.js'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
 
+import 'babel-polyfill'
+
 Vue.config.productionTip = false
 Vue.config.devtools = true
 Vue.use(VueLazyload)

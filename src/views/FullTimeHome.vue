@@ -37,6 +37,9 @@ export default {
       }
     }
   },
+  beforeCreate() {
+    this.coverTranslateY = 0
+  },
   created() {
     this.$store.commit('setDriverRecruitStateRule', {
       stateRule: this.driverRecruitState
@@ -135,6 +138,7 @@ export default {
         this.reload()
       } else {
         this.$router.replace(this.getLinkTo)
+        this.coverTranslateY = 0
       }
     }
   }
@@ -145,6 +149,7 @@ export default {
 .fullTimeHome {
   font-size: 0;
   transition: all 0.4s;
+  height: 100vh;
 }
 
 .recruitCover {
@@ -157,7 +162,7 @@ export default {
   left: 0;
   right: 0;
   margin: 0 auto;
-  bottom: 6.2rem;
+  bottom: 0.8rem;
   width: 5rem;
   height: 5rem;
   pointer-events: none;
@@ -172,7 +177,7 @@ export default {
     height: 4rem;
     margin: auto;
     pointer-events: none;
-    background-image: url('./../assets/arrows.png');
+    background-image: url('./../assets/up_to_open.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

@@ -137,6 +137,9 @@ export default {
     if (this.autoShowLoginDialog) {
       this.showLoginDialog()
     }
+    if (this.$comfun.hasAuthInfo(this)) {
+      this.isDriver(this.userPhone)
+    }
   },
   methods: {
     showLoginDialog: function() {
@@ -153,7 +156,11 @@ export default {
         phone: phone
       }).then((request) => {
         this.$comfun.hideLoading('isDriver')
+        console.log('司机招募首页', request.data)
         if (request.data.status == 'OK') {
+          this.$store.commit('updateUserBaseInfoPhone', {
+            phone: request.data.data.phone
+          })
           if (request.data.data.state === 1) {
             this.userIsDriver = false
           } else {
@@ -195,7 +202,7 @@ export default {
       })
     },
     toADriverRecruit: function(key) {
-      if (this.$store.state.userBaseInfo.phone == null) {
+      if (!this.$comfun.hasAuthInfo(this) && this.$store.state.userBaseInfo.phone == null) {
         this.showLoginDialog()
         return false
       } else {
@@ -241,13 +248,6 @@ export default {
             }
           })
         }
-      }
-    }
-  },
-  watch: {
-    userPhone(v) {
-      if (v != null) {
-        this.isDriver(v)
       }
     }
   }
@@ -429,7 +429,7 @@ export default {
       margin-top: 1rem;
       img {
         width: 100%;
-        height: 5.2rem;
+        height: 5.4rem;
       }
       img:nth-of-type(n + 2) {
         margin-top: 0.6rem;

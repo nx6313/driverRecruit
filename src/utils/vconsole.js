@@ -1,7 +1,45 @@
+import axios from 'axios'
+import DialogMsg from '@/plugins/dialogBox/msg.js'
+import ClipboardJS from 'clipboard'
+import { BASE_URL } from '@/utils/constants'
 const Shake = require('shake.js')
 const VConsole = require('vconsole')
 const regC = /^[\s\S]*((%c)[\s\S]*)+$/
-const isTest = false
+const isTest = true
+
+var url_base = "http://172.18.2.14:8080/" // 泽明
+
+// var url_base = "https://test.dcchuxing.com/" // 测试服务器
+// var url_base = "https://pre.dcchuxing.com/" // 预生产服务器
+// var url_base = "https://www.dcchuxing.com/" // 生产服务器
+
+const Axios = axios.create({
+  transformRequest: [function (data) {
+    // 将数据转换为表单数据
+    let ret = ''
+    for (let it in data) {
+      ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    }
+    return ret
+  }],
+  timeout: 10000
+})
+Axios.interceptors.response.use((response) => {
+  return response
+}, (error) => {
+  if (error.message.includes('timeout')) {
+    DialogMsg.installMsg({
+      msg: '请求超时',
+      duration: 2000
+    })
+  } else {
+    DialogMsg.installMsg({
+      msg: '请求出错',
+      duration: 2000
+    })
+  }
+  return Promise.reject(error)
+})
 
 export default {
 	// eslint-disable-next-line
@@ -68,23 +106,96 @@ export default {
 		testPlugin.on('show', function() {
 			let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
 			testUserPhone.value = options.vuexStore.state.userBaseInfo.phone || ''
-			let btnSaveUserPhone = vconsole.$dom.querySelector('input#btnSaveUserPhone')
-			btnSaveUserPhone.addEventListener('click', () => {
+			let secretText = vconsole.$dom.querySelector('span#secretText')
+			let tokenText = vconsole.$dom.querySelector('span#tokenText')
+			if (options.vuexStore.state.auth.secret != null && options.vuexStore.state.auth.token != null) {
+				secretText.innerText = '********'
+				tokenText.innerText = '********'
+			} else {
+				secretText.innerText = '未登录'
+				tokenText.innerText = '未登录'
+			}
+			let btnTestSendSmsCode = vconsole.$dom.querySelector('input#btnTestSendSmsCode')
+			btnTestSendSmsCode.addEventListener('click', () => {
 				let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
-				if (testUserPhone.value != '') {
-					options.vuexStore.commit('updateUserBaseInfoPhone', {
-						phone: testUserPhone.value
+				if (testUserPhone.value.trim() != '') {
+					btnTestSendSmsCode.disabled = true
+					Axios(getAxiosOptions(getBaseUrl(options.vuexStore.state.serviceType.type) + 'account/api/getSms', {
+						phone: testUserPhone.value.trim()
+					})).then(res => {
+						if (res.data.status == 'OK') {
+							options.showToast({
+								msg: '短信验证码发送成功，请注意查收'
+							})
+						} else {
+							btnTestSendSmsCode.disabled = false
+							options.showToast({
+								msg: res.data.msg
+							})
+						}
 					})
+					// options.vuexStore.commit('updateUserBaseInfoPhone', {
+					// 	phone: testUserPhone.value
+					// })
+					// vconsole.hide()
 				} else {
-					options.vuexStore.commit('updateUserBaseInfoPhone', {
-						phone: null
+					options.showToast({
+						msg: '请输入测试登录手机号'
 					})
 				}
-				options.showToast({
-					msg: '数据更新成功'
-				})
-				vconsole.hide()
 			}, false)
+			let btnTestLogin = vconsole.$dom.querySelector('input#btnTestLogin')
+			btnTestLogin.addEventListener('click', () => {
+				let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
+				let testUserSmsCode = vconsole.$dom.querySelector('input#testUserSmsCode')
+				if (testUserPhone.value.trim() != '' && testUserSmsCode.value.trim() != '') {
+					Axios(getAxiosOptions(getBaseUrl(options.vuexStore.state.serviceType.type) + 'account/api/loginBySms', {
+						phone: testUserPhone.value.trim(),
+						smsCode: testUserSmsCode.value.trim()
+					})).then(res => {
+						if (res.data.status == 'OK') {
+							let secretText = vconsole.$dom.querySelector('span#secretText')
+							let tokenText = vconsole.$dom.querySelector('span#tokenText')
+							options.showToast({
+								msg: '模拟登录成功'
+							})
+							secretText.innerText = '********'
+							tokenText.innerText = '********'
+							options.vuexStore.commit('updateUserBaseInfoPhone', {
+								phone: testUserPhone.value
+							})
+							options.vuexStore.commit('updateAuth', {
+								secret: res.data.data.secret,
+								token: res.data.data.token
+							})
+						} else {
+							options.showToast({
+								msg: res.data.msg
+							})
+						}
+					})
+					// vconsole.hide()
+				} else {
+					if (testUserPhone.value.trim() == '') options.showToast({ msg: '测试登录手机号不能为空' })
+					if (testUserSmsCode.value.trim() == '') options.showToast({ msg: '登录验证码不能为空' })
+				}
+			}, false)
+			let btnCopyHeaderParams = vconsole.$dom.querySelector('button#btnCopyHeaderParams')
+			let clipboard = new ClipboardJS(btnCopyHeaderParams, {
+				text: function() {
+					return `?secret=${options.vuexStore.state.auth.secret}&token=${options.vuexStore.state.auth.token}`
+				}
+			})
+			clipboard.on('success', function(e) {
+				options.showToast({
+					msg: '头信息复制成功'
+				})
+			})
+			clipboard.on('error', function(e) {
+				options.showToast({
+					msg: '头信息复制失败'
+				})
+			})
 			let btntoIndex = vconsole.$dom.querySelector('input#btntoIndex')
 			btntoIndex.addEventListener('click', () => {
 				options.router.replace('/')
@@ -317,9 +428,11 @@ let getTestDomHtml = function(vuexData) {
 	let labelStyle = `style="margin-right: 6px; color: #052937;"`
 	let inputStyle = `style="border: none; padding: 4px 10px; color: #052937;"`
 	let lineStyle = `style="width: 100%; height: 1px; background: #B4B4B4; margin: 0.6rem 0;"`
-	let btnStyle = `style="border: 1px solid #303030; padding: 0.2rem 0.4rem; border-radius: 4px; background: #E4E9ED; color: #353535; font-weight: bold;"`
+	let btnStyle = `style="border: 1px solid #303030; padding: 0.2rem 0.4rem; border-radius: 4px; background: #E4E9ED; color: #353535; font-weight: bold; margin-right: 10px;"`
 	let inputListHtml = `<div><label for="testUserPhone" ${labelStyle}>测试用户手机号</label><input id="testUserPhone" type="text" placeholder="输入测试用户手机号" value="${vuexData.userBaseInfo.phone != null ? vuexData.userBaseInfo.phone : ''}" ${inputStyle}/></div>`
-	inputListHtml += `<div><input id="btnSaveUserPhone" type="button" value="保存数据" ${btnStyle}/></div>`
+	inputListHtml += `<div><label for="testUserSmsCode" ${labelStyle}>收到的短信验证码</label><input id="testUserSmsCode" type="text" placeholder="输入收到的短信验证码" ${inputStyle}/></div>`
+	inputListHtml += `<div>secret：<span id="secretText"></span>&nbsp;&nbsp;&nbsp;&nbsp;token：<span id="tokenText"></span></div>`
+	inputListHtml += `<div><input id="btnTestSendSmsCode" type="button" value="发送短信验证码" ${btnStyle}/><input id="btnTestLogin" type="button" value="登录" ${btnStyle}/><button id="btnCopyHeaderParams" ${btnStyle}>复制相关头信息</button></div>`
 	inputListHtml += `<div ${lineStyle}></div>`
 	inputListHtml += `<div><input id="btntoIndex" type="button" value="跳转至司机招募首页" ${btnStyle}/></div>`
 	inputListHtml += `<div ${lineStyle}></div>`
@@ -379,7 +492,36 @@ let initConsoleMethod = function(vconsole) {
 	})(console.log)
 }
 
-// 摇一摇出发事件
+// 摇一摇触发事件
 let shakeEventDidOccur = function(vconsole) {
 	vconsole.show()
+}
+
+let getBaseUrl = function(serviceType) {
+	let baseUrl = BASE_URL.server_address_production
+	if (serviceType == 'production') {
+		baseUrl = BASE_URL.server_address_production
+	} else if (serviceType == 'development') {
+		baseUrl = BASE_URL.server_address_development
+	} else if (serviceType == 'test') {
+		baseUrl = BASE_URL.server_address_test
+	}
+	return baseUrl
+}
+
+let getAxiosOptions = function(url, params) {
+	var headers = {
+		'appType': 2, // 请求的类型 1：司机、2：普通会员
+		'devicetype': 5
+	}
+	headers['Content-Type'] = 'application/x-www-form-urlencoded'
+	var axiosOptions = {
+		method: 'POST',
+		headers: headers
+	}
+	axiosOptions.url = url
+	if (params) {
+		axiosOptions.params = params
+	}
+	return axiosOptions
 }
