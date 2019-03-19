@@ -9,7 +9,7 @@
       </div>
       <span class="uploadTip">上传网约车从业资格证</span>
     </BaseInfoItem>
-    <div class="pageTip">查看<span @click="toFlow">《网约车从业资格证》</span>办理流程</div>
+    <div class="pageTip" v-if="!showCertificationUpload">查看<span @click="toFlow">《网约车从业资格证》</span>办理流程</div>
     <span class="toNextStep" @click="toNext">下一步</span>
   </div>
 </template>
@@ -177,6 +177,10 @@ export default {
     certificationHas: function(val) {
       if (val == this.input2[0].range[0].name) {
         this.showCertificationUpload = true
+        this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+          key: 'needHelpGetcertification',
+          value: '0'
+        })
       } else {
         this.showCertificationUpload = false
       }

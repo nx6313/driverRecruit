@@ -48,7 +48,7 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
-            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/run_card_a.jpg')">
             <span v-if="runCardABase64 != null" class="imgPreview hasBorder" :style="runCardABase64 != null ? { 'background-image': `url(${runCardABase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传行驶证正面照</span>
@@ -56,7 +56,7 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
-            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/run_card_b.jpg')">
             <span v-if="runCardBBase64 != null" class="imgPreview hasBorder" :style="runCardBBase64 != null ? { 'background-image': `url(${runCardBBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传行驶证副页</span>
@@ -69,13 +69,13 @@
         <div class="cardOneWrap">
           <div class="fileWrap">
             <input type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
-            <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
+            <img class="cardDisplay showBorder" v-lazy="require('@/assets/people_car_photo.jpg')">
             <span v-if="peopleCarPhotoBase64 != null" class="imgPreview hasBorder" :style="peopleCarPhotoBase64 != null ? { 'background-image': `url(${peopleCarPhotoBase64})` } : {}"></span>
           </div>
           <span class="cardTitle">上传人车合影照片</span>
         </div>
         <div class="cardOneWrap">
-          <div class="fileWrap">
+          <div class="fileWrap" @click="() => { showPeopleCarPhotoDisplay = true }">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/people_car_photo.png')">
           </div>
           <span class="cardTitle">人车合影示范照片</span>
@@ -101,14 +101,33 @@
       </div>
     </div>
     <span class="toSubmitStep" @click="toSubmit">加入去赚钱</span>
+    <Modal :showButton="false" :showCloseIcon="true" :top="16" :show="showPeopleCarPhotoDisplay" @close="() => { showPeopleCarPhotoDisplay = false }">
+      <template slot="header">
+        <div class="peopleCarPhotoImg"></div>
+      </template>
+      <template slot="body">
+        <div class="contentWrap">
+          <div class="title">人车合影示范照片</div>
+          <p>1.照片清晰（完整的看到司机全身、车辆全身、车牌清晰无遮挡）。</p>
+          <p>2.背景单一（无过多车辆或行人，无广告牌、无色彩缤纷的背景）。</p>
+          <p>3.司机位于车头右侧且与车辆有重合。</p>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
+import Modal from '@/plugins/dialogBox/modal.vue'
+
 export default {
   name: 'buyCarBaseInfo2',
+  components: {
+    'Modal': Modal
+  },
   data() {
     return {
+      showPeopleCarPhotoDisplay: false,
       idCardA: null,
       idCardB: null,
       driveCardA: null,
@@ -314,6 +333,7 @@ export default {
       width: 38%;
       .fileWrap {
         position: relative;
+        height: 5.6rem;
         .fileInput {
           position: absolute;
           width: 100%;
@@ -397,5 +417,31 @@ export default {
   border-radius: 2px;
   box-shadow: 0px 0px 2px #4e4e4ea6;
   margin-bottom: 2.2rem;
+}
+
+.peopleCarPhotoImg {
+  position: relative;
+  height: 12rem;
+  background-image: url('./../../assets/people_car_photo_display.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.contentWrap {
+  position: relative;
+  text-align: left;
+  padding-bottom: 0.8rem;
+  .title {
+    position: relative;
+    text-align: center;
+    padding: 0.8rem 0;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  p {
+    font-size: 0.9rem;
+    padding: 0 0.8rem;
+    color: #5c5c5c;
+  }
 }
 </style>

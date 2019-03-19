@@ -126,8 +126,8 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     margin: auto;
     pointer-events: none;
     background-image: url('./../assets/up_to_open.png');

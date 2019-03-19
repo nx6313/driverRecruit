@@ -10,7 +10,7 @@
       <div class="topTip">成为大昌出行司机</div>
       <div class="title">收入更稳定，更多上升空间，更多权益保障</div>
       <div class="dec">稳定体面的事业选择，为您和家人带来更好的生活。</div>
-      <div class="selecterWrap">
+      <div class="selecterWrap" :style="{ height: `calc(3.1rem * ${Math.ceil(selecters.length / 2)} + 1.6rem + 0.9rem * (${Math.ceil(selecters.length / 2)} - 1))` }">
         <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
           <span class="selecterItemName">{{sel.name}}</span>
           <span class="selecterItemTip">{{sel.state ? '' : '了解详情'}}</span>
@@ -95,18 +95,18 @@ export default {
         '许师傅 135****8463 申请了租车加盟'
       ],
       selecters: [
-        {
-          key: '4',
-          name: '租车加盟',
-          state: null,
-          isRecommend: true
-        },
-        {
-          key: '2',
-          name: '购车加盟',
-          state: null,
-          isRecommend: false
-        },
+        // {
+        //   key: '4',
+        //   name: '租车加盟',
+        //   state: null,
+        //   isRecommend: true
+        // },
+        // {
+        //   key: '2',
+        //   name: '购车加盟',
+        //   state: null,
+        //   isRecommend: false
+        // },
         {
           key: '1',
           name: '自营专职',
@@ -135,7 +135,7 @@ export default {
       type: this.$comfun.getServiceType(this)
     })
     if (this.autoShowLoginDialog) {
-      this.showLoginDialog()
+      // this.showLoginDialog()
     }
     if (this.$comfun.hasAuthInfo(this)) {
       this.isDriver(this.userPhone)
@@ -203,7 +203,8 @@ export default {
     },
     toADriverRecruit: function(key) {
       if (!this.$comfun.hasAuthInfo(this) && this.$store.state.userBaseInfo.phone == null) {
-        this.showLoginDialog()
+        // this.showLoginDialog()
+        this.$comfun.showToast(this, '未检测到登录信息，请先登录')
         return false
       } else {
         this.$store.commit('updateUserBaseInfoDType', {
@@ -277,7 +278,10 @@ export default {
       left: 0;
       right: 0;
       height: 4rem;
-      background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), #ffffff);
+      background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), #ffffff); /* Safari 5.1 - 6.0 */
+      background: -o-linear-gradient(bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), #ffffff); /* Opera 11.1 - 12.0 */
+      background: -moz-linear-gradient(bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), #ffffff); /* Firefox 3.6 - 15 */
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), #ffffff);
     }
     .bannerContentWrap::after {
       content: '';
@@ -288,7 +292,10 @@ export default {
       left: 0;
       right: 0;
       height: 3rem;
-      background: linear-gradient(#ffffff, rgba(0, 0, 0, 0));
+      background: -webkit-linear-gradient(top, #ffffff, rgba(0, 0, 0, 0)); /* Safari 5.1 - 6.0 */
+      background: -o-linear-gradient(bottom, #ffffff, rgba(0, 0, 0, 0)); /* Opera 11.1 - 12.0 */
+      background: -moz-linear-gradient(bottom, #ffffff, rgba(0, 0, 0, 0)); /* Firefox 3.6 - 15 */
+      background: linear-gradient(to bottom, #ffffff, rgba(0, 0, 0, 0));
     }
   }
   .dcLogo {
@@ -324,6 +331,9 @@ export default {
     width: calc(90vw - 2.4rem);
     .topTip {
       display: inline-block;
+      background: -webkit-linear-gradient(left, #F94343, #F98C43); /* Safari 5.1 - 6.0 */
+      background: -o-linear-gradient(right, #F94343, #F98C43); /* Opera 11.1 - 12.0 */
+      background: -moz-linear-gradient(right, #F94343, #F98C43); /* Firefox 3.6 - 15 */
       background: linear-gradient(to right, #F94343, #F98C43);
       padding: 0.08rem 0.4rem;
       color: #ffffff;
@@ -352,7 +362,6 @@ export default {
       justify-content: space-between;
       align-content: space-between;
       align-items: center;
-      height: 8.6rem;
       margin-top: 2rem;
       margin-bottom: 0.9rem;
       .selecterItemWrap {
@@ -395,6 +404,7 @@ export default {
   }
   .currentNews {
     text-align: center;
+    pointer-events: none;
     .newsBannerWrap {
       position: relative;
       height: 1.8rem;
