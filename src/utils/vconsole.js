@@ -95,6 +95,10 @@ export default {
 						setTimeout(() => {
 							let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
 							testUserPhone.value = options.vuexStore.state.userBaseInfo.phone || ''
+							let secretText = vconsole.$dom.querySelector('span#secretText')
+							let tokenText = vconsole.$dom.querySelector('span#tokenText')
+							secretText.innerText = '未登录'
+							tokenText.innerText = '未登录'
 						}, 100)
 						options.showToast({
 							msg: '测试数据重置完成，并已跳转至首页'
@@ -499,11 +503,11 @@ let shakeEventDidOccur = function(vconsole) {
 
 let getBaseUrl = function(serviceType) {
 	let baseUrl = BASE_URL.server_address_production
-	if (serviceType == 'production') {
+	if (serviceType == 'p') {
 		baseUrl = BASE_URL.server_address_production
-	} else if (serviceType == 'development') {
+	} else if (serviceType == 'd') {
 		baseUrl = BASE_URL.server_address_development
-	} else if (serviceType == 'test') {
+	} else if (serviceType == 't') {
 		baseUrl = BASE_URL.server_address_test
 	}
 	return baseUrl

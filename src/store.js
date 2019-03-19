@@ -26,7 +26,7 @@ const store = new Vuex.Store({
     }
   },
   modules: {
-    // 服务器类型 生产服务器:development 、 预生产服务器:production 、 测试服:test
+    // 服务器类型 生产服务器:d 、 预生产服务器:p 、 测试服:t
     serviceType: {
       state: {
         type: null

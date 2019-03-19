@@ -112,9 +112,9 @@ export default {
           method: 'GET',
           headers: headers
         }
-        if (this.getServiceType(context) === 'test') {
+        if (this.getServiceType(context) === 't') {
           axiosOptions.url = BASE_URL.server_address_test + url
-        } else if (this.getServiceType(context) === 'development') {
+        } else if (this.getServiceType(context) === 'd') {
           axiosOptions.url = BASE_URL.server_address_development + url
         } else {
           axiosOptions.url = BASE_URL.server_address_production + url
@@ -148,9 +148,9 @@ export default {
           method: 'POST',
           headers: headers
         }
-        if (this.getServiceType(context) === 'test') {
+        if (this.getServiceType(context) === 't') {
           axiosOptions.url = BASE_URL.server_address_test + url
-        } else if (this.getServiceType(context) === 'development') {
+        } else if (this.getServiceType(context) === 'd') {
           axiosOptions.url = BASE_URL.server_address_development + url
         } else {
           axiosOptions.url = BASE_URL.server_address_production + url
@@ -191,7 +191,7 @@ export default {
         }
         if (this.getServiceType(context) === 'test') {
           axiosOptions.url = BASE_URL.server_address_test + url
-        } else if (this.getServiceType(context) === 'development') {
+        } else if (this.getServiceType(context) === 'd') {
           axiosOptions.url = BASE_URL.server_address_development + url
         } else {
           axiosOptions.url = BASE_URL.server_address_production + url
@@ -204,21 +204,21 @@ export default {
       // 判断当前是否为测试服访问
       getServiceType: function (context) {
         let serviceType = this.getRequestAuto('serviceType') || context.$store.state.auth.serviceType
-        if (serviceType === 'test') {
+        if (serviceType === 't') {
           context.$store.commit('updateServiceType', {
-            type: 'test'
+            type: 't'
           })
-          return 'test'
-        } else if (serviceType === 'development') {
+          return 't'
+        } else if (serviceType === 'd') {
           context.$store.commit('updateServiceType', {
-            type: 'development'
+            type: 'd'
           })
-          return 'development'
+          return 'd'
         } else {
           context.$store.commit('updateServiceType', {
-            type: 'production'
+            type: 'p'
           })
-          return 'production'
+          return 'p'
         }
       },
       // 判断url中是否包含用户登陆认证信息

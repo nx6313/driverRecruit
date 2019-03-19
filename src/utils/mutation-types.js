@@ -1,5 +1,5 @@
 export const SOME_MUTATION = {
-    updateServiceType: 'updateServiceType', // 更新服务器类型 生产服务器:development 、 预生产服务器:production 、 测试服:test
+    updateServiceType: 'updateServiceType', // 更新服务器类型 生产服务器:d 、 预生产服务器:p 、 测试服:t
     updateAuth: 'updateAuth', // 更新用户登陆认证信息  secret、token
     setPageData: 'setPageData', // 设置页面缓存数据
     updateUserBaseInfoPhone: 'updateUserBaseInfoPhone', // 更新用户基本信息 - 手机号

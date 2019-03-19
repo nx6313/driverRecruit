@@ -11,6 +11,7 @@
       <div class="title">收入更稳定，更多上升空间，更多权益保障</div>
       <div class="dec">稳定体面的事业选择，为您和家人带来更好的生活。</div>
       <div class="selecterWrap" :style="{ height: `calc(3.1rem * ${Math.ceil(selecters.length / 2)} + 1.6rem + 0.9rem * (${Math.ceil(selecters.length / 2)} - 1))` }">
+        <div class="currentProgressOfAuditForFullTime" v-if="progressOfAudit != null && progressOfAudit != ''"><span class="tip">当前您申请的自营司机进度：</span><span class="trail">{{progressOfAudit}}</span></div>
         <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
           <span class="selecterItemName">{{sel.name}}</span>
           <span class="selecterItemTip">{{sel.state ? '' : '了解详情'}}</span>
@@ -94,6 +95,7 @@ export default {
         '刘师傅 183****3061 申请了购车加盟',
         '许师傅 135****8463 申请了租车加盟'
       ],
+      progressOfAudit: '',
       selecters: [
         // {
         //   key: '4',
@@ -158,6 +160,7 @@ export default {
         this.$comfun.hideLoading('isDriver')
         console.log('司机招募首页', request.data)
         if (request.data.status == 'OK') {
+          this.progressOfAudit = request.data.data.progressOfAudit || ''
           this.$store.commit('updateUserBaseInfoPhone', {
             phone: request.data.data.phone
           })
@@ -399,6 +402,41 @@ export default {
         background-repeat: no-repeat;
         background-size: 100% auto;
         background-position: center;
+      }
+      .currentProgressOfAuditForFullTime {
+        position: absolute;
+        display: table;
+        top: -1.4rem;
+        left: 0;
+        font-size: 0.7rem;
+        padding-left: 1.2rem;
+        color: #363636;
+        span {
+          display: inline-block;
+          display: table-cell;
+        }
+        span.tip {
+          white-space: nowrap;
+        }
+        span.trail {
+          color: #757575;
+          width: 100%;
+        }
+      }
+      .currentProgressOfAuditForFullTime::before {
+        content: '';
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        background-image: url('./../assets/icon_info.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: auto 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
       }
     }
   }
