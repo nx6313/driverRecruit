@@ -1,6 +1,10 @@
 <template>
   <div v-if="isShow" id="dialog-sign-wrap" class="dialog-sign-wrap">
-    <div class="sign-content animated zoomInLeft" ref="sign-content">
+    <div v-if="showDirectionTip" class="equipment-direction-tip-shade animated fadeIn">
+      <img v-lazy="require('@/assets/icon_phone_direction_tip.png')">
+      <span>请您横握手机进行签名操作</span>
+    </div>
+    <div v-if="!showDirectionTip" class="sign-content animated zoomInLeft" ref="sign-content">
       <div class="canvasWrap" ref="canvasHW">
         <canvas @touchstart="touchStart"
           @touchmove="touchMove"
@@ -21,6 +25,7 @@ export default {
   name: 'dialog-sign',
   data () {
     return {
+      showDirectionTip: true,
       isShow: true,
       points: [],
       startX: 0,
@@ -31,7 +36,6 @@ export default {
       endY: 0,
       w: null,
       h: null,
-      imgData: '',
       isDown: false,
       canvasBoard: null,
       canvasContext: null,
@@ -47,12 +51,9 @@ export default {
     }
   },
   mounted() {
-    this.canvasBoard = this.$refs.canvasSign
-    this.canvasContext = this.canvasBoard.getContext('2d')
-    this.$nextTick(() => {
-      this.canvasBoard.height = this.$refs.canvasHW.offsetHeight
-      this.canvasBoard.width = this.$refs.canvasHW.offsetWidth
-    })
+    setTimeout(() => {
+      this.showDirectionTip = false
+    }, 1900)
   },
   methods: {
     closeSign () {
@@ -183,10 +184,14 @@ export default {
       this.points = []
     },
     commit: function() {
-      let imgData = this.$refs.canvasSign.toDataURL('image/png')
-      let imgFile = this.dataURLToFile(imgData, `sign_${this.$comfun.formatDate(new Date(), 'yyMdhmsS')}`)
-      this.callBack(imgData, imgFile)
-      this.closeSign()
+      if (this.points.length > 0) {
+        let imgData = this.$refs.canvasSign.toDataURL('image/png')
+        let imgFile = this.dataURLToFile(imgData, `sign_${this.$comfun.formatDate(new Date(), 'yyMdhmsS')}`)
+        this.callBack(imgData, imgFile)
+        this.closeSign()
+      } else {
+        this.$comfun.showToast(this, '您还没有写任何东西呢')
+      }
     },
     dataURLToFile: function(dataUrl, fileName) {
       let arr = dataUrl.split(',')
@@ -198,6 +203,18 @@ export default {
         u8arr[n] = bstr.charCodeAt(n)
       }
       return new File([u8arr], fileName, { type: mime })
+    }
+  },
+  watch: {
+    showDirectionTip(val) {
+      if (!val) {
+        this.$nextTick(() => {
+          this.canvasBoard = this.$refs.canvasSign
+          this.canvasContext = this.canvasBoard.getContext('2d')
+          this.canvasBoard.height = this.$refs.canvasHW.offsetHeight
+          this.canvasBoard.width = this.$refs.canvasHW.offsetWidth
+        })
+      }
     }
   }
 }
@@ -338,5 +355,48 @@ export default {
       -webkit-transform: scale(1.1);
       opacity: 0;
     }
+}
+
+.equipment-direction-tip-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 9999999;
+  background-image: url('./../../assets/black_point_bg.png');
+  background-color: #242424;
+  text-align: center;
+  img {
+    display: block;
+    height: 10rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: calc((100% - 10rem) / 2 - 3rem);
+    animation: directionRotate 1.5s ease-in-out;
+    animation-fill-mode: forwards;
+  }
+  span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: calc((100% - 10rem) / 2 + 10rem);
+    display: block;
+    color: #ffffff;
+    font-size: 0.9rem;
+    text-shadow: rgba(117, 117, 117, 0.3) 0px 1px 2px;
+  }
+}
+
+@keyframes directionRotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(-90deg);
+  }
 }
 </style>
