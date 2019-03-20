@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     isShowServiceTypeTool() {
-      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$store.state.serviceType.type != 'p' || BASE_URL.server_address_production.indexOf('https://www') < 0
+      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$store.state.serviceType.type != 'p' || BASE_URL.server_address_production != BASE_URL.server_official
     },
     currentServiceType() {
       let serviceTypeVal = ''
@@ -43,12 +43,12 @@ export default {
           break;
         case 'p':
           serviceTypeVal = '生产服'
-          if (BASE_URL.server_address_production.indexOf('https://www') < 0) {
+          if (BASE_URL.server_address_production != BASE_URL.server_official) {
             serviceTypeVal = `指定服，地址：${BASE_URL.server_address_production}`
           }
           break;
         default:
-          serviceTypeVal = '生产服'
+          serviceTypeVal = '异常地址'
           break;
       }
       return serviceTypeVal
