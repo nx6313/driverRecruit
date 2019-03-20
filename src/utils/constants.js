@@ -12,5 +12,5 @@ export const BASE_URL = {
 }
 
 export const APP_CONFIG = {
-  isTest: false // 设置h5是否为测试环境，将忽略内置环境
+  isTest: true // 设置h5是否为测试环境，将忽略内置环境
 }

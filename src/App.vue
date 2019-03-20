@@ -30,11 +30,11 @@ export default {
   },
   computed: {
     isShowServiceTypeTool() {
-      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$store.state.serviceType.type != 'p' || BASE_URL.server_address_production != BASE_URL.server_official
+      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$comfun.getServiceType(this) != 'p' || BASE_URL.server_address_production != BASE_URL.server_official
     },
     currentServiceType() {
       let serviceTypeVal = ''
-      switch (this.$store.state.serviceType.type) {
+      switch (this.$comfun.getServiceType(this)) {
         case 't':
           serviceTypeVal = '测试服'
           break;

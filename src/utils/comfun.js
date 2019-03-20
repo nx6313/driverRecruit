@@ -189,7 +189,7 @@ export default {
             console.log(`文件【${file.name}】上传进度：${percentCompleted} %`)
           }
         }
-        if (this.getServiceType(context) === 'test') {
+        if (this.getServiceType(context) === 't') {
           axiosOptions.url = BASE_URL.server_address_test + url
         } else if (this.getServiceType(context) === 'd') {
           axiosOptions.url = BASE_URL.server_address_development + url
@@ -203,7 +203,7 @@ export default {
       },
       // 判断当前是否为测试服访问
       getServiceType: function (context) {
-        let serviceType = this.getRequestAuto('serviceType') || context.$store.state.auth.serviceType
+        let serviceType = this.getRequestAuto('serviceType') || context.$store.state.serviceType.type
         if (serviceType === 't') {
           context.$store.commit('updateServiceType', {
             type: 't'
