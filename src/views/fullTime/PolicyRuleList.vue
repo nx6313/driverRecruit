@@ -127,7 +127,7 @@ export default {
         toPolicyDetail: function(policyId) {
             let policyInfo = this.policyData[this.policyData.map(v => { return v.id }).indexOf(policyId)]
             if (!policyInfo.read || policyInfo.needUpdate) {
-                this.$router.replace({ path: policyInfo.route, query: { policyId: policyId } })
+                this.$router.push({ path: policyInfo.route, query: { policyId: policyId } })
             } else {
                 this.$comfun.showToast(this, '该规则您已阅读，请查看其他规则')
             }

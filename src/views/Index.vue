@@ -12,7 +12,7 @@
       <div class="dec">稳定体面的事业选择，为您和家人带来更好的生活。</div>
       <div class="selecterWrap" :style="{ height: `calc(3.1rem * ${Math.ceil(selecters.length / 2)} + 1.6rem + 0.9rem * (${Math.ceil(selecters.length / 2)} - 1))` }">
         <div class="currentProgressOfAuditForFullTime" v-if="progressOfAudit != null && progressOfAudit != ''">
-          <span class="tip">当前您申请的自营司机进度：</span>
+          <span class="tip">申请自营司机进度：</span>
           <span class="trail">
             <Marquee :lists="[progressOfAudit]"></Marquee>
           </span>
