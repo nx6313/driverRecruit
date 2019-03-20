@@ -5,13 +5,7 @@ import { BASE_URL } from '@/utils/constants'
 const Shake = require('shake.js')
 const VConsole = require('vconsole')
 const regC = /^[\s\S]*((%c)[\s\S]*)+$/
-const isTest = true
-
-var url_base = "http://172.18.2.14:8080/" // 泽明
-
-// var url_base = "https://test.dcchuxing.com/" // 测试服务器
-// var url_base = "https://pre.dcchuxing.com/" // 预生产服务器
-// var url_base = "https://www.dcchuxing.com/" // 生产服务器
+const isTest = false
 
 const Axios = axios.create({
   transformRequest: [function (data) {

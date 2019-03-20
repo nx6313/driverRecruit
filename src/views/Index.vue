@@ -11,7 +11,12 @@
       <div class="title">收入更稳定，更多上升空间，更多权益保障</div>
       <div class="dec">稳定体面的事业选择，为您和家人带来更好的生活。</div>
       <div class="selecterWrap" :style="{ height: `calc(3.1rem * ${Math.ceil(selecters.length / 2)} + 1.6rem + 0.9rem * (${Math.ceil(selecters.length / 2)} - 1))` }">
-        <div class="currentProgressOfAuditForFullTime" v-if="progressOfAudit != null && progressOfAudit != ''"><span class="tip">当前您申请的自营司机进度：</span><span class="trail">{{progressOfAudit}}</span></div>
+        <div class="currentProgressOfAuditForFullTime" v-if="progressOfAudit != null && progressOfAudit != ''">
+          <span class="tip">当前您申请的自营司机进度：</span>
+          <span class="trail">
+            <Marquee :lists="[progressOfAudit]"></Marquee>
+          </span>
+        </div>
         <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
           <span class="selecterItemName">{{sel.name}}</span>
           <span class="selecterItemTip">{{sel.state ? '' : '了解详情'}}</span>
@@ -38,10 +43,14 @@
 
 <script>
 import { SOME_RULES } from '@/utils/rules'
+import Marquee from '@/components/Marquee.vue'
 
 export default {
   name: 'index',
   inject: ['reload'],
+  components: {
+    Marquee
+  },
   data() {
     return {
       autoShowLoginDialog: false,
@@ -405,22 +414,29 @@ export default {
       }
       .currentProgressOfAuditForFullTime {
         position: absolute;
-        display: table;
         top: -1.4rem;
         left: 0;
         font-size: 0.7rem;
         padding-left: 1.2rem;
         color: #363636;
-        span {
-          display: inline-block;
-          display: table-cell;
-        }
+        width: calc(100% - 1.4rem);
+        white-space: nowrap;
+        overflow: hidden;
+        display: -webkit-flex; /* Safari */
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
         span.tip {
-          white-space: nowrap;
+          display: inline-block;
+          vertical-align: middle;
         }
         span.trail {
+          display: inline-block;
+          vertical-align: middle;
+          width: auto;
           color: #757575;
-          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
         }
       }
       .currentProgressOfAuditForFullTime::before {

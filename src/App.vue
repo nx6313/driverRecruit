@@ -1,10 +1,19 @@
 <template>
   <div id="app">
     <router-view v-if="isRouterAlive"/>
+    <span v-if="isShowServiceTypeTool" class="currentServiceType">
+      <span class="tip">当前服务器</span>
+      <span class="content">
+        <Marquee :lists="[currentServiceType]"></Marquee>
+      </span>
+    </span>
   </div>
 </template>
 
 <script>
+import { BASE_URL } from '@/utils/constants'
+import Marquee from '@/components/Marquee.vue'
+
 export default {
   provide() {
     return {
@@ -18,6 +27,35 @@ export default {
     return {
       isRouterAlive: true
     }
+  },
+  computed: {
+    isShowServiceTypeTool() {
+      return process.env.NODE_ENV != 'production' || this.$store.state.serviceType.type != 'p' || BASE_URL.server_address_production.indexOf('https://www') < 0
+    },
+    currentServiceType() {
+      let serviceTypeVal = ''
+      switch (this.$store.state.serviceType.type) {
+        case 't':
+          serviceTypeVal = '测试服'
+          break;
+        case 'd':
+          serviceTypeVal = '预生产服'
+          break;
+        case 'p':
+          serviceTypeVal = '生产服'
+          if (BASE_URL.server_address_production.indexOf('https://www') < 0) {
+            serviceTypeVal = `指定服，地址：${BASE_URL.server_address_production}`
+          }
+          break;
+        default:
+          serviceTypeVal = '生产服'
+          break;
+      }
+      return serviceTypeVal
+    }
+  },
+  components: {
+    Marquee
   },
   methods: {
     reload() {
@@ -55,6 +93,30 @@ export default {
   user-select: none;
   textarea {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  }
+  .currentServiceType {
+    position: fixed;
+    top: 0.5rem;
+    right: 0.8rem;
+    z-index: 999;
+    background-color: #2c3e50;
+    color: #e8e8e8;
+    font-size: 0.6rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 10rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    .tip {
+      display: inline-block;
+      padding-right: 0.4rem;
+      vertical-align: middle;
+      text-shadow: 0 0 10px #c0a1a1;
+    }
+    .content {
+      display: inline-block;
+      max-width: 5rem;
+      vertical-align: middle;
+      color: #a3a3a3;
+    }
   }
 }
 
