@@ -8,3 +8,7 @@ export const BASE_URL = {
   server_address_development: "https://pre.dcchuxing.com/", // 预生产服务器
   server_address_production: "https://www.dcchuxing.com/" // 生产服务器
 }
+
+export const APP_CONFIG = {
+  isTest: false // 设置h5是否为测试环境，将忽略内置环境
+}

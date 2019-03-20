@@ -64,11 +64,7 @@ export default {
         loop: true
       },
       banners: [
-        require('@/assets/index_banner_1.png'),
-        'http://pic1.win4000.com/wallpaper/2018-12-12/5c10b83941aae.jpg',
-        'http://img0.imgtn.bdimg.com/it/u=4041338415,2387281745&fm=214&gp=0.jpg',
-        'http://img.kutoo8.com/upload/thumb/748540/ab82869799b4b09b39599c85d579eeba_960x540.jpg',
-        'http://img3.imgtn.bdimg.com/it/u=1757734083,322205330&fm=214&gp=0.jpg'
+        require('@/assets/index_banner_1.png')
       ],
       newsOption: {
         autoplay: {

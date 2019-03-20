@@ -1,11 +1,10 @@
 import axios from 'axios'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
 import ClipboardJS from 'clipboard'
-import { BASE_URL } from '@/utils/constants'
+import { BASE_URL, APP_CONFIG } from '@/utils/constants'
 const Shake = require('shake.js')
 const VConsole = require('vconsole')
 const regC = /^[\s\S]*((%c)[\s\S]*)+$/
-const isTest = false
 
 const Axios = axios.create({
   transformRequest: [function (data) {
@@ -281,7 +280,7 @@ export default {
 			onReady: ()=> {
 				let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
 				if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
-				if (!isTest && process.env.NODE_ENV == 'production') {
+				if (!APP_CONFIG.isTest && process.env.NODE_ENV == 'production') {
 					// 生产环境，隐藏日志面板控制开关
 					vconsole.hideSwitch()
 					// let mShakeEvent = new Shake({

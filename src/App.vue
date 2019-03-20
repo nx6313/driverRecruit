@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { BASE_URL } from '@/utils/constants'
+import { BASE_URL, APP_CONFIG } from '@/utils/constants'
 import Marquee from '@/components/Marquee.vue'
 
 export default {
@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     isShowServiceTypeTool() {
-      return process.env.NODE_ENV != 'production' || this.$store.state.serviceType.type != 'p' || BASE_URL.server_address_production.indexOf('https://www') < 0
+      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$store.state.serviceType.type != 'p' || BASE_URL.server_address_production.indexOf('https://www') < 0
     },
     currentServiceType() {
       let serviceTypeVal = ''
