@@ -21,7 +21,8 @@
                 <p>本人 <u> {{userInfo.personName}} </u>，身份证号码 <u> {{userInfo.idcarNo}} </u>，确认已于 <span :class="leaveYear ? 'notEmpty' : 'empty'" v-html="leaveYear ? leaveYear : ''" @click="selectPicker('year')"></span> 年 <span :class="leaveMonth ? 'notEmpty' : 'empty'" v-html="leaveMonth ? leaveMonth : ''" @click="selectPicker('month')"></span> 月 <span :class="leaveDay ? 'notEmpty' : 'empty'" v-html="leaveDay ? leaveDay : ''" @click="selectPicker('day')"></span> 日与之前原单位 <span :class="leaveCompany ? 'notEmpty' : 'empty'" v-html="leaveCompany ? leaveCompany : ''" @click="toInput('company')"></span>公司 解除 / 终止劳动关系，且无任何经济纠纷，由于 <span :class="leaveReason ? 'notEmpty' : 'empty'" v-html="leaveReason ? leaveReason : ''" @click="toInput('reason')"></span> 原因，无法提交《离职证明》，今后如因此出现任何问题，本人自行负责，与贵公司无任何权利义务之争。</p>
                 <span class="statement">特此声明！</span>
             </div>
-            <div class="uploadTipLinkWrap">
+            <span class="tipInfo">如果您从未有过其他工作，以上信息请忽略，直接点击 阅读完毕 即可。</span>
+            <div class="uploadTipLinkWrap cantLeaveDeclareTipLink">
                 <span class="uploadTipLink" @click="hasLeaveDeclare = true">可以提交《离职证明》申明？</span>
             </div>
         </template>
@@ -156,10 +157,10 @@ export default {
             }
         },
         readFinish: function() {
-            // if (this.leaveYear == null || this.leaveMonth == null || this.leaveDay == null || this.leaveCompany == null || this.leaveReason == null) {
-            //     this.$comfun.showToast(this, '请先填写无法离职信息')
-            //     return false
-            // }
+            if (this.hasLeaveDeclare && (this.leaveYear == null || this.leaveMonth == null || this.leaveDay == null || this.leaveCompany == null)) {
+                this.$comfun.showToast(this, '请先填写离职证明信息')
+                return false
+            }
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 phone: this.$store.state.userBaseInfo.phone,
@@ -226,6 +227,31 @@ export default {
         float: right;
         margin-bottom: 3rem;
     }
+}
+
+.tipInfo {
+    position: relative;
+    display: block;
+    padding: 1rem 1rem 0.7rem;
+    margin-top: 6rem;
+    font-size: 0.6rem;
+    padding-left: 3rem;
+    color: #969696;
+}
+.tipInfo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    left: 0.6rem;
+    width: 2rem;
+    height: 1.6rem;
+    display: block;
+    background-image: url('./../../../assets/icon_d_info.png');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    background-position: center;
 }
 
 .readFinish {
@@ -328,6 +354,10 @@ export default {
     text-align: center;
     margin-top: 6rem;
     margin-bottom: 2rem;
+}
+
+.cantLeaveDeclareTipLink {
+    margin-top: 1rem;
 }
 
 .uploadTipLink {

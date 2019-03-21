@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view v-if="isRouterAlive"/>
-    <span v-if="isShowServiceTypeTool" class="currentServiceType">
+    <span v-if="isShowServiceTypeTool" class="currentServiceType" v-drag:config="{ about: ['top', 'right'], overstep: false, inertia: true, recover: true }">
       <span class="tip">当前服务器</span>
       <span class="content">
         <Marquee :lists="[currentServiceType]"></Marquee>

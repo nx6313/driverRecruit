@@ -58,6 +58,8 @@ export default {
 <style lang="less" scoped>
 .wrap {
   overflow: hidden;
+  user-select: none;
+  pointer-events: none;
 }
 #marquee-box {
   width: 80000%;

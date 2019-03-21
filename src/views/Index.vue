@@ -19,7 +19,7 @@
         </div>
         <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
           <span class="selecterItemName">{{sel.name}}</span>
-          <span class="selecterItemTip">{{sel.state ? '' : '了解详情'}}</span>
+          <span class="selecterItemTip">了解详情</span>
         </div>
       </div>
     </div>
@@ -105,25 +105,21 @@ export default {
         // {
         //   key: '4',
         //   name: '租车加盟',
-        //   state: null,
         //   isRecommend: true
         // },
         // {
         //   key: '2',
         //   name: '购车加盟',
-        //   state: null,
         //   isRecommend: false
         // },
         {
           key: '1',
           name: '自营专职',
-          state: null,
           isRecommend: false
         },
         {
           key: '3',
           name: '带车加盟',
-          state: null,
           isRecommend: true
         }
       ],

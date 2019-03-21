@@ -3,8 +3,6 @@ import 'es6-promise/auto'
 import App from './App.vue'
 import appConfig from './router'
 import VueLazyload from "vue-lazyload"
-import VueUi from '@vue/ui'
-import '@vue/ui/dist/vue-ui.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import ComFun from '@/utils/comfun.js'
@@ -18,7 +16,6 @@ import 'babel-polyfill'
 Vue.config.productionTip = false
 Vue.config.devtools = true
 Vue.use(VueLazyload)
-Vue.use(VueUi)
 Vue.use(VueAwesomeSwiper)
 Vue.use(ComFun)
 Vue.use(Directives)

@@ -26,14 +26,14 @@
         <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}">
         <textarea class="textInput" v-if="input.type == 'textarea'" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}"></textarea>
         <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'" :style="input.label === undefined ? { left: '1.6rem' } : {}"/>
-        <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
+        <!-- <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
           <VueGroupButton v-for="(select, selectIndex) in input.range" v-bind:key="selectIndex" class="selectBtnItem round" :value="select.name">{{select.value}}</VueGroupButton>
-        </VueGroup>
-        <VueSwitch class="radioSwitch" v-if="input.type == 'switch'" v-model="input.model"></VueSwitch>
-        <div class="sendSmsCodeWrap" v-if="input.type == 'sendSmsCode'">
+        </VueGroup> -->
+        <!-- <VueSwitch class="radioSwitch" v-if="input.type == 'switch'" v-model="input.model"></VueSwitch> -->
+        <!-- <div class="sendSmsCodeWrap" v-if="input.type == 'sendSmsCode'">
           <input class="textInput" type="text" :placeholder="input.hint" v-model="input.model">
           <VueButton :class="['sendBtn', canUseSendSmsCodeBtn(input.model)]" @click="sendSmsCode(input.model, input)">{{hasSendSmsCode ? `${sendSmsCodeTime}秒后重新发送` : '发送验证码'}}</VueButton>
-        </div>
+        </div> -->
         <div class="smsCodeTextWrap" v-if="input.type == 'smsCodeText'">
           <input class="textInput" type="text" v-model="input.model" :maxlength="input.codeCount" v-focus="[codeBox, index]" v-on:input="codeBoxInput(input.model, index)" v-on:blur="codeBoxBlur(index)">
           <span :class="['codeCell', currentInputCodeBox >= 0 && currentInputCodeBox == codeIndex ? 'isInput' : '']" v-for="(code, codeIndex) in input.codeCount" v-bind:key="codeIndex" :style="{ left: `${5 + codeIndex * 2.4}rem` }" @click="focusToInputCode(index, codeIndex, input.model)">{{codeBoxGet(index, codeIndex)}}</span>
