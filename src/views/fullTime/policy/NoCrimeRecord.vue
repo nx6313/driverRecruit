@@ -206,7 +206,7 @@ body, html {
     position: relative;
     display: inline-block;
     text-align: center;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     margin-top: 3rem;
     margin-bottom: 3.6rem;
     color: #0078ff;

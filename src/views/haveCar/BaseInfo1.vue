@@ -107,8 +107,8 @@ export default {
         if (type == 'certification_record') {
           this.uploadCardFile(this.certification, (path) => {
             this.certificationBase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
-              key: 'certification',
+            this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+              key: 'certificationCard',
               value: path
             })
           }, () => {
