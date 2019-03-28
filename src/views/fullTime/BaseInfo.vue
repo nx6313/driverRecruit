@@ -71,6 +71,10 @@ export default {
           }
         })
       }
+      if (leagueRecommend != null && leagueRecommend.length > 20) {
+        this.$comfun.showToast(this, '推荐人姓名及联系方式内容过长，不得超过20个字符')
+        return false
+      }
       let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       this.$comfun.http_post(this, this.$api.applyInfo, {
         'apply.d_type': this.$store.state.userBaseInfo.dType,

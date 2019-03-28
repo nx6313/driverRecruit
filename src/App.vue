@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view v-if="isRouterAlive"/>
-    <span v-if="isShowServiceTypeTool" class="currentServiceType" v-drag:config="{ about: ['top', 'right'], overstep: false, inertia: true, recover: true }">
+    <span v-if="isShowServiceTypeTool" class="currentServiceType" v-drag:config="{ about: ['top', 'right'], overstep: false, inertia: true, recover: true, tap: showLogVc }">
       <span class="tip">当前服务器</span>
       <span class="content">
         <Marquee :lists="[currentServiceType]"></Marquee>
@@ -74,6 +74,9 @@ export default {
     },
     clearPageData() {
       this.$store.dispatch('clearPageData')
+    },
+    showLogVc() {
+      this.$vconsole.show()
     }
   }
 }

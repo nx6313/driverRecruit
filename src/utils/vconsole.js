@@ -296,7 +296,7 @@ export default {
 			}
 		})
 
-		// Vue.prototype.$vconsole = vconsole
+		Vue.prototype.$vconsole = vconsole
 		Vue.prototype.$vctool = vconsole.tool
 		// Vue.prototype.$vcdom = vconsole.$
 	}

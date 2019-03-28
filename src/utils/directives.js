@@ -160,6 +160,9 @@ let touchEndEvent = function(e, binding, el) {
   }
   if (el) {
     if (binding.arg == 'config') {
+      if (touchDistanceX == 0 && touchDistanceY == 0 && binding.value.tap) {
+        binding.value.tap()
+      }
       if (binding.value.recover === true) {
         // 拖拽结束，恢复至原本位置
         let dragAbout = ['top', 'left']

@@ -114,7 +114,7 @@ export default {
         // },
         {
           key: '1',
-          name: '自营专职',
+          name: '专车全职',
           isRecommend: false
         },
         {
