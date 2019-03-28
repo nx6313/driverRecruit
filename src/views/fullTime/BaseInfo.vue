@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { SOME_RULES } from '@/utils/rules'
 import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
 export default {
@@ -71,9 +72,9 @@ export default {
           }
         })
       }
-      if (leagueRecommend != null && leagueRecommend.length > 20) {
-        this.$comfun.showToast(this, '推荐人姓名及联系方式内容过长，不得超过20个字符')
-        return false
+      if (leagueRecommend != null) {
+        if (SOME_RULES.emoji.test(leagueRecommend.trim())) { this.$comfun.showToast(this, '推荐人姓名及联系方式中不能含有特殊字符'); return false }
+        if (leagueRecommend.trim().length > 20) { this.$comfun.showToast(this, '推荐人姓名及联系方式内容过长，不得超过20个字符'); return false }
       }
       let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       this.$comfun.http_post(this, this.$api.applyInfo, {
@@ -85,7 +86,7 @@ export default {
         'apply.health': health != null && this.$vctool.isArray(health) ? health.map(v => { return v.key }).join(',') : (health != null && !this.$vctool.isArray(health) ? health.key : null),
         'apply.health_other': health != null && !this.$vctool.isArray(health) ? health.val : null,
         'apply.league': league != null && this.$vctool.isArray(league) ? league.map(v => { return v.key }).join(',') : (league != null && !this.$vctool.isArray(league) ? league.key : null),
-        'apply.league_recommend': leagueRecommend,
+        'apply.league_recommend': leagueRecommend.trim(),
         'apply.league_other': league != null && !this.$vctool.isArray(league) ? league.val : null,
         'apply.experience': experience != null && this.$vctool.isArray(experience) ? experience.map(v => { return v.key }).join(',') : (experience != null && !this.$vctool.isArray(experience) ? experience.key : null),
         'apply.experience_other': experience != null && !this.$vctool.isArray(experience) ? experience.val : null,
