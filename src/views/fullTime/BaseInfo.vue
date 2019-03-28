@@ -47,7 +47,6 @@ export default {
       } else {
         this.saveUserBaseInfo(question1, question2, question3)
       }
-      this.$comfun.showLoading(this, 'baseInfoApplyInfo', false)
       this.submit()
     },
     saveUserBaseInfo: function(question1, question2, question3) {
@@ -76,6 +75,7 @@ export default {
         if (SOME_RULES.emoji.test(leagueRecommend.trim())) { this.$comfun.showToast(this, '推荐人姓名及联系方式中不能含有特殊字符'); return false }
         if (leagueRecommend.trim().length > 20) { this.$comfun.showToast(this, '推荐人姓名及联系方式内容过长，不得超过20个字符'); return false }
       }
+      this.$comfun.showLoading(this, 'baseInfoApplyInfo', false)
       let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       this.$comfun.http_post(this, this.$api.applyInfo, {
         'apply.d_type': this.$store.state.userBaseInfo.dType,
