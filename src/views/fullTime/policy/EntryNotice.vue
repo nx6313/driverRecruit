@@ -134,6 +134,31 @@ export default {
     },
     mounted() {
         this.userInfo = this.$store.state.driverRecruitData.auditState
+        this.userPhotoBase64 = this.$store.state.driverRecruitData.policyDataInfo.userPhoto
+        this.salaryCardBase64 = this.$store.state.driverRecruitData.policyDataInfo.salaryCard
+        this.salaryCardAddress = this.$store.state.driverRecruitData.policyDataInfo.salaryCardAddress || ''
+        this.accountCardBase64 = this.$store.state.driverRecruitData.policyDataInfo.accountCard
+        this.liverBase64 = this.$store.state.driverRecruitData.policyDataInfo.liver
+        this.heartBase64 = this.$store.state.driverRecruitData.policyDataInfo.heart
+        this.xLightBase64 = this.$store.state.driverRecruitData.policyDataInfo.xLight
+        if (this.userPhotoBase64 !== null) {
+            this.doItems[0].isOk = true
+        }
+        if (this.salaryCardBase64 !== null && this.salaryCardAddress !== '') {
+            this.doItems[1].isOk = true
+        }
+        if (this.accountCardBase64 !== null) {
+            this.doItems[2].isOk = true
+        }
+        if (this.liverBase64 !== null) {
+            this.doItems[3].isOk = true
+        }
+        if (this.heartBase64 !== null) {
+            this.doItems[4].isOk = true
+        }
+        if (this.xLightBase64 !== null) {
+            this.doItems[5].isOk = true
+        }
     },
     created() {
         let lockTime = setInterval(() => {
@@ -277,6 +302,10 @@ export default {
                 this.$comfun.showToast(this, '请先上传所有需要的文件内容')
                 return false
             }
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'salaryCardAddress',
+                value: this.salaryCardAddress
+            })
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 phone: this.$store.state.userBaseInfo.phone,
@@ -284,15 +313,16 @@ export default {
                 type: 'induction',
                 'induction.photo': this.$store.state.driverRecruitData.policyDataInfo.userPhoto,
                 'induction.bankcar': this.$store.state.driverRecruitData.policyDataInfo.salaryCard,
-                'induction.bankaddress': this.salaryCardAddress,
-                // 'induction.residence': this.$store.state.driverRecruitData.policyDataInfo.userPhoto,
+                'induction.bankaddress': this.$store.state.driverRecruitData.policyDataInfo.salaryCardAddress,
+                'induction.residence': this.$store.state.driverRecruitData.policyDataInfo.accountCard,
                 'induction.liver': this.$store.state.driverRecruitData.policyDataInfo.liver,
                 'induction.ecg': this.$store.state.driverRecruitData.policyDataInfo.heart,
                 'induction.xray': this.$store.state.driverRecruitData.policyDataInfo.xLight
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
-                    this.$router.replace('/fullTime/policyRuleList')
+                    // this.$router.replace('/fullTime/policyRuleList')
+                    this.$router.back()
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
                 }
@@ -301,7 +331,7 @@ export default {
     },
     watch: {
         salaryCardAddress: function(val) {
-            if (this.salaryCard != null && val.trim() != '') {
+            if (this.salaryCardBase64 != null && val.trim() != '') {
                 this.doItems[1].isOk = true
             } else {
                 this.doItems[1].isOk = false

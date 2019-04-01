@@ -218,7 +218,7 @@ let router = new Router({
               }
             }
             if (allIsRead && notNeedUpdate) {
-              next('/')
+              next('/fullTimeHome')
             } else {
               next()
             }

@@ -142,13 +142,20 @@ const store = new Vuex.Store({
         policyDataInfo: {
           userPhoto: null,
           salaryCard: null,
+          salaryCardAddress: null,
           accountCard: null,
           liver: null,
           heart: null,
           xLight: null,
           noCrimeRecord: null,
           signContract: null,
-          leaveDeclare: null
+          leaveDeclare: null,
+          leaveYear: null,
+          leaveMonth: null,
+          leaveDay: null,
+          leaveCompany: null,
+          leaveReason: null,
+          hasLeaveDeclare: null
         }
       },
       getters: {

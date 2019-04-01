@@ -34,6 +34,7 @@ export default {
     },
     mounted() {
         this.userInfo = this.$store.state.driverRecruitData.auditState
+        this.noCrimeRecordBase64 = this.$store.state.driverRecruitData.policyDataInfo.noCrimeRecord
     },
     created() {
         let lockTime = setInterval(() => {
@@ -98,7 +99,8 @@ export default {
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
-                    this.$router.replace('/fullTime/policyRuleList')
+                    // this.$router.replace('/fullTime/policyRuleList')
+                    this.$router.back()
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
                 }

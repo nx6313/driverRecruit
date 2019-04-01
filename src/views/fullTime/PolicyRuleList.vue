@@ -93,6 +93,7 @@ export default {
         }
     },
     mounted() {
+        this.$comfun.closeCurDialogPrompt()
         this.$store.commit('setDriverRecruitData_PolicyList', {
             policyList: this.policyData
         })
@@ -118,6 +119,104 @@ export default {
                 this.$store.commit('setDriverRecruitData_PolicyList', {
                     policyList: this.policyData
                 })
+                // 更新本地缓存 - 已上传的图片信息
+                let userPhoto = null
+                let salaryCard = null
+                let salaryCardAddress = null
+                let accountCard = null
+                let liver = null
+                let heart = null
+                let xLight = null
+                if (requestData.memberRuleRealinfo !== null) {
+                    userPhoto = requestData.memberRuleRealinfo.photo
+                    salaryCard = requestData.memberRuleRealinfo.bankcar
+                    salaryCardAddress = requestData.memberRuleRealinfo.bankaddress
+                    accountCard = requestData.memberRuleRealinfo.residence
+                    liver = requestData.memberRuleRealinfo.liver
+                    heart = requestData.memberRuleRealinfo.ecg
+                    xLight = requestData.memberRuleRealinfo.xray
+                }
+
+                let noCrimeRecord = null
+                if (requestData.memberRuleCrime !== null) {
+                    noCrimeRecord = requestData.memberRuleCrime.path
+                }
+
+                let leaveDeclare = null
+                let leaveYear = null
+                let leaveMonth = null
+                let leaveDay = null
+                let leaveCompany = null
+                let leaveReason = null
+                if (requestData.memberRuleDeclaration !== null) {
+                    leaveDeclare = requestData.memberRuleDeclaration.leave_declare
+                    leaveYear = requestData.memberRuleDeclaration.leave_year
+                    leaveMonth = requestData.memberRuleDeclaration.leave_month
+                    leaveDay = requestData.memberRuleDeclaration.leave_date
+                    leaveCompany = requestData.memberRuleDeclaration.company
+                    leaveReason = requestData.memberRuleDeclaration.reason
+                }
+                let hasLeaveDeclare = leaveDeclare !== null ? true : false
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'userPhoto',
+                    value: userPhoto
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'salaryCard',
+                    value: salaryCard
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'salaryCardAddress',
+                    value: salaryCardAddress
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'accountCard',
+                    value: accountCard
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'liver',
+                    value: liver
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'heart',
+                    value: heart
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'xLight',
+                    value: xLight
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'noCrimeRecord',
+                    value: noCrimeRecord
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'leaveDeclare',
+                    value: leaveDeclare
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'leaveYear',
+                    value: leaveYear
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'leaveMonth',
+                    value: leaveMonth
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'leaveDay',
+                    value: leaveDay
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'leaveCompany',
+                    value: leaveCompany
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'leaveReason',
+                    value: leaveReason
+                })
+                this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                    key: 'hasLeaveDeclare',
+                    value: hasLeaveDeclare
+                })
             } else {
                 this.$comfun.showToast(this, request.data.msg)
             }
@@ -126,7 +225,7 @@ export default {
     methods: {
         toPolicyDetail: function(policyId) {
             let policyInfo = this.policyData[this.policyData.map(v => { return v.id }).indexOf(policyId)]
-            this.$router.replace({ path: policyInfo.route, query: { policyId: policyId } })
+            this.$router.push({ path: policyInfo.route, query: { policyId: policyId } })
             // if (!policyInfo.read || policyInfo.needUpdate) {
             //     this.$router.replace({ path: policyInfo.route, query: { policyId: policyId } })
             // } else {

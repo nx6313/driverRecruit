@@ -46,7 +46,10 @@ Axios.interceptors.response.use((response) => {
       duration: 2000
     })
   }
-  if (loginDialog != null) loginDialog.destory()
+  if (loginDialog != null) {
+    loginDialog.destory()
+    loginDialog = null
+  }
   return Promise.reject(error)
 })
 const FileAxios = axios.create({
@@ -84,6 +87,8 @@ var iv = CryptoJS.enc.Utf8.parse("123456789zxcvbnm")
 
 var loadingManager = new Map() // 管理loading对象
 var loginDialog = null // 用户登录弹窗
+var dialogPrompt = null // 带有输入框的dialog弹出框
+var picker = null // picker选择器
 
 export default {
   install: function (Vue) {
@@ -297,7 +302,7 @@ export default {
             }
           }
         ]
-        let dialogPrompt = context.$dialog_prompt({
+        dialogPrompt = context.$dialog_prompt({
           title: title,
           msg: message,
           showCancel: showCancel,
@@ -361,7 +366,7 @@ export default {
       // 弹出picker选择
       // data 为双层数组结构
       showPicker: function(title, data, onSelect, onChange) {
-        let picker = new WheelPicker({
+        picker = new WheelPicker({
           title: title,
           data: data,
           hideOnBackdrop: true,
@@ -369,11 +374,13 @@ export default {
             onSelect(result)
             setTimeout(() => {
               picker.destory()
+              picker = null
             }, 300)
           },
           onCancel: () => {
             setTimeout(() => {
               picker.destory()
+              picker = null
             }, 300)
           },
           onChange: onChange
@@ -626,6 +633,17 @@ export default {
           return false
         }
         return true
+      },
+      // 关闭当前带有输入框的dialog弹出框
+      closeCurDialogPrompt: function() {
+        if (picker != null) {
+          picker.destory()
+          picker = null
+        }
+        if (dialogPrompt != null) {
+          dialogPrompt.destory()
+          dialogPrompt = null
+        }
       }
       // convertPdf: function(pdfFileName, toPdfDom) {
       //   if (toPdfDom == undefined) toPdfDom = document.body.parentElement

@@ -13,7 +13,7 @@
             </div>
             <span class="uploadTip">上传《离职证明》申明</span>
             <div class="uploadTipLinkWrap">
-                <span class="uploadTipLink" @click="hasLeaveDeclare = false">无法提交《离职证明》申明？</span>
+                <span class="uploadTipLink" @click="changeHasLeaveDeclare(false)">无法提交《离职证明》申明？</span>
             </div>
         </template>
         <template v-if="!hasLeaveDeclare">
@@ -23,7 +23,7 @@
             </div>
             <span class="tipInfo">如果您从未有过其他工作，以上信息请忽略，直接点击 “ 阅读完毕 ” 即可。</span>
             <div class="uploadTipLinkWrap cantLeaveDeclareTipLink">
-                <span class="uploadTipLink" @click="hasLeaveDeclare = true">可以提交《离职证明》申明？</span>
+                <span class="uploadTipLink" @click="changeHasLeaveDeclare(true)">可以提交《离职证明》申明？</span>
             </div>
         </template>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
@@ -43,8 +43,6 @@ export default {
             leaveDay: null,
             leaveCompany: null,
             leaveReason: null,
-            currentPicker: null,
-            currentPromptDialog: null,
             leaveDeclare: null,
             leaveDeclareBase64: null,
             hasLeaveDeclare: true
@@ -52,6 +50,13 @@ export default {
     },
     mounted() {
         this.userInfo = this.$store.state.driverRecruitData.auditState
+        this.leaveDeclareBase64 = this.$store.state.driverRecruitData.policyDataInfo.leaveDeclare
+        this.leaveYear = this.$store.state.driverRecruitData.policyDataInfo.leaveYear
+        this.leaveMonth = this.$store.state.driverRecruitData.policyDataInfo.leaveMonth
+        this.leaveDay = this.$store.state.driverRecruitData.policyDataInfo.leaveDay
+        this.leaveCompany = this.$store.state.driverRecruitData.policyDataInfo.leaveCompany
+        this.leaveReason = this.$store.state.driverRecruitData.policyDataInfo.leaveReason
+        this.hasLeaveDeclare = this.$store.state.driverRecruitData.policyDataInfo.hasLeaveDeclare === null ? true : this.$store.state.driverRecruitData.policyDataInfo.hasLeaveDeclare
     },
     created() {
         let lockTime = setInterval(() => {
@@ -61,11 +66,6 @@ export default {
             clearInterval(lockTime)
           }
         }, 1000)
-    },
-    beforeRouteLeave(to, from, next) {
-        // if (this.currentPicker && this.currentPicker.cancelled !== true) this.currentPicker.destory()
-        if (this.currentPromptDialog) this.currentPromptDialog.destory()
-        next()
     },
     methods: {
         selectFile: function(event, type) {
@@ -113,7 +113,7 @@ export default {
                 for (let y = 1990; y <= parseInt(this.$comfun.formatDate(new Date(), 'yyyy')); y++) {
                     yearPickerData.push(y)
                 }
-                this.currentPicker = this.$comfun.showPicker('离职日期 - 年', [yearPickerData], (result) => {
+                this.$comfun.showPicker('离职日期 - 年', [yearPickerData], (result) => {
                     this.leaveMonth = null
                     this.leaveDay = null
                     this.leaveYear = result[0].value
@@ -123,7 +123,7 @@ export default {
                     this.selectPicker('year')
                     return false
                 }
-                this.currentPicker = this.$comfun.showPicker('离职日期 - 月', [['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']], (result) => {
+                this.$comfun.showPicker('离职日期 - 月', [['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']], (result) => {
                     this.leaveDay = null
                     this.leaveMonth = result[0].value
                 })
@@ -140,18 +140,18 @@ export default {
                 for (let d = 1; d <= parseInt(this.$comfun.formatDate(this.$comfun.getLastDay(this.leaveYear, this.leaveMonth), 'dd')); d++) {
                     dayPickerData.push(d)
                 }
-                this.currentPicker = this.$comfun.showPicker('离职日期 - 日', [dayPickerData], (result) => {
+                this.$comfun.showPicker('离职日期 - 日', [dayPickerData], (result) => {
                     this.leaveDay = result[0].value
                 })
             }
         },
         toInput: function(type) {
             if (type == 'company') {
-                this.currentPromptDialog = this.$comfun.showDialogWithPrompt(this, '请输入您的原单位名称', undefined, true, '输入原单位名称', undefined, undefined, undefined, (leaveCompany) => {
+                this.$comfun.showDialogWithPrompt(this, '请输入您的原单位名称', undefined, true, '输入原单位名称', undefined, undefined, undefined, (leaveCompany) => {
                     this.leaveCompany = leaveCompany
                 }, undefined, true)
             } else if (type == 'reason') {
-                this.currentPromptDialog = this.$comfun.showDialogWithPrompt(this, '请输入您在原单位无法离职原因', undefined, true, '输入原单位无法离职原因', undefined, undefined, undefined, (leaveReason) => {
+                this.$comfun.showDialogWithPrompt(this, '请输入您在原单位无法离职原因', undefined, true, '输入原单位无法离职原因', undefined, undefined, undefined, (leaveReason) => {
                     this.leaveReason = leaveReason
                 }, undefined, true)
             }
@@ -161,6 +161,26 @@ export default {
                 this.$comfun.showToast(this, '请先填写离职证明信息')
                 return false
             }
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'leaveYear',
+                value: this.leaveYear
+            })
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'leaveMonth',
+                value: this.leaveMonth
+            })
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'leaveDay',
+                value: this.leaveDay
+            })
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'leaveCompany',
+                value: this.leaveCompany
+            })
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'leaveReason',
+                value: this.leaveReason
+            })
             this.$comfun.showLoading(this, 'applyRuleRead', false)
             this.$comfun.http_post(this, this.$api.applyRuleRead, {
                 phone: this.$store.state.userBaseInfo.phone,
@@ -175,10 +195,24 @@ export default {
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
-                    this.$router.replace('/fullTime/policyRuleList')
+                    // this.$router.replace('/fullTime/policyRuleList')
+                    this.$router.back()
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
                 }
+            })
+        },
+        changeHasLeaveDeclare(val) {
+            this.hasLeaveDeclare = val
+            this.leaveDeclare = null
+            this.leaveDeclareBase64 = null
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'leaveDeclare',
+                value: null
+            })
+            this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+                key: 'hasLeaveDeclare',
+                value: val
             })
         }
     }

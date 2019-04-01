@@ -63,17 +63,18 @@ export default {
                 this.$comfun.showToast(this, '请您先修改其他被驳回的政策声明')
                 return false
             }
-            this.$comfun.showSignPanel(this, (base64, imgFile) => {
-                this.signImgData = base64
-                this.uploadCardFile(imgFile, (path) => {
-                    this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
-                        key: 'signContract',
-                        value: path
-                    })
-                }, () => {
-                    this.signImgData = null
-                })
-            })
+            this.$router.back()
+            // this.$comfun.showSignPanel(this, (base64, imgFile) => {
+            //     this.signImgData = base64
+            //     this.uploadCardFile(imgFile, (path) => {
+            //         this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
+            //             key: 'signContract',
+            //             value: path
+            //         })
+            //     }, () => {
+            //         this.signImgData = null
+            //     })
+            // })
         },
         uploadCardFile: function(file, callBack, errorCallBack) {
             this.$comfun.showLoading(this, 'uploadCardFile', false)
@@ -109,7 +110,8 @@ export default {
                         key: 'read',
                         value: true
                     })
-                    this.$router.replace('/fullTimeHome')
+                    // this.$router.replace('/fullTimeHome')
+                    this.$router.back()
                 } else {
                     this.$comfun.showToast(this, request.data.msg)
                 }

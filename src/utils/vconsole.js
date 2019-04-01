@@ -280,18 +280,19 @@ export default {
 			onReady: ()=> {
 				let consoleLogCmd = vconsole.$dom.querySelector('form.vc-cmd')
 				if (consoleLogCmd) consoleLogCmd.parentNode.removeChild(consoleLogCmd)
-				if (!APP_CONFIG.isTest && process.env.NODE_ENV == 'production') {
-					// 生产环境，隐藏日志面板控制开关
-					vconsole.hideSwitch()
-					// let mShakeEvent = new Shake({
-					// 	threshold: 10,
-					// 	timeout: 20000
-					// })
-					// mShakeEvent.start()
-					// window.addEventListener('shake', () => {
-					// 	shakeEventDidOccur(vconsole)
-					// }, false)
-				}
+				vconsole.hideSwitch()
+				// if (!APP_CONFIG.isTest && process.env.NODE_ENV == 'production') {
+				// 	// 生产环境，隐藏日志面板控制开关
+				// 	vconsole.hideSwitch()
+				// 	// let mShakeEvent = new Shake({
+				// 	// 	threshold: 10,
+				// 	// 	timeout: 20000
+				// 	// })
+				// 	// mShakeEvent.start()
+				// 	// window.addEventListener('shake', () => {
+				// 	// 	shakeEventDidOccur(vconsole)
+				// 	// }, false)
+				// }
 				initSpecialVConsole(vconsole)
 			}
 		})

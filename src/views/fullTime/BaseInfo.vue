@@ -86,7 +86,7 @@ export default {
         'apply.health': health != null && this.$vctool.isArray(health) ? health.map(v => { return v.key }).join(',') : (health != null && !this.$vctool.isArray(health) ? health.key : null),
         'apply.health_other': health != null && !this.$vctool.isArray(health) ? health.val : null,
         'apply.league': league != null && this.$vctool.isArray(league) ? league.map(v => { return v.key }).join(',') : (league != null && !this.$vctool.isArray(league) ? league.key : null),
-        'apply.league_recommend': leagueRecommend.trim(),
+        'apply.league_recommend': leagueRecommend !== null ? leagueRecommend.trim() : null,
         'apply.league_other': league != null && !this.$vctool.isArray(league) ? league.val : null,
         'apply.experience': experience != null && this.$vctool.isArray(experience) ? experience.map(v => { return v.key }).join(',') : (experience != null && !this.$vctool.isArray(experience) ? experience.key : null),
         'apply.experience_other': experience != null && !this.$vctool.isArray(experience) ? experience.val : null,
