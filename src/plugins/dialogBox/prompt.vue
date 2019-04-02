@@ -44,6 +44,7 @@
             :placeholder="hint"
             v-model="promptInput"
             ref="prompt-input"
+            v-text="defalutValue != null ? defalutValue : ''"
           />
           <div v-if="rule !== undefined && hasStartInput" class="ruleTip">
             <span v-if="isOkForRule" class="ok">{{ruleOkTip}}</span>
@@ -99,7 +100,8 @@ export default {
       ruleCallBack: () => {},
       isMultiline: false,
       isLogin: false,
-      sendSmsCodeCallBack: () => {}
+      sendSmsCodeCallBack: () => {},
+      defalutValue: null
     };
   },
   beforeMount() {

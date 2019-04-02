@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { SOME_RULES } from '@/utils/rules'
+
 export default {
     name: 'leaveDeclare',
     data() {
@@ -149,11 +151,11 @@ export default {
             if (type == 'company') {
                 this.$comfun.showDialogWithPrompt(this, '请输入您的原单位名称', undefined, true, '输入原单位名称', undefined, undefined, undefined, (leaveCompany) => {
                     this.leaveCompany = leaveCompany
-                }, undefined, true)
+                }, undefined, true, this.leaveCompany)
             } else if (type == 'reason') {
                 this.$comfun.showDialogWithPrompt(this, '请输入您在原单位无法离职原因', undefined, true, '输入原单位无法离职原因', undefined, undefined, undefined, (leaveReason) => {
                     this.leaveReason = leaveReason
-                }, undefined, true)
+                }, undefined, true, this.leaveReason)
             }
         },
         readFinish: function() {
@@ -161,6 +163,8 @@ export default {
                 this.$comfun.showToast(this, '请先填写离职证明信息')
                 return false
             }
+            if (this.leaveCompany != null && SOME_RULES.emoji.test(this.leaveCompany.trim())) { this.$comfun.showToast(this, '所在原单位不能含有特殊字符'); return false }
+            if (this.leaveReason != null && SOME_RULES.emoji.test(this.leaveReason.trim())) { this.$comfun.showToast(this, '无法离职原因不能含有特殊字符'); return false }
             this.$store.commit('setDriverRecruitData_PolicyDataInfo', {
                 key: 'leaveYear',
                 value: this.leaveYear

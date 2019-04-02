@@ -284,12 +284,13 @@ export default {
         })
       },
       // 显示带有输入框的dialog弹出框
-      showDialogWithPrompt: function (context, title, message, showCancel, hint, rule, ruleOkTip, ruleErrorTip, okCallBack, ruleCallBack, isMultiline) {
+      showDialogWithPrompt: function (context, title, message, showCancel, hint, rule, ruleOkTip, ruleErrorTip, okCallBack, ruleCallBack, isMultiline, defalutValue) {
         if (title === undefined) title = '未定义标题'
         if (showCancel === undefined) showCancel = true
         if (hint === undefined) hint = ''
         if (okCallBack === undefined) okCallBack = () => {}
         if (isMultiline === undefined) isMultiline = false
+        if (defalutValue === undefined) defalutValue = ''
         let btns = [
           {
             label: '取消',
@@ -312,7 +313,8 @@ export default {
           ruleErrorTip: ruleErrorTip,
           buttons: btns,
           ruleCallBack: ruleCallBack,
-          isMultiline: isMultiline
+          isMultiline: isMultiline,
+          defalutValue: defalutValue
         })
         return dialogPrompt
       },

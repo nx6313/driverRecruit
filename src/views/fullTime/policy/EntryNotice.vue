@@ -70,7 +70,7 @@ export default {
             userInfo: null,
             doItems: [
                 {
-                    title: '一寸红底正装照片',
+                    title: '二寸红底正装照片',
                     minTitle: '正装深色领带',
                     isUnfold: false,
                     isOk: false
