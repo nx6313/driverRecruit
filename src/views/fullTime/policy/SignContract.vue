@@ -2,7 +2,7 @@
     <!-- 专职司机文件签约单 -->
     <div class="signContract" v-if="userInfo">
         <div class="policyContentWrap">
-            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日阅读并签阅了公司《专职司机管理制度》、《司机证件征信声明》、《无犯罪记录声明》、《驾驶人员安全承诺书》、《入职登记表》、《专职司机薪酬保密承诺书》、《与原单位解除劳动关系证明》、《申报网约车驾驶员资格证承诺书》、《与原单位解除劳动关系证明》；我承诺将严格遵守上述文件中的各项规定，如有违反，愿意承担相应处罚以及相关责任。</p>
+            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日阅读并签阅了公司 《入职须知》、《薪酬保密承诺书》、《驾驶人员安全承诺书》、《无法提交离职证明》声明《无兼职工作声明》、《工衣西服费用声明》、《申报网约车驾驶员资格证承诺书》；我承诺将严格遵守上述文件中的各项规定，如有违反，愿意承担相应处罚以及相关责任。</p>
         </div>
         <span class="toSignBtn" @click="toSign">
             <span class="tip">{{signImgData == null ? '点这里签名' : ''}}</span>

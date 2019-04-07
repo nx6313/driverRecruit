@@ -11,7 +11,7 @@ import Dialogbox from '@/plugins/dialogBox/index.js'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
 // import html2Canvas from 'html2canvas'
 // import JsPDF from 'jspdf'
-import { BASE_URL } from '@/utils/constants'
+import { BASE_URL, APP_CONFIG } from '@/utils/constants'
 
 const Axios = axios.create({
   transformRequest: [function (data) {
@@ -24,7 +24,7 @@ const Axios = axios.create({
     }
     return ret != '' ? ret.substr(0, ret.length - 1) : ret
   }],
-  timeout: 10000
+  timeout: 20000
 })
 Axios.interceptors.response.use((response) => {
   return response
@@ -53,7 +53,7 @@ Axios.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 const FileAxios = axios.create({
-  timeout: 10000
+  timeout: 20000
 })
 FileAxios.interceptors.response.use((response) => {
   return response
@@ -129,6 +129,19 @@ export default {
         }
         return Axios(axiosOptions)
       },
+      http_get_: function (url, params) {
+        var headers = {}
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        var axiosOptions = {
+          method: 'GET',
+          headers: headers,
+          url: url
+        }
+        if (params) {
+          axiosOptions.params = params
+        }
+        return Axios(axiosOptions)
+      },
       http_post: function (context, url, params) {
         let token = null
         let secret = null
@@ -159,6 +172,19 @@ export default {
           axiosOptions.url = BASE_URL.server_address_development + url
         } else {
           axiosOptions.url = BASE_URL.server_address_production + url
+        }
+        if (params) {
+          axiosOptions.data = params
+        }
+        return Axios(axiosOptions)
+      },
+      http_post_: function (url, params) {
+        var headers = {}
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        var axiosOptions = {
+          method: 'POST',
+          headers: headers,
+          url: url
         }
         if (params) {
           axiosOptions.data = params
@@ -206,9 +232,26 @@ export default {
         axiosOptions.data = formData
         return FileAxios(axiosOptions)
       },
+      http_file_: function (url, params) {
+        var headers = {}
+        headers['Content-Type'] = 'multipart/form-data'
+        var axiosOptions = {
+          method: 'POST',
+          headers: headers,
+          url: url,
+          contentType: false,
+          processData: false
+        }
+        let formData = new FormData()
+        for (let key in params) {
+          formData.append(key, params[key])
+        }
+        axiosOptions.data = formData
+        return FileAxios(axiosOptions)
+      },
       // 判断当前是否为测试服访问
       getServiceType: function (context) {
-        let serviceType = this.getRequestAuto('serviceType') || context.$store.state.serviceType.type
+        let serviceType = context.$store.state.serviceType.type
         if (serviceType === 't') {
           context.$store.commit('updateServiceType', {
             type: 't'
@@ -221,9 +264,9 @@ export default {
           return 'd'
         } else {
           context.$store.commit('updateServiceType', {
-            type: 'p'
+            type: APP_CONFIG.serverEnvironment
           })
-          return 'p'
+          return APP_CONFIG.serverEnvironment
         }
       },
       // 判断url中是否包含用户登陆认证信息
@@ -646,6 +689,96 @@ export default {
           dialogPrompt.destory()
           dialogPrompt = null
         }
+      },
+      // 判断图片是否大于指定大小，如果小于直接返回图片不做任何处理，如果大于则压缩后再返回图片信息
+      compressImg: function(file, limit) {
+        let that = this
+        return new Promise(resolve => {
+          if (!file || !window.FileReader) {
+            resolve(file)
+          } else {
+            if (/^image/.test(file.type)) {
+              let reader = new FileReader()
+              reader.readAsDataURL(file)
+              reader.onloadend = function() {
+                let result = this.result
+                let img = new Image()
+                img.src = result
+                if (this.result.length <= limit * 1024) {
+                  resolve(file)
+                } else {
+                  let fileName = file.name
+                  img.onload = function() {
+                    let canvas = document.createElement('canvas')
+                    let ctx = canvas.getContext('2d')
+                    // 瓦片canvas
+                    let tCanvas = document.createElement('canvas')
+                    let tctx = tCanvas.getContext('2d')
+                    let width = img.width
+                    let height = img.height
+                    // 如果图片大于四百万像素，计算压缩比并将大小压至400万以下
+                    let ratio
+                    if ((ratio = width * height / 4000000) > 1) {
+                      ratio = Math.sqrt(ratio)
+                      width /= ratio
+                      height /= ratio
+                    } else {
+                      ratio = 1
+                    }
+                    canvas.width = width
+                    canvas.height = height
+                    // 铺底色
+                    ctx.fillStyle = '#fff'
+                    ctx.fillRect(0, 0, canvas.width, canvas.height)
+                    // 如果图片像素大于100万则使用瓦片绘制
+                    let count
+                    if ((count = width * height / 1000000) > 1) {
+                      count = ~~(Math.sqrt(count) + 1) // 计算要分成多少块瓦片
+                      // 计算每块瓦片的宽和高
+                      let nw = ~~(width / count)
+                      let nh = ~~(height / count)
+                      tCanvas.width = nw
+                      tCanvas.height = nh
+                      for (let i = 0; i < count; i++) {
+                        for (let j = 0; j < count; j++) {
+                          tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh)
+                          ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh)
+                        }
+                      }
+                    } else {
+                      ctx.drawImage(img, 0, 0, width, height)
+                    }
+                    // 进行最小压缩
+                    let ndata = canvas.toDataURL('image/jpeg', 0.7)
+                    // document.body.appendChild(canvas)
+                    tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0
+                    // 将 base64 数据转 file 文件
+                    let fileDataArr = ndata.split(',')
+                    let mime = fileDataArr[0].match(/:(.*?);/)[1]
+                    let bstr = atob(fileDataArr[1])
+                    let n = bstr.length
+                    let u8arr = new Uint8Array(n)
+                    while (n--) {
+                      u8arr[n] = bstr.charCodeAt(n)
+                    }
+                    // 下载保存到本地
+                    // let blob = new Blob([u8arr], { type: mime })
+                    // let urlObject = window.URL || window.webkitURL || window
+                    // let url = urlObject.createObjectURL(blob)
+                    // let aEl = document.createElement('a')
+                    // aEl.href = url
+                    // aEl.download = `压缩文件下载-${that.formatDate(new Date(), 'yyMdhms')}.jpeg`
+                    // aEl.click()
+                    // urlObject.revokeObjectURL(url)
+                    resolve(new File([u8arr], fileName, { type: mime }))
+                  }
+                }
+              }
+            } else {
+              resolve(file)
+            }
+          }
+        })
       }
       // convertPdf: function(pdfFileName, toPdfDom) {
       //   if (toPdfDom == undefined) toPdfDom = document.body.parentElement

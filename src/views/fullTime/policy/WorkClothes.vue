@@ -2,7 +2,7 @@
     <!-- 工衣西服费用申明 -->
     <div class="workClothes" v-if="userInfo">
         <div class="policyContentWrap">
-            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日自愿加入山西大昌网约车服务有限公司，本人承诺积极配合公司经办人员办理相关入职手续，并于 5 个工作日之内完成以下手续办理及材料提交，如果超过时限，将视为我自动放弃在贵公司的工作机会。</p>
+            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日自愿加入大昌网约车服务有限公司，本人承诺在参加培训期间完成工衣的测量，包含西服，西裤，衬衣及领带（费用共计500元）在此之后1年之内如发生离职，该费用将扣除，制作好之后自行领走，由此造成的损失将自行承担。</p>
         </div>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>

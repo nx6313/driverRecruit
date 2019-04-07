@@ -66,7 +66,7 @@ export default {
     },
     savePageData() {
       this.$store.commit('setPageData', {
-        data: this.$children[0].$data
+        data: this.$children[this.$children.length - 1].$data
       })
     },
     getPageData() {

@@ -2,7 +2,7 @@
     <!-- 无兼职工作申明 -->
     <div class="noPartTimeJob" v-if="userInfo">
         <div class="policyContentWrap">
-            <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日自愿加入山西大昌网约车服务有限公司，本人承诺所提交的无犯罪记录证明属实，如此证明为虚假或伪造证明，由此造成不能继续从事此项工作的，一切后果由本人承担。</p>
+            <p>本人 <u> {{userInfo.personName}} </u>，身份证号码 <u> {{userInfo.idcarNo}} </u>，承诺在大昌网约车公司就职同时没有和其他任何单位签定有劳动关系或从事任何形式的兼职工作，如有事实隐瞒，愿意接受大昌网约车公司追究违约责任，扣除10000元车辆押金。</p>
         </div>
         <span class="readFinish" @click="readFinish" v-if="canReadFinishTime < 0">阅读完毕</span>
         <span class="readFinish readFinishTimeDown" v-if="canReadFinishTime >= 0">{{`（ ${canReadFinishTime} 秒 ） 阅读完毕`}}</span>
