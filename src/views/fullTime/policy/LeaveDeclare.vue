@@ -7,7 +7,7 @@
                 <span class="statement">特此声明！</span>
             </div>
             <div :class="['cardWrap', 'leaveDeclareWrap', leaveDeclareBase64 == null ? 'normalCardWrap' : '']">
-                <input type="file" class="fileInput" title="请选择《离职证明》申明照片" accept="image/*" @change="selectFile($event, 'leave_declare')">
+                <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择《离职证明》申明照片" accept="image/*" @change="selectFile($event, 'leave_declare')">
                 <img class="cardDisplay showBorder" v-lazy="require('@/assets/leave_prove.png')">
                 <span v-if="leaveDeclareBase64 != null" class="imgPreview hasBorder" :style="leaveDeclareBase64 != null ? { 'background-image': `url(${leaveDeclareBase64})` } : {}"></span>
             </div>
@@ -38,6 +38,7 @@ export default {
     name: 'leaveDeclare',
     data() {
         return {
+            showFileSelectInput: true,
             canReadFinishTime: 10, // 可以点击阅读完毕的倒计时
             userInfo: null,
             leaveYear: null,
@@ -75,6 +76,10 @@ export default {
                 this.leaveDeclare = event.target.files[0]
                 this.imgPreview(this.leaveDeclare, type)
             }
+            this.showFileSelectInput = false
+            setTimeout(() => {
+                this.showFileSelectInput = true
+            }, 100)
         },
         imgPreview: function(file, type) {
             if (!file || !window.FileReader) return false

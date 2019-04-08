@@ -9,9 +9,11 @@ import '@/plugins/comm.css'
 import '@/plugins/animate.css'
 import Dialogbox from '@/plugins/dialogBox/index.js'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
+import DialogCardDetection from '@/plugins/dialogBox/card-detection.js'
+import Api from '@/utils/api.js'
 // import html2Canvas from 'html2canvas'
 // import JsPDF from 'jspdf'
-import { BASE_URL, APP_CONFIG } from '@/utils/constants'
+import { BASE_URL, APP_CONFIG, CONFIG_DATA } from '@/utils/constants'
 
 const Axios = axios.create({
   transformRequest: [function (data) {
@@ -588,56 +590,45 @@ export default {
       // 自动判断是以普通方式跳转页面传值还是通过hash值方式，并获取网址中的参数
       getRequestAuto: function (key) {
         let url = location.href
-        if (url.indexOf('?') !== -1) {
+        let search = location.search
+        if (search === '') {
           let safe = true
           if (this.decryptedData(decodeURIComponent(url.split('?')[1])) == '') safe = false
-          return this.getRequest(key, safe)
+          return this.getRequestHash(key, safe)
         } else {
-          // hash 模式默认按照加密处理
-          return this.getRequestHash(key, true)
+          let safe = true
+          if (this.decryptedData(decodeURIComponent(search.substr(1))) == '') safe = false
+          return this.getRequest(key, safe)
         }
       },
       // 获取网址中的参数
       getRequest: function (key, safe) {
-        var url = location.href
-        var theRequest = {}
-        if (url.indexOf('?') !== -1) {
-          var str = decodeURIComponent(url.split('?')[1])
-          if (safe) {
-            str = this.decryptedData(str)
-          }
-          var strs = str.split('&')
-          for (var i = 0; i < strs.length; i++) {
-            theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
-          }
+        let reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)")
+        let url = location.search
+        let str = decodeURIComponent(url.substr(1))
+        if (safe) {
+          str = this.decryptedData(str)
         }
-        if (key) {
-          return theRequest[key]
-        }
-        return theRequest
+        let matchParams = str.match(reg)
+        if (matchParams != null) return matchParams[2]
+        return null
       },
       // 获取网址中的hash值
       getRequestHash: function (key, safe) {
-        var hash = window.location.hash
+        var hash = location.hash
         var theRequest = {}
-        if (hash.indexOf('#/') !== -1) {
-          try {
-            var str = decodeURIComponent(hash.split('#/')[1])
-            if (safe) {
-              str = this.decryptedData(str)
-            }
-            var strs = str.split('&')
-            for (var i = 0; i < strs.length; i++) {
-              theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
-            }
-          } catch (error) {
-            return null
-          }
+        var str = decodeURIComponent(hash.split('?')[1])
+        if (safe) {
+          str = this.decryptedData(str)
+        }
+        var strs = str.split('&')
+        for (var i = 0; i < strs.length; i++) {
+          theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
         }
         if (key) {
           return theRequest[key]
         }
-        return theRequest
+        return null
       },
       // aes加密
       encryptedData(data) {
@@ -778,6 +769,260 @@ export default {
               resolve(file)
             }
           }
+        })
+      },
+      cardImgDetection: function(context, file, callBack, type) {
+        if (!APP_CONFIG.openCredentialsDetaction) {
+          if (callBack) callBack.apply()
+          return false
+        }
+        // 身份证正面信息
+        let idcarda_birthday = null // 生日
+        let idcarda_sex = null // 性别
+        let idcarda_address = null // 地址
+        let idcarda_name = null // 姓名
+        let idcarda_image = null // 身份证头像照片(暂不提供)
+        let idcarda_idcard = null // 身份证号
+        let idcarda_nation = null // 民族
+        // 身份证反面信息
+        let idcardb_authority = null // 签发机关
+        let idcardb_timelimit = null // 有效期限
+        // 驾驶证正面信息
+        let drivecarda_address = null // 住址
+        let drivecarda_begin_date = null // 有效起始日期
+        let drivecarda_birthday = null // 生日
+        let drivecarda_end_date = null // 有效截止日期
+        let drivecarda_firstGetDocDate = null // 初次领证日期
+        let drivecarda_idcard = null // 驾驶证号
+        let drivecarda_name = null // 姓名
+        let drivecarda_nationality = null // 国籍
+        let drivecarda_sex = null // 性别
+        let drivecarda_type = null // 准驾车型
+        // 驾驶证副页信息
+        let drivecardb_record = null // 记录
+        let drivecardb_file_number = null // 档案编号
+        let drivecardb_name = null // 姓名
+        let drivecardb_barcode = null // 条形码编号
+        let drivecardb_idcard = null // 驾驶证号
+        // 行驶证正面信息
+        let runcarda_carType = null
+        let runcarda_model = null
+        let runcarda_address = null
+        let runcarda_engine = null
+        let runcarda_register_date = null
+        let runcarda_use_Property = null
+        let runcarda_vin = null
+        let runcarda_carNumber = null
+        let runcarda_owner = null
+        let runcarda_issue_date = null
+        // 行驶证副页信息
+        let runcardb_recordId = null
+        let runcardb_passengers = null
+        let runcardb_overall_dimension = null
+        let runcardb_load_weight = null
+        let runcardb_curb_weight = null
+        let runcardb_cross_weight = null
+        let runcardb_carNumber = null
+        let runcardb_barcode = null
+        let runcardb_towing_capacity = null
+        let runcardb_inspection_record = null
+        let runcardb_note = null
+
+        let tip = ''
+        let aboutDiscernKey = ''
+        let aboutDiscernApi = ''
+        let aboutCheckKey = ''
+        let aboutCheckApi = ''
+        if (type === 'id_card_a') {
+          tip = '正在检测身份证件正面是否有效'
+          aboutDiscernKey = CONFIG_DATA.idCardOcrApiKey
+          aboutDiscernApi = Api.dataProIdCard
+          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          aboutCheckApi = Api.dataProRealNameAuth
+        } else if (type === 'id_card_b') {
+          tip = '正在检测身份证件反面是否有效'
+          aboutDiscernKey = CONFIG_DATA.idCardOcrApiKey
+          aboutDiscernApi = Api.dataProIdCard
+          // aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          // aboutCheckApi = Api.dataProRealNameAuth
+        } else if (type === 'drive_card_a') {
+          tip = '正在检测驾驶证件正面是否有效'
+          aboutDiscernKey = CONFIG_DATA.driverCardOcrApiKey
+          aboutDiscernApi = Api.dataProDriverCard
+          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          aboutCheckApi = Api.dataProRealNameAuth
+        } else if (type === 'drive_card_b') {
+          tip = '正在检测驾驶证件反面是否有效'
+          aboutDiscernKey = CONFIG_DATA.driverCardOcrApiKey
+          aboutDiscernApi = Api.dataProDriverCard
+          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          aboutCheckApi = Api.dataProRealNameAuth
+        } else if (type === 'run_card_a') {
+          tip = '正在检测行驶证件正面是否有效'
+          aboutDiscernKey = CONFIG_DATA.runCardOcrApiKey
+          aboutDiscernApi = Api.dataProRunCard
+          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          aboutCheckApi = Api.dataProRealNameAuth
+        } else if (type === 'run_card_b') {
+          tip = '正在检测行驶证件反面是否有效'
+          aboutDiscernKey = CONFIG_DATA.runCardOcrApiKey
+          aboutDiscernApi = Api.dataProRunCard
+          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          aboutCheckApi = Api.dataProRealNameAuth
+        } else {
+          return false
+        }
+        let cardDetactionDialog = DialogCardDetection.installCardDetection({
+          tip: tip,
+          stepInfo: '正在上传检测信息'
+        })
+        // 保持图片在 1000 KB 之下
+        this.compressImg(file, 1000).then(result => {
+          this.http_file_(Api.dataProUploadImg, {
+            appkey: aboutDiscernKey,
+            file: result
+          }).then(request => {
+            if (request.data.code === '10000') {
+              cardDetactionDialog.updateStepInfo('正在识别需检测信息')
+              this.http_post_(aboutDiscernApi, {
+                key: aboutDiscernKey,
+                imageId: request.data.data
+              }).then(request => {
+                if (request.data.code === '10000') {
+                  // 识别到卡片信息，进行后续处理
+                  if (type === 'id_card_a') {
+                    idcarda_birthday = request.data.data.birthday
+                    idcarda_sex = request.data.data.sex
+                    idcarda_address = request.data.data.address
+                    idcarda_name = request.data.data.name
+                    idcarda_image = request.data.data.image
+                    idcarda_idcard = request.data.data.idcard
+                    idcarda_nation = request.data.data.nation
+                    if (idcarda_birthday === undefined || idcarda_sex === undefined || idcarda_address === undefined
+                        || idcarda_name === undefined || idcarda_image === undefined || idcarda_idcard === undefined || idcarda_nation === undefined) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '请选择正确且清晰的身份证正面图')
+                      return false
+                    }
+                    cardDetactionDialog.updateStepInfo('正在比对数据')
+                    this.http_post_(aboutCheckApi, {
+                      key: aboutCheckKey,
+                      name: idcarda_name,
+                      idcard: idcarda_idcard
+                    }).then(request => {
+                      if (request.data.code === '10000') {
+                        cardDetactionDialog.close()
+                        if (request.data.data.result === '1') {
+                          this.showToast(context, '身份信息比对成功')
+                          if (callBack) callBack.apply()
+                        } else {
+                          this.showToast(context, '身份信息不匹配')
+                        }
+                      } else {
+                        cardDetactionDialog.close()
+                        this.showToast(context, request.data.message)
+                      }
+                    }, error => {
+                      console.log(error)
+                      cardDetactionDialog.close()
+                      this.showToast(context, '比对出错，-1')
+                    })
+                  } else if (type === 'id_card_b') {
+                    idcardb_authority = request.data.data.authority
+                    idcardb_timelimit = request.data.data.timelimit
+                    cardDetactionDialog.close()
+                    if (idcardb_authority === undefined || idcardb_timelimit === undefined) {
+                      this.showToast(context, '请选择正确且清晰的身份证反面图')
+                      return false
+                    }
+                    if (callBack) callBack.apply()
+                  } else if (type === 'drive_card_a') {
+                    drivecarda_address = request.data.data.info_Positive.address
+                    drivecarda_begin_date = request.data.data.info_Positive.begin_date
+                    drivecarda_birthday = request.data.data.info_Positive.birthday
+                    drivecarda_end_date = request.data.data.info_Positive.end_date
+                    drivecarda_firstGetDocDate = request.data.data.info_Positive.firstGetDocDate
+                    drivecarda_idcard = request.data.data.info_Positive.idcard
+                    drivecarda_name = request.data.data.info_Positive.name
+                    drivecarda_nationality = request.data.data.info_Positive.nationality
+                    drivecarda_sex = request.data.data.info_Positive.sex
+                    drivecarda_type = request.data.data.info_Positive.type
+                    if (drivecarda_address === undefined || drivecarda_begin_date === undefined || drivecarda_birthday === undefined
+                        || drivecarda_end_date === undefined || drivecarda_firstGetDocDate === undefined || drivecarda_idcard === undefined
+                        || drivecarda_name === undefined || drivecarda_nationality === undefined || drivecarda_sex === undefined || drivecarda_type === undefined) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '请选择正确且清晰的驾驶证正面图')
+                      return false
+                    }
+                  } else if (type === 'drive_card_b') {
+                    drivecardb_record = request.data.data.info_negative.record
+                    drivecardb_file_number = request.data.data.info_negative.file_number
+                    drivecardb_name = request.data.data.info_negative.name
+                    drivecardb_barcode = request.data.data.info_negative.barcode
+                    drivecardb_idcard = request.data.data.info_negative.idcard
+                    if (drivecardb_record === undefined || drivecardb_file_number === undefined || drivecardb_name === undefined
+                        || drivecardb_barcode === undefined || drivecardb_idcard === undefined) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '请选择正确且清晰的驾驶证副页图')
+                      return false
+                    }
+                  } else if (type === 'run_card_a') {
+                    runcarda_carType = request.data.data.info_Positive.carType
+                    runcarda_model = request.data.data.info_Positive.model
+                    runcarda_address = request.data.data.info_Positive.address
+                    runcarda_engine = request.data.data.info_Positive.engine
+                    runcarda_register_date = request.data.data.info_Positive.register_date
+                    runcarda_use_Property = request.data.data.info_Positive.use_Property
+                    runcarda_vin = request.data.data.info_Positive.vin
+                    runcarda_carNumber = request.data.data.info_Positive.carNumber
+                    runcarda_owner = request.data.data.info_Positive.owner
+                    runcarda_issue_date = request.data.data.info_Positive.issue_date
+                    if (runcarda_carType === undefined || runcarda_model === undefined || runcarda_address === undefined
+                        || runcarda_engine === undefined || runcarda_register_date === undefined || runcarda_use_Property === undefined
+                        || runcarda_vin === undefined || runcarda_carNumber === undefined || runcarda_owner === undefined || runcarda_issue_date === undefined) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '请选择正确且清晰的行驶证正面图')
+                      return false
+                    }
+                  } else if (type === 'run_card_b') {
+                    runcardb_recordId = request.data.data.info_negative.recordId
+                    runcardb_passengers = request.data.data.info_negative.passengers
+                    runcardb_overall_dimension = request.data.data.info_negative.overall_dimension
+                    runcardb_load_weight = request.data.data.info_negative.load_weight
+                    runcardb_curb_weight = request.data.data.info_negative.curb_weight
+                    runcardb_cross_weight = request.data.data.info_negative.cross_weight
+                    runcardb_carNumber = request.data.data.info_negative.carNumber
+                    runcardb_barcode = request.data.data.info_negative.barcode
+                    runcardb_towing_capacity = request.data.data.info_negative.towing_capacity
+                    runcardb_inspection_record = request.data.data.info_negative.inspection_record
+                    runcardb_note = request.data.data.info_negative.note
+                    if (runcardb_recordId === undefined || runcardb_passengers === undefined || runcardb_overall_dimension === undefined
+                        || runcardb_load_weight === undefined || runcardb_curb_weight === undefined || runcardb_cross_weight === undefined
+                        || runcardb_carNumber === undefined || runcardb_barcode === undefined || runcardb_towing_capacity === undefined
+                        || runcardb_inspection_record === undefined || runcardb_note === undefined) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '请选择正确且清晰的行驶证副页图')
+                      return false
+                    }
+                  }
+                } else {
+                  cardDetactionDialog.close()
+                  this.showToast(context, '识别失败，请上传正确的卡片信息')
+                }
+              }, error => {
+                console.log(error)
+                cardDetactionDialog.close()
+                this.showToast(context, '识别出错，-1')
+              })
+            } else {
+              cardDetactionDialog.close()
+              this.showToast(context, '识别上传出错，' + request.data.msg)
+            }
+          }, error => {
+            console.log(error)
+            cardDetactionDialog.close()
+            this.showToast(context, '识别上传出错，-1')
+          })
         })
       }
       // convertPdf: function(pdfFileName, toPdfDom) {

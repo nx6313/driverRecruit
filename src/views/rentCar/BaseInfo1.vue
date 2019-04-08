@@ -3,7 +3,7 @@
     <BaseInfoItem title="请填写您的基本信息" :titleIcon="require('@/assets/logo.png')" :inputs="input1"/>
     <BaseInfoItem title="是否拥有网约车司机从业资格证" :titleIcon="require('@/assets/logo.png')" :inputs="input2" :hasSlot="showCertificationUpload" :slotStyle="{ paddingBottom: '0.8rem' }">
       <div :class="['cardWrap', 'certificationWrap', certificationBase64 == null ? 'normalCardWrap' : '']">
-        <input type="file" class="fileInput" title="请选择网约车从业资格证" accept="image/*" @change="selectFile($event, 'certification_record')">
+        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择网约车从业资格证" accept="image/*" @change="selectFile($event, 'certification_record')">
         <img class="cardDisplay showBorder" v-lazy="require('@/assets/certification_record.png')">
         <span v-if="certificationBase64 != null" class="imgPreview hasBorder" :style="certificationBase64 != null ? { 'background-image': `url(${certificationBase64})` } : {}"></span>
       </div>
@@ -26,6 +26,7 @@ export default {
   },
   data() {
     return {
+      showFileSelectInput: true,
       certification: null,
       certificationBase64: null,
       showCertificationUpload: false,
@@ -98,6 +99,10 @@ export default {
         this.certification = event.target.files[0]
         this.imgPreview(this.certification, type)
       }
+      this.showFileSelectInput = false
+      setTimeout(() => {
+        this.showFileSelectInput = true
+      }, 100)
     },
     imgPreview: function(file, type) {
       if (!file || !window.FileReader) return false

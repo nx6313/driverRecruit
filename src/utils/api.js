@@ -33,7 +33,7 @@ export default {
     // 数据宝 行驶证OCR识别
     dataProRunCard: `${BASE_URL.datapro_server_base_address}/trade/user/2132`, // key=您申请的key值&imageId=图片ID
     // 数据宝 人像比对（尊享版）
-    dataProUserCardCompare: `${BASE_URL.datapro_server_base_address}/communication/personal/2061`, // key=您申请的key值&name=姓名&idcard=身份证号&imageI
+    // dataProUserCardCompare: `${BASE_URL.datapro_server_base_address}/communication/personal/2061`, // key=您申请的key值&name=姓名&idcard=身份证号&imageI
     // 数据宝 实名认证(尊享版)
     dataProRealNameAuth: `${BASE_URL.datapro_server_base_address}/communication/personal/1882` // key=您申请的key值&name=姓名&idcard=身份证号
 }

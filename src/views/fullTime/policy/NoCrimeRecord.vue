@@ -5,7 +5,7 @@
             <p>本人 <u> {{userInfo.personName}} </u>，{{$comfun.formatDate(currentDate, 'yyyy')}} 年 {{$comfun.formatDate(currentDate, 'MM')}} 月 {{$comfun.formatDate(currentDate, 'dd')}} 日自愿加入山西大昌网约车服务有限公司，本人承诺所提交的无犯罪记录证明属实，如此证明为虚假或伪造证明，由此造成不能继续从事此项工作的，一切后果由本人承担。</p>
         </div>
         <div :class="['cardWrap', 'noCrimeRecordWrap', noCrimeRecordBase64 == null ? 'normalCardWrap' : '']">
-            <input type="file" class="fileInput" title="请选择无犯罪记录证明照片" accept="image/*" @change="selectFile($event, 'no_crime_record')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择无犯罪记录证明照片" accept="image/*" @change="selectFile($event, 'no_crime_record')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/no_crime.png')">
             <span v-if="noCrimeRecordBase64 != null" class="imgPreview hasBorder" :style="noCrimeRecordBase64 != null ? { 'background-image': `url(${noCrimeRecordBase64})` } : {}"></span>
         </div>
@@ -21,6 +21,7 @@ export default {
     name: 'noCrimeRecord',
     data() {
         return {
+            showFileSelectInput: true,
             canReadFinishTime: 10, // 可以点击阅读完毕的倒计时
             userInfo: null,
             noCrimeRecord: null,
@@ -51,6 +52,10 @@ export default {
                 this.noCrimeRecord = event.target.files[0]
                 this.imgPreview(this.noCrimeRecord, type)
             }
+            this.showFileSelectInput = false
+            setTimeout(() => {
+                this.showFileSelectInput = true
+            }, 100)
         },
         imgPreview: function(file, type) {
             if (!file || !window.FileReader) return false

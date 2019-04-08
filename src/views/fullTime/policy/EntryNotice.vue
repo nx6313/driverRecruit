@@ -10,14 +10,14 @@
             <div v-bind:key="`unfold-${doIndex}`" :class="['line', 'doItemUnfoldWrap', doItem.isUnfold ? 'isUnfoldContent' : '']" v-if="doItem.isUnfold">
                 <template v-if="doIndex === 0">
                     <div :class="['cardWrap', 'userPhotoWrap', userPhotoBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择红底正装照片" accept="image/*" @change="selectFile($event, 'user_photo', doItem)">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择红底正装照片" accept="image/*" @change="selectFile($event, 'user_photo', doItem)">
                         <img class="cardDisplay showBorder" v-lazy="require('@/assets/user_photo.png')">
                         <span v-if="userPhotoBase64 != null" class="imgPreview hasBorder" :style="userPhotoBase64 != null ? { 'background-image': `url(${userPhotoBase64})` } : {}"></span>
                     </div>
                 </template>
                 <template v-if="doIndex === 1">
                     <div :class="['cardWrap', 'salaryCardWrap', salaryCardBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择建行工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择建行工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
                         <img class="cardDisplay showBorder" v-lazy="require('@/assets/salary_card.png')">
                         <span v-if="salaryCardBase64 != null" class="imgPreview hasBorder" :style="salaryCardBase64 != null ? { 'background-image': `url(${salaryCardBase64})` } : {}"></span>
                     </div>
@@ -28,28 +28,28 @@
                 </template>
                 <template v-if="doIndex === 2">
                     <div :class="['cardWrap', 'salaryCardWrap', accountCardBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择户口簿个人页" accept="image/*" @change="selectFile($event, 'account_card', doItem)">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择户口簿个人页" accept="image/*" @change="selectFile($event, 'account_card', doItem)">
                         <img class="cardDisplay showBorder" v-lazy="require('@/assets/user_hk.png')">
                         <span v-if="accountCardBase64 != null" class="imgPreview hasBorder" :style="accountCardBase64 != null ? { 'background-image': `url(${accountCardBase64})` } : {}"></span>
                     </div>
                 </template>
                 <template v-if="doIndex === 3">
                     <div :class="['cardWrap', 'salaryCardWrap', liverBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择肝功能体检报告" accept="image/*" @change="selectFile($event, 'liver', doItem)">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择肝功能体检报告" accept="image/*" @change="selectFile($event, 'liver', doItem)">
                         <div class="cardDisplay showBorder h8"></div>
                         <span v-if="liverBase64 != null" class="imgPreview hasBorder" :style="liverBase64 != null ? { 'background-image': `url(${liverBase64})` } : {}"></span>
                     </div>
                 </template>
                 <template v-if="doIndex === 4">
                     <div :class="['cardWrap', 'salaryCardWrap', heartBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择心电体检报告" accept="image/*" @change="selectFile($event, 'heart', doItem)">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择心电体检报告" accept="image/*" @change="selectFile($event, 'heart', doItem)">
                         <div class="cardDisplay showBorder h8"></div>
                         <span v-if="heartBase64 != null" class="imgPreview hasBorder" :style="heartBase64 != null ? { 'background-image': `url(${heartBase64})` } : {}"></span>
                     </div>
                 </template>
                 <template v-if="doIndex === 5">
                     <div :class="['cardWrap', 'salaryCardWrap', xLightBase64 == null ? 'normalCardWrap' : '']">
-                        <input type="file" class="fileInput" title="请选择X光胸透体检报告" accept="image/*" @change="selectFile($event, 'x_light', doItem)">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择X光胸透体检报告" accept="image/*" @change="selectFile($event, 'x_light', doItem)">
                         <div class="cardDisplay showBorder h8"></div>
                         <span v-if="xLightBase64 != null" class="imgPreview hasBorder" :style="xLightBase64 != null ? { 'background-image': `url(${xLightBase64})` } : {}"></span>
                     </div>
@@ -66,6 +66,7 @@ export default {
     name: 'entryNotice',
     data() {
         return {
+            showFileSelectInput: true,
             canReadFinishTime: 10, // 可以点击上传且阅读完毕的倒计时
             userInfo: null,
             doItems: [
@@ -200,6 +201,10 @@ export default {
                 this.xLight = event.target.files[0]
                 this.imgPreview(this.xLight, type, doItem)
             }
+            this.showFileSelectInput = false
+            setTimeout(() => {
+                this.showFileSelectInput = true
+            }, 100)
         },
         imgPreview: function(file, type, doItem) {
             if (!file || !window.FileReader) return false

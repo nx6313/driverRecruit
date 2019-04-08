@@ -10,13 +10,13 @@
       <div class="topTip">成为大昌出行司机</div>
       <div class="title">收入更稳定，更多上升空间，更多权益保障</div>
       <div class="dec">稳定体面的事业选择，为您和家人带来更好的生活。</div>
-      <div class="selecterWrap" :style="{ height: `calc(3.1rem * ${Math.ceil(selecters.length / 2)} + 1.6rem + 0.9rem * (${Math.ceil(selecters.length / 2)} - 1))` }">
-        <div class="currentProgressOfAuditForFullTime" v-if="progressOfAudit != null && progressOfAudit != ''">
+      <div class="selecterWrap">
+        <p class="currentProgressOfAuditForFullTime" v-if="progressOfAudit != null && progressOfAudit != ''">
           <span class="tip">申请自营司机进度：</span>
           <span class="trail">
             <Marquee :lists="[progressOfAudit]"></Marquee>
           </span>
-        </div>
+        </p>
         <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
           <span class="selecterItemName">{{sel.name}}</span>
           <span class="selecterItemTip">了解详情</span>
@@ -362,10 +362,9 @@ export default {
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: space-between;
-      align-content: space-between;
       align-items: center;
-      margin-top: 2rem;
-      margin-bottom: 0.9rem;
+      margin-top: 2.6rem;
+      margin-bottom: 1.1rem;
       .selecterItemWrap {
         position: relative;
         display: inline-block;
@@ -390,6 +389,9 @@ export default {
           margin-top: 0.4rem;
         }
       }
+      .selecterItemWrap:nth-of-type(n + 3) {
+        margin-top: 1.2rem;
+      }
       .selecterItemIsRecommend::before {
         content: '';
         position: absolute;
@@ -404,9 +406,11 @@ export default {
       }
       .currentProgressOfAuditForFullTime {
         position: absolute;
-        top: -1.4rem;
+        top: -1.9rem;
         left: 0;
         font-size: 0.7rem;
+        margin: 0;
+        padding: 0;
         padding-left: 1.2rem;
         color: #363636;
         width: calc(100% - 1.4rem);

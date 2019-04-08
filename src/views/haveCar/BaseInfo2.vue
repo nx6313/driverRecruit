@@ -5,7 +5,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择身份证正面照" accept="image/*" @change="selectFile($event, 'id_card_a')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择身份证正面照" accept="image/*" @change="selectFile($event, 'id_card_a')">
             <img class="cardDisplay" v-lazy="require('@/assets/id_card_a.jpg')">
             <span v-if="idCardABase64 != null" class="imgPreview" :style="idCardABase64 != null ? { 'background-image': `url(${idCardABase64})` } : {}"></span>
           </div>
@@ -13,7 +13,7 @@
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择身份证国徽面照" accept="image/*" @change="selectFile($event, 'id_card_b')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择身份证国徽面照" accept="image/*" @change="selectFile($event, 'id_card_b')">
             <img class="cardDisplay" v-lazy="require('@/assets/id_card_b.jpg')">
             <span v-if="idCardBBase64 != null" class="imgPreview" :style="idCardBBase64 != null ? { 'background-image': `url(${idCardBBase64})` } : {}"></span>
           </div>
@@ -26,7 +26,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择驾驶证正面照" accept="image/*" @change="selectFile($event, 'drive_card_a')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择驾驶证正面照" accept="image/*" @change="selectFile($event, 'drive_card_a')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
             <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
           </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择驾驶证副页照" accept="image/*" @change="selectFile($event, 'drive_card_b')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择驾驶证副页照" accept="image/*" @change="selectFile($event, 'drive_card_b')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
             <span v-if="driveCardBBase64 != null" class="imgPreview hasBorder" :style="driveCardBBase64 != null ? { 'background-image': `url(${driveCardBBase64})` } : {}"></span>
           </div>
@@ -47,7 +47,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/run_card_a.jpg')">
             <span v-if="runCardABase64 != null" class="imgPreview hasBorder" :style="runCardABase64 != null ? { 'background-image': `url(${runCardABase64})` } : {}"></span>
           </div>
@@ -55,7 +55,7 @@
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/run_card_b.jpg')">
             <span v-if="runCardBBase64 != null" class="imgPreview hasBorder" :style="runCardBBase64 != null ? { 'background-image': `url(${runCardBBase64})` } : {}"></span>
           </div>
@@ -68,7 +68,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/people_car_photo.jpg')">
             <span v-if="peopleCarPhotoBase64 != null" class="imgPreview hasBorder" :style="peopleCarPhotoBase64 != null ? { 'background-image': `url(${peopleCarPhotoBase64})` } : {}"></span>
           </div>
@@ -118,7 +118,6 @@
 </template>
 
 <script>
-import { APP_CONFIG, CONFIG_DATA } from '@/utils/constants'
 import Modal from '@/plugins/dialogBox/modal.vue'
 
 export default {
@@ -128,6 +127,7 @@ export default {
   },
   data() {
     return {
+      showFileSelectInput: true,
       showPeopleCarPhotoDisplay: false,
       idCardA: null,
       idCardB: null,
@@ -179,6 +179,10 @@ export default {
         this.peopleCarPhoto = event.target.files[0]
         this.imgPreview(this.peopleCarPhoto, type)
       }
+      this.showFileSelectInput = false
+      setTimeout(() => {
+        this.showFileSelectInput = true
+      }, 100)
     },
     imgPreview: function(file, type) {
       if (!file || !window.FileReader) return false
@@ -186,7 +190,7 @@ export default {
       reader.readAsDataURL(file)
       reader.onloadend = (event) => {
         if (type == 'id_card_a') {
-          this.cardImgDetection(this.idCardA, () => {
+          this.$comfun.cardImgDetection(this, this.idCardA, () => {
             this.uploadCardFile(this.idCardA, (path) => {
               this.idCardABase64 = event.target.result
               this.$store.commit('setDriverRecruitData_CardInfoByKey', {
@@ -199,7 +203,7 @@ export default {
             })
           }, type)
         } else if (type == 'id_card_b') {
-          this.cardImgDetection(this.idCardB, () => {
+          this.$comfun.cardImgDetection(this, this.idCardB, () => {
             this.uploadCardFile(this.idCardB, (path) => {
               this.idCardBBase64 = event.target.result
               this.$store.commit('setDriverRecruitData_CardInfoByKey', {
@@ -212,7 +216,7 @@ export default {
             })
           }, type)
         } else if (type == 'drive_card_a') {
-          this.cardImgDetection(this.driveCardA, () => {
+          this.$comfun.cardImgDetection(this, this.driveCardA, () => {
             this.uploadCardFile(this.driveCardA, (path) => {
               this.driveCardABase64 = event.target.result
               this.$store.commit('setDriverRecruitData_CardInfoByKey', {
@@ -225,7 +229,7 @@ export default {
             })
           }, type)
         } else if (type == 'drive_card_b') {
-          this.cardImgDetection(this.driveCardB, () => {
+          this.$comfun.cardImgDetection(this, this.driveCardB, () => {
             this.uploadCardFile(this.driveCardB, (path) => {
               this.driveCardBBase64 = event.target.result
               this.$store.commit('setDriverRecruitData_CardInfoByKey', {
@@ -238,7 +242,7 @@ export default {
             })
           }, type)
         } else if (type == 'run_card_a') {
-          this.cardImgDetection(this.runCardA, () => {
+          this.$comfun.cardImgDetection(this, this.runCardA, () => {
             this.uploadCardFile(this.runCardA, (path) => {
               this.runCardABase64 = event.target.result
               this.$store.commit('setDriverRecruitData_CardInfoByKey', {
@@ -251,7 +255,7 @@ export default {
             })
           }, type)
         } else if (type == 'run_card_b') {
-          this.cardImgDetection(this.runCardB, () => {
+          this.$comfun.cardImgDetection(this, this.runCardB, () => {
             this.uploadCardFile(this.runCardB, (path) => {
               this.runCardBBase64 = event.target.result
               this.$store.commit('setDriverRecruitData_CardInfoByKey', {
@@ -276,60 +280,6 @@ export default {
           })
         }
       }
-    },
-    cardImgDetection: function(file, callBack, type) {
-      if (!APP_CONFIG.openCredentialsDetaction) {
-        if (callBack) callBack.apply()
-        return false
-      }
-      let tip = ''
-      if (type === 'id_card_a') {
-        tip = '正在检测身份证件正面是否有效'
-      } else if (type === 'id_card_b') {
-        tip = '正在检测身份证件反面是否有效'
-      } else if (type === 'drive_card_a') {
-        tip = '正在检测驾驶证件正面是否有效'
-      } else if (type === 'drive_card_b') {
-        tip = '正在检测驾驶证件反面是否有效'
-      } else if (type === 'run_card_a') {
-        tip = '正在检测行驶证件正面是否有效'
-      } else if (type === 'run_card_b') {
-        tip = '正在检测行驶证件反面是否有效'
-      }
-      let cardDetactionDialog = this.$dialog_card_detection({
-        tip: tip
-      })
-      // 保持图片在 1000 KB 之下
-      this.$comfun.compressImg(file, 1000).then(result => {
-        this.$comfun.http_file_(this.$api.dataProUploadImg, {
-          appkey: CONFIG_DATA.idCardOcrApiKey,
-          file: result
-        }).then(request => {
-          if (request.data.code === '10000') {
-            this.$comfun.http_post_(this.$api.dataProIdCard, {
-              key: CONFIG_DATA.idCardOcrApiKey,
-              imageId: request.data.data
-            }).then(request => {
-              cardDetactionDialog.close()
-              if (request.data.code === '10000') {
-                this.$comfun.showToast(this, request.data.message)
-                if (callBack) callBack.apply()
-              } else {
-                this.$comfun.showToast(this, request.data.message)
-              }
-            }, error => {
-              cardDetactionDialog.close()
-              this.$comfun.showToast(this, '识别出错，-1')
-            })
-          } else {
-            cardDetactionDialog.close()
-            this.$comfun.showToast(this, '识别上传出错，' + request.data.msg)
-          }
-        }, error => {
-          cardDetactionDialog.close()
-          this.$comfun.showToast(this, '识别上传出错，-1')
-        })
-      })
     },
     uploadCardFile: function(file, callBack, errorCallBack) {
       this.$comfun.showLoading(this, 'uploadCardFile', false)

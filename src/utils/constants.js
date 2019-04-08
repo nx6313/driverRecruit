@@ -24,6 +24,9 @@ export const CONFIG_DATA = {
   idCardOcrApiKey: '9be531fdf84fd71b53aba94caad95178', // 数据宝 身份证OCR识别（尊享版） ApiKey
   driverCardOcrApiKey: 'a5d74317a5f3968eed5fb016fd3f3aaa', // 数据宝 驾驶证OCR识别 ApiKey
   runCardOcrApiKey: 'b5871d82d8d3cbda24f36cd83c9da233', // 数据宝 行驶证OCR识别 ApiKey
-  userCardCompareApiKey: '53edc190902fe6ab15685e51f9e3290a', // 数据宝 人像比对（尊享版） ApiKey
-  realNameAuthApiKey: 'c67e870268ca6cbed72d830f378d915e' // 数据宝 实名认证(尊享版) ApiKey
+  // userCardCompareApiKey: '53edc190902fe6ab15685e51f9e3290a', // 数据宝 人像比对（尊享版） ApiKey
+  realNameAuthApiKey: 'c67e870268ca6cbed72d830f378d915e', // 数据宝 实名认证(尊享版) ApiKey
+  driverCardStatusApiKey: 'cf486fe6451889a0573128b97b6c73df', // 数据宝 驾驶证状态核验 ApiKey
+  runCardCheckApiKey: '9af0bb6aac96ff7be38d4c7bf2053630', // 数据宝 行驶证五要素核验 ApiKey
+  driverCardCheckApiKey: '708160dc6089edf0eddcb506a738b3b5' // 数据宝 驾驶证五要素核验V2 ApiKey
 }

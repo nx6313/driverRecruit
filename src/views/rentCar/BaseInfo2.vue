@@ -5,7 +5,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择身份证正面照" accept="image/*" @change="selectFile($event, 'id_card_a')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择身份证正面照" accept="image/*" @change="selectFile($event, 'id_card_a')">
             <img class="cardDisplay" v-lazy="require('@/assets/id_card_a.jpg')">
             <span v-if="idCardABase64 != null" class="imgPreview" :style="idCardABase64 != null ? { 'background-image': `url(${idCardABase64})` } : {}"></span>
           </div>
@@ -13,7 +13,7 @@
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择身份证国徽面照" accept="image/*" @change="selectFile($event, 'id_card_b')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择身份证国徽面照" accept="image/*" @change="selectFile($event, 'id_card_b')">
             <img class="cardDisplay" v-lazy="require('@/assets/id_card_b.jpg')">
             <span v-if="idCardBBase64 != null" class="imgPreview" :style="idCardBBase64 != null ? { 'background-image': `url(${idCardBBase64})` } : {}"></span>
           </div>
@@ -26,7 +26,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择驾驶证正面照" accept="image/*" @change="selectFile($event, 'drive_card_a')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择驾驶证正面照" accept="image/*" @change="selectFile($event, 'drive_card_a')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_a.jpg')">
             <span v-if="driveCardABase64 != null" class="imgPreview hasBorder" :style="driveCardABase64 != null ? { 'background-image': `url(${driveCardABase64})` } : {}"></span>
           </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择驾驶证副页照" accept="image/*" @change="selectFile($event, 'drive_card_b')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择驾驶证副页照" accept="image/*" @change="selectFile($event, 'drive_card_b')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/drive_card_b.jpg')">
             <span v-if="driveCardBBase64 != null" class="imgPreview hasBorder" :style="driveCardBBase64 != null ? { 'background-image': `url(${driveCardBBase64})` } : {}"></span>
           </div>
@@ -47,7 +47,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择行驶证正面照" accept="image/*" @change="selectFile($event, 'run_card_a')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/run_card_a.jpg')">
             <span v-if="runCardABase64 != null" class="imgPreview hasBorder" :style="runCardABase64 != null ? { 'background-image': `url(${runCardABase64})` } : {}"></span>
           </div>
@@ -55,7 +55,7 @@
         </div>
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择行驶证副页照" accept="image/*" @change="selectFile($event, 'run_card_b')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/run_card_b.jpg')">
             <span v-if="runCardBBase64 != null" class="imgPreview hasBorder" :style="runCardBBase64 != null ? { 'background-image': `url(${runCardBBase64})` } : {}"></span>
           </div>
@@ -68,7 +68,7 @@
       <div class="cardWrap">
         <div class="cardOneWrap">
           <div class="fileWrap">
-            <input type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
+            <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择人车合影照片" accept="image/*" @change="selectFile($event, 'people_car_photo')">
             <img class="cardDisplay showBorder" v-lazy="require('@/assets/people_car_photo.jpg')">
             <span v-if="peopleCarPhotoBase64 != null" class="imgPreview hasBorder" :style="peopleCarPhotoBase64 != null ? { 'background-image': `url(${peopleCarPhotoBase64})` } : {}"></span>
           </div>
@@ -127,6 +127,7 @@ export default {
   },
   data() {
     return {
+      showFileSelectInput: true,
       showPeopleCarPhotoDisplay: false,
       idCardA: null,
       idCardB: null,
@@ -178,6 +179,10 @@ export default {
         this.peopleCarPhoto = event.target.files[0]
         this.imgPreview(this.peopleCarPhoto, type)
       }
+      this.showFileSelectInput = false
+      setTimeout(() => {
+        this.showFileSelectInput = true
+      }, 100)
     },
     imgPreview: function(file, type) {
       if (!file || !window.FileReader) return false
@@ -185,71 +190,83 @@ export default {
       reader.readAsDataURL(file)
       reader.onloadend = (event) => {
         if (type == 'id_card_a') {
-          this.uploadCardFile(this.idCardA, (path) => {
-            this.idCardABase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
-              key: 'idCardA',
-              value: path
+          this.$comfun.cardImgDetection(this, this.idCardA, () => {
+            this.uploadCardFile(this.idCardA, (path) => {
+              this.idCardABase64 = event.target.result
+              this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+                key: 'idCardA',
+                value: path
+              })
+            }, () => {
+              this.idCardA = null
+              this.idCardABase64 = null
             })
-          }, () => {
-            this.idCardA = null
-            this.idCardABase64 = null
-          })
+          }, type)
         } else if (type == 'id_card_b') {
-          this.uploadCardFile(this.idCardB, (path) => {
-            this.idCardBBase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
-              key: 'idCardB',
-              value: path
+          this.$comfun.cardImgDetection(this, this.idCardB, () => {
+            this.uploadCardFile(this.idCardB, (path) => {
+              this.idCardBBase64 = event.target.result
+              this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+                key: 'idCardB',
+                value: path
+              })
+            }, () => {
+              this.idCardB = null
+              this.idCardBBase64 = null
             })
-          }, () => {
-            this.idCardB = null
-            this.idCardBBase64 = null
-          })
+          }, type)
         } else if (type == 'drive_card_a') {
-          this.uploadCardFile(this.driveCardA, (path) => {
-            this.driveCardABase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
-              key: 'driveCardA',
-              value: path
+          this.$comfun.cardImgDetection(this, this.driveCardA, () => {
+            this.uploadCardFile(this.driveCardA, (path) => {
+              this.driveCardABase64 = event.target.result
+              this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+                key: 'driveCardA',
+                value: path
+              })
+            }, () => {
+              this.driveCardA = null
+              this.driveCardABase64 = null
             })
-          }, () => {
-            this.driveCardA = null
-            this.driveCardABase64 = null
-          })
+          }, type)
         } else if (type == 'drive_card_b') {
-          this.uploadCardFile(this.driveCardB, (path) => {
-            this.driveCardBBase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
-              key: 'driveCardB',
-              value: path
+          this.$comfun.cardImgDetection(this, this.driveCardB, () => {
+            this.uploadCardFile(this.driveCardB, (path) => {
+              this.driveCardBBase64 = event.target.result
+              this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+                key: 'driveCardB',
+                value: path
+              })
+            }, () => {
+              this.driveCardB = null
+              this.driveCardBBase64 = null
             })
-          }, () => {
-            this.driveCardB = null
-            this.driveCardBBase64 = null
-          })
+          }, type)
         } else if (type == 'run_card_a') {
-          this.uploadCardFile(this.runCardA, (path) => {
-            this.runCardABase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
-              key: 'runCardA',
-              value: path
+          this.$comfun.cardImgDetection(this, this.runCardA, () => {
+            this.uploadCardFile(this.runCardA, (path) => {
+              this.runCardABase64 = event.target.result
+              this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+                key: 'runCardA',
+                value: path
+              })
+            }, () => {
+              this.runCardA = null
+              this.runCardABase64 = null
             })
-          }, () => {
-            this.runCardA = null
-            this.runCardABase64 = null
-          })
+          }, type)
         } else if (type == 'run_card_b') {
-          this.uploadCardFile(this.runCardB, (path) => {
-            this.runCardBBase64 = event.target.result
-            this.$store.commit('setDriverRecruitData_CardInfoByKey', {
-              key: 'runCardB',
-              value: path
+          this.$comfun.cardImgDetection(this, this.runCardB, () => {
+            this.uploadCardFile(this.runCardB, (path) => {
+              this.runCardBBase64 = event.target.result
+              this.$store.commit('setDriverRecruitData_CardInfoByKey', {
+                key: 'runCardB',
+                value: path
+              })
+            }, () => {
+              this.runCardB = null
+              this.runCardBBase64 = null
             })
-          }, () => {
-            this.runCardB = null
-            this.runCardBBase64 = null
-          })
+          }, type)
         } else if (type == 'people_car_photo') {
           this.uploadCardFile(this.peopleCarPhoto, (path) => {
             this.peopleCarPhotoBase64 = event.target.result
