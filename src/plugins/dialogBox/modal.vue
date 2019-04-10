@@ -121,8 +121,8 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   background-color: rgba(88, 88, 88, 0.3);
   z-index: 99999;
   -vendor-animation-duration: 0.2s;

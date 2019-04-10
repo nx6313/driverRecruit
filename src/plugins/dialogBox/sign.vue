@@ -228,8 +228,6 @@ export default {
   left: 0;
   right: 0;
   margin: auto;
-  width: 100vw;
-  height: 100vh;
   text-align: center;
   font-weight: bold;
   z-index: 999999;

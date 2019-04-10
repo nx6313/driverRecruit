@@ -90,6 +90,7 @@ var loadingManager = new Map() // 管理loading对象
 var loginDialog = null // 用户登录弹窗
 var dialogPrompt = null // 带有输入框的dialog弹出框
 var picker = null // picker选择器
+var signPanel = null // 签名板
 
 export default {
   install: function (Vue) {
@@ -367,9 +368,15 @@ export default {
       // 显示签名面板
       showSignPanel: function(context, callBack) {
         if (callBack === undefined) callBack = () => {}
-        context.$dialog_sign({
+        signPanel = context.$dialog_sign({
           callBack: callBack
         })
+      },
+      closeSignPanel: function() {
+        if (signPanel !== null) {
+          signPanel.closeSign()
+          signPanel = null
+        }
       },
       // 弹出picker选择
       // data 为双层数组结构

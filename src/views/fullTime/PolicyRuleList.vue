@@ -94,6 +94,7 @@ export default {
     },
     mounted() {
         this.$comfun.closeCurDialogPrompt()
+        this.$comfun.closeSignPanel()
         this.$store.commit('setDriverRecruitData_PolicyList', {
             policyList: this.policyData
         })

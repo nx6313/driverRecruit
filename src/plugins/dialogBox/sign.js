@@ -7,6 +7,7 @@ Sign.installSign = function (options) {
     data: options
   }).$mount()
   document.querySelector('body').appendChild(comment.$el)
+  return comment
 }
 
 export default Sign
