@@ -10,10 +10,9 @@ import '@/plugins/animate.css'
 import Dialogbox from '@/plugins/dialogBox/index.js'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
 import DialogCardDetection from '@/plugins/dialogBox/card-detection.js'
-import Api from '@/utils/api.js'
 // import html2Canvas from 'html2canvas'
 // import JsPDF from 'jspdf'
-import { BASE_URL, APP_CONFIG, CONFIG_DATA } from '@/utils/constants'
+import { APP_CONFIG, CONFIG_DATA } from '@/utils/constants'
 
 const Axios = axios.create({
   transformRequest: [function (data) {
@@ -117,14 +116,8 @@ export default {
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
         var axiosOptions = {
           method: 'GET',
-          headers: headers
-        }
-        if (this.getServiceType(context) === 't') {
-          axiosOptions.url = BASE_URL.server_address_test + url
-        } else if (this.getServiceType(context) === 'd') {
-          axiosOptions.url = BASE_URL.server_address_development + url
-        } else {
-          axiosOptions.url = BASE_URL.server_address_production + url
+          headers: headers,
+          url: context.$BASE_URL + url
         }
         if (params) {
           axiosOptions.params = params
@@ -166,14 +159,8 @@ export default {
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
         var axiosOptions = {
           method: 'POST',
-          headers: headers
-        }
-        if (this.getServiceType(context) === 't') {
-          axiosOptions.url = BASE_URL.server_address_test + url
-        } else if (this.getServiceType(context) === 'd') {
-          axiosOptions.url = BASE_URL.server_address_development + url
-        } else {
-          axiosOptions.url = BASE_URL.server_address_production + url
+          headers: headers,
+          url: context.$BASE_URL + url
         }
         if (params) {
           axiosOptions.data = params
@@ -216,18 +203,12 @@ export default {
         var axiosOptions = {
           method: 'POST',
           headers: headers,
+          url: context.$BASE_URL + url,
           onUploadProgress: (progressEvent) => {
             let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
             // eslint-disable-next-line
             console.log(`文件【${file.name}】上传进度：${percentCompleted} %`)
           }
-        }
-        if (this.getServiceType(context) === 't') {
-          axiosOptions.url = BASE_URL.server_address_test + url
-        } else if (this.getServiceType(context) === 'd') {
-          axiosOptions.url = BASE_URL.server_address_development + url
-        } else {
-          axiosOptions.url = BASE_URL.server_address_production + url
         }
         let formData = new FormData()
         formData.append('file', file)
@@ -250,26 +231,6 @@ export default {
         }
         axiosOptions.data = formData
         return FileAxios(axiosOptions)
-      },
-      // 判断当前是否为测试服访问
-      getServiceType: function (context) {
-        let serviceType = context.$store.state.serviceType.type
-        if (serviceType === 't') {
-          context.$store.commit('updateServiceType', {
-            type: 't'
-          })
-          return 't'
-        } else if (serviceType === 'd') {
-          context.$store.commit('updateServiceType', {
-            type: 'd'
-          })
-          return 'd'
-        } else {
-          context.$store.commit('updateServiceType', {
-            type: APP_CONFIG.serverEnvironment
-          })
-          return APP_CONFIG.serverEnvironment
-        }
       },
       // 判断url中是否包含用户登陆认证信息
       hasAuthInfoInUrl: function () {
@@ -572,6 +533,19 @@ export default {
         }
         return returnVal
       },
+      /**
+       * 计算年龄
+       * 传入生日，格式：yyyy-MM-dd
+       */
+      getAge: function (birthday) {
+        let birthdayArr = birthday.split('-')
+        let d = new Date()
+        let yearDiff = d.getFullYear() - birthdayArr[0]
+        let monthDiff = d.getMonth() + 1 - birthdayArr[1]
+        let dayDiff = d.getDate() - birthdayArr[2]
+        let age = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? yearDiff - 1 : yearDiff
+        return age = age < 0 ? 0 : age
+      },
       // 判断设备类型
       isAndroidIos: function () {
         var p = navigator.platform
@@ -683,7 +657,7 @@ export default {
       },
       // 判断图片是否大于指定大小，如果小于直接返回图片不做任何处理，如果大于则压缩后再返回图片信息
       compressImg: function(file, limit) {
-        let that = this
+        // let that = this
         return new Promise(resolve => {
           if (!file || !window.FileReader) {
             resolve(file)
@@ -771,7 +745,7 @@ export default {
           }
         })
       },
-      cardImgDetection: function(context, file, callBack, type) {
+      cardImgDetection: function(context, file, callBack, type, clearCallBack) {
         if (!APP_CONFIG.openCredentialsDetaction) {
           if (callBack) callBack.apply()
           return false
@@ -805,28 +779,28 @@ export default {
         let drivecardb_barcode = null // 条形码编号
         let drivecardb_idcard = null // 驾驶证号
         // 行驶证正面信息
-        let runcarda_carType = null
-        let runcarda_model = null
-        let runcarda_address = null
-        let runcarda_engine = null
-        let runcarda_register_date = null
-        let runcarda_use_Property = null
-        let runcarda_vin = null
-        let runcarda_carNumber = null
-        let runcarda_owner = null
-        let runcarda_issue_date = null
+        let runcarda_carType = null // 车辆类型
+        let runcarda_model = null // 品牌型号
+        let runcarda_address = null // 住址
+        let runcarda_engine = null // 发动机号
+        let runcarda_register_date = null // 注册日期
+        let runcarda_use_Property = null // 使用性质
+        let runcarda_vin = null // 车架号
+        let runcarda_carNumber = null // 车牌号码
+        let runcarda_owner = null // 所有人
+        let runcarda_issue_date = null // 发证日期
         // 行驶证副页信息
-        let runcardb_recordId = null
-        let runcardb_passengers = null
-        let runcardb_overall_dimension = null
-        let runcardb_load_weight = null
-        let runcardb_curb_weight = null
-        let runcardb_cross_weight = null
-        let runcardb_carNumber = null
-        let runcardb_barcode = null
-        let runcardb_towing_capacity = null
-        let runcardb_inspection_record = null
-        let runcardb_note = null
+        let runcardb_recordId = null // 档案编号
+        let runcardb_passengers = null // 核定载人数
+        let runcardb_overall_dimension = null // 外廓尺寸
+        let runcardb_load_weight = null // 核定载质量
+        let runcardb_curb_weight = null // 整备质量
+        let runcardb_cross_weight = null // 总质量
+        let runcardb_carNumber = null // 车牌号码
+        let runcardb_barcode = null // 条形码编号
+        let runcardb_towing_capacity = null // 准牵引总质量
+        let runcardb_inspection_record = null // 检验记录
+        let runcardb_note = null // 备注
 
         let tip = ''
         let aboutDiscernKey = ''
@@ -836,49 +810,74 @@ export default {
         if (type === 'id_card_a') {
           tip = '正在检测身份证件正面是否有效'
           aboutDiscernKey = CONFIG_DATA.idCardOcrApiKey
-          aboutDiscernApi = Api.dataProIdCard
+          aboutDiscernApi = context.$api.dataProIdCard
           aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
-          aboutCheckApi = Api.dataProRealNameAuth
+          aboutCheckApi = context.$api.dataProRealNameAuth
         } else if (type === 'id_card_b') {
+          // 判断身份证正面是否上传
+          if (context.$store.state.driverRecruitData.dataProAbout.idcarda_name === null) {
+            this.showToast(context, '请先上传身份证正面照')
+            return false
+          }
           tip = '正在检测身份证件反面是否有效'
           aboutDiscernKey = CONFIG_DATA.idCardOcrApiKey
-          aboutDiscernApi = Api.dataProIdCard
+          aboutDiscernApi = context.$api.dataProIdCard
           // aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
-          // aboutCheckApi = Api.dataProRealNameAuth
+          // aboutCheckApi = context.$api.dataProRealNameAuth
         } else if (type === 'drive_card_a') {
           tip = '正在检测驾驶证件正面是否有效'
           aboutDiscernKey = CONFIG_DATA.driverCardOcrApiKey
-          aboutDiscernApi = Api.dataProDriverCard
-          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
-          aboutCheckApi = Api.dataProRealNameAuth
+          aboutDiscernApi = context.$api.dataProDriverCard
+          aboutCheckKey = CONFIG_DATA.driverCardCheckApiKey
+          aboutCheckApi = context.$api.dataProDriveCardCheck
         } else if (type === 'drive_card_b') {
+          // 判断驾驶证正面是否上传
+          if (context.$store.state.driverRecruitData.dataProAbout.drivecarda_name === null) {
+            this.showToast(context, '请先上传驾驶证正面照')
+            return false
+          }
           tip = '正在检测驾驶证件反面是否有效'
           aboutDiscernKey = CONFIG_DATA.driverCardOcrApiKey
-          aboutDiscernApi = Api.dataProDriverCard
-          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
-          aboutCheckApi = Api.dataProRealNameAuth
+          aboutDiscernApi = context.$api.dataProDriverCard
+          // aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          // aboutCheckApi = context.$api.dataProRealNameAuth
         } else if (type === 'run_card_a') {
           tip = '正在检测行驶证件正面是否有效'
           aboutDiscernKey = CONFIG_DATA.runCardOcrApiKey
-          aboutDiscernApi = Api.dataProRunCard
-          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
-          aboutCheckApi = Api.dataProRealNameAuth
+          aboutDiscernApi = context.$api.dataProRunCard
+          aboutCheckKey = CONFIG_DATA.runCardCheckApiKey
+          aboutCheckApi = context.$api.dataProRunCardCheck
         } else if (type === 'run_card_b') {
+          // 判断行驶证正面是否上传
+          if (context.$store.state.driverRecruitData.dataProAbout.runcarda_carNumber === null) {
+            this.showToast(context, '请先上传行驶证正面照')
+            return false
+          }
           tip = '正在检测行驶证件反面是否有效'
           aboutDiscernKey = CONFIG_DATA.runCardOcrApiKey
-          aboutDiscernApi = Api.dataProRunCard
-          aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
-          aboutCheckApi = Api.dataProRealNameAuth
+          aboutDiscernApi = context.$api.dataProRunCard
+          // aboutCheckKey = CONFIG_DATA.realNameAuthApiKey
+          // aboutCheckApi = context.$api.dataProRealNameAuth
         } else {
           return false
         }
+
+        let checkNameFlag = true // 是否检测姓名与之前填写是否一致
+        let userName = context.$store.state.driverRecruitData.baseInfoComplete.personName
+        if (userName !== null) userName = userName.trim()
+        let manRequireAge = 55 // 男士要求年龄 -> 不可大于 x 岁
+        let womanRequireAge = 50 // 女士要求年龄 -> 不可大于 x 岁
+        let driveAge = 3 // 要求驾龄 -> 需满 x 年
+        let carAge = 3 // 要求车龄 -> 不可大于 x 年
+        let mustPassengers = [ 5, 6, 7 ] // 车辆核定载人数
+
         let cardDetactionDialog = DialogCardDetection.installCardDetection({
           tip: tip,
           stepInfo: '正在上传检测信息'
         })
         // 保持图片在 1000 KB 之下
         this.compressImg(file, 1000).then(result => {
-          this.http_file_(Api.dataProUploadImg, {
+          this.http_file_(context.$api.dataProUploadImg, {
             appkey: aboutDiscernKey,
             file: result
           }).then(request => {
@@ -902,9 +901,36 @@ export default {
                         || idcarda_name === undefined || idcarda_image === undefined || idcarda_idcard === undefined || idcarda_nation === undefined) {
                       cardDetactionDialog.close()
                       this.showToast(context, '请选择正确且清晰的身份证正面图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
                       return false
                     }
-                    cardDetactionDialog.updateStepInfo('正在比对数据')
+                    if (userName !== idcarda_name && checkNameFlag) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '您上传的身份证信息与之前填写的姓名不匹配')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
+                      return false
+                    }
+                    let peopleAge = this.getAge(idcarda_birthday.replace('年', '-').replace('月', '-').replace('日', ''))
+                    if (idcarda_sex === '男') {
+                      if (peopleAge > manRequireAge) {
+                        cardDetactionDialog.close()
+                        this.showToast(context, `抱歉，您的年龄大于${manRequireAge}岁，不符合我们的要求`)
+                        if (clearCallBack) clearCallBack.apply()
+                        context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
+                        return false
+                      }
+                    } else {
+                      if (peopleAge > womanRequireAge) {
+                        cardDetactionDialog.close()
+                        this.showToast(context, `抱歉，您的年龄大于${womanRequireAge}岁，不符合我们的要求`)
+                        if (clearCallBack) clearCallBack.apply()
+                        context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
+                        return false
+                      }
+                    }
+                    cardDetactionDialog.updateStepInfo('正在比对身份数据')
                     this.http_post_(aboutCheckApi, {
                       key: aboutCheckKey,
                       name: idcarda_name,
@@ -913,19 +939,34 @@ export default {
                       if (request.data.code === '10000') {
                         cardDetactionDialog.close()
                         if (request.data.data.result === '1') {
+                          context.$store.commit('setDriverRecruitData_DataProAbout', {
+                            'idcarda_birthday': idcarda_birthday,
+                            'idcarda_sex': idcarda_sex,
+                            'idcarda_address': idcarda_address,
+                            'idcarda_name': idcarda_name,
+                            'idcarda_image': idcarda_image,
+                            'idcarda_idcard': idcarda_idcard,
+                            'idcarda_nation': idcarda_nation
+                          })
                           this.showToast(context, '身份信息比对成功')
                           if (callBack) callBack.apply()
                         } else {
                           this.showToast(context, '身份信息不匹配')
+                          if (clearCallBack) clearCallBack.apply()
+                          context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
                         }
                       } else {
                         cardDetactionDialog.close()
                         this.showToast(context, request.data.message)
+                        if (clearCallBack) clearCallBack.apply()
+                        context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
                       }
                     }, error => {
                       console.log(error)
                       cardDetactionDialog.close()
                       this.showToast(context, '比对出错，-1')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardA')
                     })
                   } else if (type === 'id_card_b') {
                     idcardb_authority = request.data.data.authority
@@ -933,8 +974,14 @@ export default {
                     cardDetactionDialog.close()
                     if (idcardb_authority === undefined || idcardb_timelimit === undefined) {
                       this.showToast(context, '请选择正确且清晰的身份证反面图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_idCardB')
                       return false
                     }
+                    context.$store.commit('setDriverRecruitData_DataProAbout', {
+                      'idcardb_authority': idcardb_authority,
+                      'idcardb_timelimit': idcardb_timelimit
+                    })
                     if (callBack) callBack.apply()
                   } else if (type === 'drive_card_a') {
                     drivecarda_address = request.data.data.info_Positive.address
@@ -952,20 +999,124 @@ export default {
                         || drivecarda_name === undefined || drivecarda_nationality === undefined || drivecarda_sex === undefined || drivecarda_type === undefined) {
                       cardDetactionDialog.close()
                       this.showToast(context, '请选择正确且清晰的驾驶证正面图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
                       return false
                     }
+                    if (userName !== drivecarda_name && checkNameFlag) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '您上传的驾驶证信息与之前填写的姓名不匹配')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                      return false
+                    }
+                    let peopleDriveAge = ((new Date()) - (new Date(drivecarda_firstGetDocDate.replace('-', '/')))) / (365 * 24 * 60 * 60 * 1000)
+                    if (peopleDriveAge < driveAge) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, `抱歉，您的驾龄未满${driveAge}年，不符合我们的要求`)
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                      return false
+                    }
+                    cardDetactionDialog.updateStepInfo('正在比对驾驶证数据')
+                    this.http_post_(aboutCheckApi, {
+                      key: aboutCheckKey,
+                      name: drivecarda_name,
+                      idcard: drivecarda_idcard,
+                      carModels: drivecarda_type,
+                      firstIssueDate: drivecarda_firstGetDocDate,
+                      expiryDate: drivecarda_end_date
+                    }).then(request => {
+                      if (request.data.code === '10000') {
+                        if (request.data.data.carModelsResult === '1' && request.data.data.nameResult === '1' && request.data.data.idcardResult === '1' 
+                            && request.data.data.expiryDateResult === '1' && request.data.data.firstIssueDateResult === '1') {
+                          cardDetactionDialog.updateStepInfo('正在进行驾驶证状态核验')
+                          this.http_post_(context.$api.dataProDriveCardStatus, {
+                            key: CONFIG_DATA.driverCardStatusApiKey,
+                            idcard: drivecarda_idcard
+                          }).then(request => {
+                            if (request.data.code === '10000') {
+                              cardDetactionDialog.close()
+                              if (request.data.data.idcardResult === '1') {
+                                context.$store.commit('setDriverRecruitData_DataProAbout', {
+                                  'drivecarda_address': drivecarda_address,
+                                  'drivecarda_begin_date': drivecarda_begin_date,
+                                  'drivecarda_birthday': drivecarda_birthday,
+                                  'drivecarda_end_date': drivecarda_end_date,
+                                  'drivecarda_firstGetDocDate': drivecarda_firstGetDocDate,
+                                  'drivecarda_idcard': drivecarda_idcard,
+                                  'drivecarda_name': drivecarda_name,
+                                  'drivecarda_nationality': drivecarda_nationality,
+                                  'drivecarda_sex': drivecarda_sex,
+                                  'drivecarda_type': drivecarda_type
+                                })
+                                this.showToast(context, '驾驶证状态满足条件')
+                                if (callBack) callBack.apply()
+                              } else {
+                                this.showToast(context, '驾驶证状态不满足，' + request.data.data.status)
+                                if (clearCallBack) clearCallBack.apply()
+                                context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                              }
+                            } else {
+                              cardDetactionDialog.close()
+                              this.showToast(context, request.data.message)
+                              if (clearCallBack) clearCallBack.apply()
+                              context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                            }
+                          }, error => {
+                            console.log(error)
+                            cardDetactionDialog.close()
+                            this.showToast(context, '驾驶证状态核验出错，-1')
+                            if (clearCallBack) clearCallBack.apply()
+                            context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                          })
+                        } else {
+                          cardDetactionDialog.close()
+                          this.showToast(context, '驾驶证信息不匹配')
+                          if (clearCallBack) clearCallBack.apply()
+                          context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                        }
+                      } else {
+                        cardDetactionDialog.close()
+                        this.showToast(context, request.data.message)
+                        if (clearCallBack) clearCallBack.apply()
+                        context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                      }
+                    }, error => {
+                      console.log(error)
+                      cardDetactionDialog.close()
+                      this.showToast(context, '比对出错，-1')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardA')
+                    })
                   } else if (type === 'drive_card_b') {
                     drivecardb_record = request.data.data.info_negative.record
                     drivecardb_file_number = request.data.data.info_negative.file_number
                     drivecardb_name = request.data.data.info_negative.name
                     drivecardb_barcode = request.data.data.info_negative.barcode
                     drivecardb_idcard = request.data.data.info_negative.idcard
+                    cardDetactionDialog.close()
                     if (drivecardb_record === undefined || drivecardb_file_number === undefined || drivecardb_name === undefined
                         || drivecardb_barcode === undefined || drivecardb_idcard === undefined) {
-                      cardDetactionDialog.close()
                       this.showToast(context, '请选择正确且清晰的驾驶证副页图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardB')
                       return false
                     }
+                    if (context.$store.state.driverRecruitData.dataProAbout.drivecarda_idcard !== drivecardb_idcard) {
+                      this.showToast(context, '请选择与驾驶证正面匹配的副页图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_driveCardB')
+                      return false
+                    }
+                    context.$store.commit('setDriverRecruitData_DataProAbout', {
+                      'drivecardb_record': drivecardb_record,
+                      'drivecardb_file_number': drivecardb_file_number,
+                      'drivecardb_name': drivecardb_name,
+                      'drivecardb_barcode': drivecardb_barcode,
+                      'drivecardb_idcard': drivecardb_idcard
+                    })
+                    if (callBack) callBack.apply()
                   } else if (type === 'run_card_a') {
                     runcarda_carType = request.data.data.info_Positive.carType
                     runcarda_model = request.data.data.info_Positive.model
@@ -982,8 +1133,86 @@ export default {
                         || runcarda_vin === undefined || runcarda_carNumber === undefined || runcarda_owner === undefined || runcarda_issue_date === undefined) {
                       cardDetactionDialog.close()
                       this.showToast(context, '请选择正确且清晰的行驶证正面图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
                       return false
                     }
+                    if (userName !== runcarda_owner && checkNameFlag) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '您上传的行驶证信息与之前填写的姓名不匹配')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
+                      return false
+                    }
+                    let peopleCarAge = ((new Date()) - (new Date(runcarda_register_date.replace('-', '/')))) / (365 * 24 * 60 * 60 * 1000)
+                    if (peopleCarAge >= carAge) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, `抱歉，您的车辆使用时间已满${carAge}年，不符合我们的要求`)
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
+                      return false
+                    }
+                    let needCarTypes = [ '小型汽车', '小型轿车', '新能源小型车' ]
+                    let plateType = 0
+                    if (needCarTypes.indexOf(runcarda_carType) < 0) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, '对不起，您的车辆不符合我们的要求')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
+                      return false
+                    } else {
+                      let carTypeIndex = needCarTypes.indexOf(runcarda_carType)
+                      if (carTypeIndex === 0 || carTypeIndex === 1) {
+                        plateType = '02'
+                      } else if (carTypeIndex === 2) {
+                        plateType = '52'
+                      }
+                    }
+                    cardDetactionDialog.updateStepInfo('正在比对行驶证数据')
+                    this.http_post_(aboutCheckApi, {
+                      key: aboutCheckKey,
+                      plateNumber: runcarda_carNumber,
+                      plateType: plateType,
+                      owner: runcarda_owner,
+                      vin: runcarda_vin,
+                      firstIssueDate: runcarda_register_date
+                    }).then(request => {
+                      if (request.data.code === '10000') {
+                        cardDetactionDialog.close()
+                        if (request.data.data.plateTypeResult === '1' && request.data.data.ownerResult === '1' && request.data.data.plateNumberResult === '1' 
+                            && request.data.data.vinResult === '1' && request.data.data.firstIssueDateResult === '1') {
+                          context.$store.commit('setDriverRecruitData_DataProAbout', {
+                            'runcarda_carType': runcarda_carType,
+                            'runcarda_model': runcarda_model,
+                            'runcarda_address': runcarda_address,
+                            'runcarda_engine': runcarda_engine,
+                            'runcarda_register_date': runcarda_register_date,
+                            'runcarda_use_Property': runcarda_use_Property,
+                            'runcarda_vin': runcarda_vin,
+                            'runcarda_carNumber': runcarda_carNumber,
+                            'runcarda_owner': runcarda_owner,
+                            'runcarda_issue_date': runcarda_issue_date
+                          })
+                          this.showToast(context, '行驶证信息比对成功')
+                          if (callBack) callBack.apply()
+                        } else {
+                          this.showToast(context, '行驶证信息不匹配')
+                          if (clearCallBack) clearCallBack.apply()
+                          context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
+                        }
+                      } else {
+                        cardDetactionDialog.close()
+                        this.showToast(context, request.data.message)
+                        if (clearCallBack) clearCallBack.apply()
+                        context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
+                      }
+                    }, error => {
+                      console.log(error)
+                      cardDetactionDialog.close()
+                      this.showToast(context, '比对出错，-1')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
+                    })
                   } else if (type === 'run_card_b') {
                     runcardb_recordId = request.data.data.info_negative.recordId
                     runcardb_passengers = request.data.data.info_negative.passengers
@@ -996,32 +1225,66 @@ export default {
                     runcardb_towing_capacity = request.data.data.info_negative.towing_capacity
                     runcardb_inspection_record = request.data.data.info_negative.inspection_record
                     runcardb_note = request.data.data.info_negative.note
+                    cardDetactionDialog.close()
                     if (runcardb_recordId === undefined || runcardb_passengers === undefined || runcardb_overall_dimension === undefined
                         || runcardb_load_weight === undefined || runcardb_curb_weight === undefined || runcardb_cross_weight === undefined
                         || runcardb_carNumber === undefined || runcardb_barcode === undefined || runcardb_towing_capacity === undefined
                         || runcardb_inspection_record === undefined || runcardb_note === undefined) {
-                      cardDetactionDialog.close()
                       this.showToast(context, '请选择正确且清晰的行驶证副页图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardB')
                       return false
                     }
+                    if (context.$store.state.driverRecruitData.dataProAbout.runcarda_carNumber !== runcardb_carNumber) {
+                      this.showToast(context, '请选择与行驶证正面匹配的副页图')
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardB')
+                      return false
+                    }
+                    let canPassenger = parseInt(runcardb_passengers)
+                    if (mustPassengers.indexOf(canPassenger) < 0) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, `抱歉，您的车辆核定载人数不符合我们的要求`)
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardB')
+                      return false
+                    }
+                    context.$store.commit('setDriverRecruitData_DataProAbout', {
+                      'runcardb_recordId': runcardb_recordId,
+                      'runcardb_passengers': runcardb_passengers,
+                      'runcardb_overall_dimension': runcardb_overall_dimension,
+                      'runcardb_load_weight': runcardb_load_weight,
+                      'runcardb_curb_weight': runcardb_curb_weight,
+                      'runcardb_cross_weight': runcardb_cross_weight,
+                      'runcardb_carNumber': runcardb_carNumber,
+                      'runcardb_barcode': runcardb_barcode,
+                      'runcardb_towing_capacity': runcardb_towing_capacity,
+                      'runcardb_inspection_record': runcardb_inspection_record,
+                      'runcardb_note': runcardb_note
+                    })
+                    if (callBack) callBack.apply()
                   }
                 } else {
                   cardDetactionDialog.close()
                   this.showToast(context, '识别失败，请上传正确的卡片信息')
+                  if (clearCallBack) clearCallBack.apply()
                 }
               }, error => {
                 console.log(error)
                 cardDetactionDialog.close()
                 this.showToast(context, '识别出错，-1')
+                if (clearCallBack) clearCallBack.apply()
               })
             } else {
               cardDetactionDialog.close()
               this.showToast(context, '识别上传出错，' + request.data.msg)
+              if (clearCallBack) clearCallBack.apply()
             }
           }, error => {
             console.log(error)
             cardDetactionDialog.close()
             this.showToast(context, '识别上传出错，-1')
+            if (clearCallBack) clearCallBack.apply()
           })
         })
       }

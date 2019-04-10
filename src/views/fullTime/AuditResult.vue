@@ -7,7 +7,8 @@
     </div>
     <div v-if="!isAuditing" class="userHasAudit">
       <span class="title">您好，{{$store.state.driverRecruitData.auditState.personName}} {{$store.state.driverRecruitData.auditState.personSex ? ($store.state.driverRecruitData.auditState.personSex.indexOf('男') >= 0 ? '先生' : ($store.state.driverRecruitData.auditState.personSex.indexOf('女') >= 0 ? '女士' : '先生/女士')) : '先生/女士'}}</span>
-      <span class="content">请您在 {{$store.state.driverRecruitData.auditState.time ? ($comfun.formatDate(new Date($store.state.driverRecruitData.auditState.time), 'yyyy') == $comfun.formatDate(new Date(), 'yyyy') ? $comfun.formatDate(new Date($store.state.driverRecruitData.auditState.time), '今年 M 月 d 日 h 点 m 分') : $comfun.formatDate(new Date($store.state.driverRecruitData.auditState.time), 'yy 年 M 月 d 日 h 点 m 分')) : '_ _'}} 之前到公司参加面试，详细内容我们已发送到您的 <u>{{$store.state.driverRecruitData.auditState.phone}}</u> 短信中，请注意查收。</span>
+      <span class="content" v-if="$store.state.driverRecruit.state != $store.state.driverRecruit.stateRule.AUDIT_NO_PASS">请您在 {{$store.state.driverRecruitData.auditState.time ? ($comfun.formatDate(new Date($store.state.driverRecruitData.auditState.time), 'yyyy') == $comfun.formatDate(new Date(), 'yyyy') ? $comfun.formatDate(new Date($store.state.driverRecruitData.auditState.time), '今年 M 月 d 日 h 点 m 分') : $comfun.formatDate(new Date($store.state.driverRecruitData.auditState.time), 'yy 年 M 月 d 日 h 点 m 分')) : '_ _'}} 之前到公司参加面试，详细内容我们已发送到您的 <u>{{$store.state.driverRecruitData.auditState.phone}}</u> 短信中，请注意查收。</span>
+      <span class="content" v-if="$store.state.driverRecruit.state == $store.state.driverRecruit.stateRule.AUDIT_NO_PASS">很抱歉，您提交的初审信息未通过，如有疑问请联系 <a :href="`tel:${contactPhone}`">{{contactPhone}}</a>（{{contactPeople}}） 咨询详情。</span>
       <img class="seal" v-if="isAuditPass" v-lazy="require('@/assets/icon_audit_pass.png')">
       <img class="seal" v-if="!isAuditPass" v-lazy="require('@/assets/icon_audit_reject.png')">
     </div>
@@ -15,12 +16,16 @@
 </template>
 
 <script>
+import { CONFIG_DATA } from '@/utils/constants'
+
 export default {
   name: 'auditResult',
   data() {
     return {
       isAuditing: this.$store.state.driverRecruitData.auditState.state,
-      isAuditPass: this.$store.state.driverRecruitData.auditState.auditPass
+      isAuditPass: this.$store.state.driverRecruitData.auditState.auditPass,
+      contactPhone: CONFIG_DATA.fullTimeContactPhone,
+      contactPeople: CONFIG_DATA.fullTimeContactPeople
     }
   },
   mounted() {

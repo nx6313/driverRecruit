@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { CONFIG_DATA } from '@/utils/constants'
 import { SOME_RULES } from '@/utils/rules'
 import BaseInfoItem from '@/components/BaseInfoItem.vue'
 
@@ -48,8 +49,8 @@ export default {
           model: ''
         }
       ],
-      contactPhone: '13753111557',
-      contactPeople: '曹经理'
+      contactPhone: CONFIG_DATA.joinContactPhone,
+      contactPeople: CONFIG_DATA.joinContactPeople
     }
   },
   methods: {

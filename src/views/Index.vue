@@ -133,8 +133,6 @@ export default {
   },
   created() {
     this.$store.dispatch('clearAll')
-    // this.$store.dispatch('clearUserBaseInfo')
-    this.$comfun.getServiceType(this)
     if (this.autoShowLoginDialog) {
       // this.showLoginDialog()
     }

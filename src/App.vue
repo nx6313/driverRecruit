@@ -30,28 +30,10 @@ export default {
   },
   computed: {
     isShowServiceTypeTool() {
-      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$comfun.getServiceType(this) != 'p' || BASE_URL.server_address_production != BASE_URL.server_official
+      return APP_CONFIG.isTest || process.env.NODE_ENV != 'production' || this.$SHOW_TEST_TOOL
     },
     currentServiceType() {
-      let serviceTypeVal = ''
-      switch (this.$comfun.getServiceType(this)) {
-        case 't':
-          serviceTypeVal = '测试服'
-          break;
-        case 'd':
-          serviceTypeVal = '预生产服'
-          break;
-        case 'p':
-          serviceTypeVal = '生产服'
-          if (BASE_URL.server_address_production != BASE_URL.server_official) {
-            serviceTypeVal = `指定服，地址：${BASE_URL.server_address_production}`
-          }
-          break;
-        default:
-          serviceTypeVal = '异常地址'
-          break;
-      }
-      return serviceTypeVal
+      return this.$BASE_HOST
     }
   },
   components: {

@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { CONFIG_DATA } from '@/utils/constants'
+
 export default {
     name: 'complete',
     data() {

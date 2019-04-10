@@ -1,8 +1,7 @@
 import axios from 'axios'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
 import ClipboardJS from 'clipboard'
-import { BASE_URL, APP_CONFIG } from '@/utils/constants'
-const Shake = require('shake.js')
+// const Shake = require('shake.js')
 const VConsole = require('vconsole')
 const regC = /^[\s\S]*((%c)[\s\S]*)+$/
 
@@ -79,11 +78,7 @@ export default {
 					name: '重置测试数据',
 					global: false,
 					onClick: function() {
-						let curServerType = options.vuexStore.state.serviceType.type
 						options.vuexStore.dispatch('clearAll')
-						options.vuexStore.commit('updateServiceType', {
-							type: curServerType
-						})
 						options.router.replace('/')
 						setTimeout(() => {
 							let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
@@ -117,7 +112,7 @@ export default {
 				let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
 				if (testUserPhone.value.trim() != '') {
 					btnTestSendSmsCode.disabled = true
-					Axios(getAxiosOptions(getBaseUrl(options.vuexStore.state.serviceType.type) + 'account/api/getSms', {
+					Axios(getAxiosOptions(getBaseUrl(options) + 'account/api/getSms', {
 						phone: testUserPhone.value.trim()
 					})).then(res => {
 						if (res.data.status == 'OK') {
@@ -146,7 +141,7 @@ export default {
 				let testUserPhone = vconsole.$dom.querySelector('input#testUserPhone')
 				let testUserSmsCode = vconsole.$dom.querySelector('input#testUserSmsCode')
 				if (testUserPhone.value.trim() != '' && testUserSmsCode.value.trim() != '') {
-					Axios(getAxiosOptions(getBaseUrl(options.vuexStore.state.serviceType.type) + 'account/api/loginBySms', {
+					Axios(getAxiosOptions(getBaseUrl(options) + 'account/api/loginBySms', {
 						phone: testUserPhone.value.trim(),
 						smsCode: testUserSmsCode.value.trim()
 					})).then(res => {
@@ -491,20 +486,12 @@ let initConsoleMethod = function(vconsole) {
 }
 
 // 摇一摇触发事件
-let shakeEventDidOccur = function(vconsole) {
-	vconsole.show()
-}
+// let shakeEventDidOccur = function(vconsole) {
+// 	vconsole.show()
+// }
 
-let getBaseUrl = function(serviceType) {
-	let baseUrl = BASE_URL.server_address_production
-	if (serviceType == 'p') {
-		baseUrl = BASE_URL.server_address_production
-	} else if (serviceType == 'd') {
-		baseUrl = BASE_URL.server_address_development
-	} else if (serviceType == 't') {
-		baseUrl = BASE_URL.server_address_test
-	}
-	return baseUrl
+let getBaseUrl = function(options) {
+	return options.baseUrl
 }
 
 let getAxiosOptions = function(url, params) {

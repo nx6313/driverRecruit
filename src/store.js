@@ -26,19 +26,6 @@ const store = new Vuex.Store({
     }
   },
   modules: {
-    // 服务器类型 生产服务器:d 、 预生产服务器:p 、 测试服:t
-    serviceType: {
-      state: {
-        type: null
-      },
-      getters: {},
-      mutations: {
-        [SOME_MUTATION.updateServiceType] (state, payload) {
-          state.type = payload.type
-        }
-      },
-      actions: {}
-    },
     // 用户auth登陆认证信息
     auth: {
       state: {
@@ -156,6 +143,53 @@ const store = new Vuex.Store({
           leaveCompany: null,
           leaveReason: null,
           hasLeaveDeclare: null
+        },
+        dataProAbout: {
+          idcarda_birthday: null,
+          idcarda_sex: null,
+          idcarda_address: null,
+          idcarda_name: null,
+          idcarda_image: null,
+          idcarda_idcard: null,
+          idcarda_nation: null,
+          idcardb_authority: null,
+          idcardb_timelimit: null,
+          drivecarda_address: null,
+          drivecarda_begin_date: null,
+          drivecarda_birthday: null,
+          drivecarda_end_date: null,
+          drivecarda_firstGetDocDate: null,
+          drivecarda_idcard: null,
+          drivecarda_name: null,
+          drivecarda_nationality: null,
+          drivecarda_sex: null,
+          drivecarda_type: null,
+          drivecardb_record: null,
+          drivecardb_file_number: null,
+          drivecardb_name: null,
+          drivecardb_barcode: null,
+          drivecardb_idcard: null,
+          runcarda_carType: null,
+          runcarda_model: null,
+          runcarda_address: null,
+          runcarda_engine: null,
+          runcarda_register_date: null,
+          runcarda_use_Property: null,
+          runcarda_vin: null,
+          runcarda_carNumber: null,
+          runcarda_owner: null,
+          runcarda_issue_date: null,
+          runcardb_recordId: null,
+          runcardb_passengers: null,
+          runcardb_overall_dimension: null,
+          runcardb_load_weight: null,
+          runcardb_curb_weight: null,
+          runcardb_cross_weight: null,
+          runcardb_carNumber: null,
+          runcardb_barcode: null,
+          runcardb_towing_capacity: null,
+          runcardb_inspection_record: null,
+          runcardb_note: null
         }
       },
       getters: {
@@ -200,6 +234,11 @@ const store = new Vuex.Store({
         },
         [SOME_MUTATION.setDriverRecruitData_PolicyDataInfo] (state, payload) {
           state.policyDataInfo[payload.key] = payload.value
+        },
+        [SOME_MUTATION.setDriverRecruitData_DataProAbout] (state, payload) {
+          for (let key in payload) {
+            state.dataProAbout[key] = payload[key]
+          }
         }
       },
       actions: {
@@ -219,6 +258,123 @@ const store = new Vuex.Store({
         // eslint-disable-next-line
         clearDriverRecruitData_BaseInfoComplete({ commit, state }) {
           state.baseInfoComplete = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_idCardA({ commit, state }) {
+          state.dataProAbout.idcarda_birthday = null
+          state.dataProAbout.idcarda_sex = null
+          state.dataProAbout.idcarda_address = null
+          state.dataProAbout.idcarda_name = null
+          state.dataProAbout.idcarda_image = null
+          state.dataProAbout.idcarda_idcard = null
+          state.dataProAbout.idcarda_nation = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_idCardB({ commit, state }) {
+          state.dataProAbout.idcardb_authority = null
+          state.dataProAbout.idcardb_timelimit = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_idCard({ commit, state }) {
+          state.dataProAbout.idcarda_birthday = null
+          state.dataProAbout.idcarda_sex = null
+          state.dataProAbout.idcarda_address = null
+          state.dataProAbout.idcarda_name = null
+          state.dataProAbout.idcarda_image = null
+          state.dataProAbout.idcarda_idcard = null
+          state.dataProAbout.idcarda_nation = null
+          state.dataProAbout.idcardb_authority = null
+          state.dataProAbout.idcardb_timelimit = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_driveCardA({ commit, state }) {
+          state.dataProAbout.drivecarda_address = null
+          state.dataProAbout.drivecarda_begin_date = null
+          state.dataProAbout.drivecarda_birthday = null
+          state.dataProAbout.drivecarda_end_date = null
+          state.dataProAbout.drivecarda_firstGetDocDate = null
+          state.dataProAbout.drivecarda_idcard = null
+          state.dataProAbout.drivecarda_name = null
+          state.dataProAbout.drivecarda_nationality = null
+          state.dataProAbout.drivecarda_sex = null
+          state.dataProAbout.drivecarda_type = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_driveCardB({ commit, state }) {
+          state.dataProAbout.drivecardb_record = null
+          state.dataProAbout.drivecardb_file_number = null
+          state.dataProAbout.drivecardb_name = null
+          state.dataProAbout.drivecardb_barcode = null
+          state.dataProAbout.drivecardb_idcard = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_driveCard({ commit, state }) {
+          state.dataProAbout.drivecarda_address = null
+          state.dataProAbout.drivecarda_begin_date = null
+          state.dataProAbout.drivecarda_birthday = null
+          state.dataProAbout.drivecarda_end_date = null
+          state.dataProAbout.drivecarda_firstGetDocDate = null
+          state.dataProAbout.drivecarda_idcard = null
+          state.dataProAbout.drivecarda_name = null
+          state.dataProAbout.drivecarda_nationality = null
+          state.dataProAbout.drivecarda_sex = null
+          state.dataProAbout.drivecarda_type = null
+          state.dataProAbout.drivecardb_record = null
+          state.dataProAbout.drivecardb_file_number = null
+          state.dataProAbout.drivecardb_name = null
+          state.dataProAbout.drivecardb_barcode = null
+          state.dataProAbout.drivecardb_idcard = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_runCardA({ commit, state }) {
+          state.dataProAbout.runcarda_carType = null
+          state.dataProAbout.runcarda_model = null
+          state.dataProAbout.runcarda_address = null
+          state.dataProAbout.runcarda_engine = null
+          state.dataProAbout.runcarda_register_date = null
+          state.dataProAbout.runcarda_use_Property = null
+          state.dataProAbout.runcarda_vin = null
+          state.dataProAbout.runcarda_carNumber = null
+          state.dataProAbout.runcarda_owner = null
+          state.dataProAbout.runcarda_issue_date = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_runCardB({ commit, state }) {
+          state.dataProAbout.runcardb_recordId = null
+          state.dataProAbout.runcardb_passengers = null
+          state.dataProAbout.runcardb_overall_dimension = null
+          state.dataProAbout.runcardb_load_weight = null
+          state.dataProAbout.runcardb_curb_weight = null
+          state.dataProAbout.runcardb_cross_weight = null
+          state.dataProAbout.runcardb_carNumber = null
+          state.dataProAbout.runcardb_barcode = null
+          state.dataProAbout.runcardb_towing_capacity = null
+          state.dataProAbout.runcardb_inspection_record = null
+          state.dataProAbout.runcardb_note = null
+        },
+        // eslint-disable-next-line
+        clearDriverRecruitData_DataProAbout_runCard({ commit, state }) {
+          state.dataProAbout.runcarda_carType = null
+          state.dataProAbout.runcarda_model = null
+          state.dataProAbout.runcarda_address = null
+          state.dataProAbout.runcarda_engine = null
+          state.dataProAbout.runcarda_register_date = null
+          state.dataProAbout.runcarda_use_Property = null
+          state.dataProAbout.runcarda_vin = null
+          state.dataProAbout.runcarda_carNumber = null
+          state.dataProAbout.runcarda_owner = null
+          state.dataProAbout.runcarda_issue_date = null
+          state.dataProAbout.runcardb_recordId = null
+          state.dataProAbout.runcardb_passengers = null
+          state.dataProAbout.runcardb_overall_dimension = null
+          state.dataProAbout.runcardb_load_weight = null
+          state.dataProAbout.runcardb_curb_weight = null
+          state.dataProAbout.runcardb_cross_weight = null
+          state.dataProAbout.runcardb_carNumber = null
+          state.dataProAbout.runcardb_barcode = null
+          state.dataProAbout.runcardb_towing_capacity = null
+          state.dataProAbout.runcardb_inspection_record = null
+          state.dataProAbout.runcardb_note = null
         }
       }
     },

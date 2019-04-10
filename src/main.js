@@ -11,7 +11,9 @@ import VConsole from '@/utils/vconsole.js'
 import Api from '@/utils/api.js'
 import DialogMsg from '@/plugins/dialogBox/msg.js'
 
-import 'babel-polyfill'
+import 'babel-polyfill' // IE兼容
+
+import { APP_CONFIG } from '@/utils/constants'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
@@ -24,7 +26,20 @@ Vue.prototype.$api = Api
 const router = appConfig.router
 const store = appConfig.store
 
-Vue.use(VConsole, { vuexStore: store, showToast: DialogMsg.installMsg, router: router })
+let currentBaseUrl
+if (location.host.endsWith('.com')) {
+  currentBaseUrl = location.origin + '/'
+  Vue.prototype.$BASE_URL = location.origin + '/'
+  Vue.prototype.$BASE_HOST = location.host
+  Vue.prototype.$SHOW_TEST_TOOL = location.host.startsWith('test.') ? true : false
+} else {
+  currentBaseUrl = APP_CONFIG.localhostServerBaseUrl
+  Vue.prototype.$BASE_URL = APP_CONFIG.localhostServerBaseUrl
+  Vue.prototype.$BASE_HOST = '本地调试：' + APP_CONFIG.localhostServerBaseUrl
+  Vue.prototype.$SHOW_TEST_TOOL = true
+}
+
+Vue.use(VConsole, { vuexStore: store, showToast: DialogMsg.installMsg, router: router, baseUrl: currentBaseUrl })
 
 new Vue({
   router,

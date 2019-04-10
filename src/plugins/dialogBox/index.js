@@ -14,5 +14,7 @@ export default {
         Vue.prototype.$dialog_prompt = DialogPrompt.installPrompt
         Vue.prototype.$dialog_sign = DialogSign.installSign
         Vue.prototype.$dialog_card_detection = DialogCardDetection.installCardDetection
+
+        Vue.prototype.$card_detectioning_img = require('@/assets/card_detection.gif')
     }
 }

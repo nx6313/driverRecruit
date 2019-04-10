@@ -19,14 +19,16 @@
 </template>
 
 <script>
+import { CONFIG_DATA } from '@/utils/constants'
+
 export default {
   name: 'buyCarAuditResult',
   data() {
     return {
       isAuditing: this.$store.state.driverRecruitData.auditState.state,
       isAuditPass: this.$store.state.driverRecruitData.auditState.auditPass,
-      contactPhone: '13753111557',
-      contactPeople: '曹经理'
+      contactPhone: CONFIG_DATA.joinContactPhone,
+      contactPeople: CONFIG_DATA.joinContactPeople
     }
   },
   mounted() {

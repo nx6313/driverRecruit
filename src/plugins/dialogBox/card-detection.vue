@@ -4,7 +4,7 @@
     <div class="card-detection-content animated fadeIn" ref="card-detection-content">
       <div>
         <span class="title">{{tip || '正在检测证件是否有效'}}</span>
-        <img v-lazy="require('@/assets/card_detection.gif')">
+        <img :src="$card_detectioning_img">
         <span class="curStep">{{stepInfo || '正在检测中'}}</span>
       </div>
     </div>

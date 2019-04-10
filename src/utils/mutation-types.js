@@ -1,5 +1,4 @@
 export const SOME_MUTATION = {
-    updateServiceType: 'updateServiceType', // 更新服务器类型 生产服务器:p 、 预生产服务器:d 、 测试服:t
     updateAuth: 'updateAuth', // 更新用户登陆认证信息  secret、token
     setPageData: 'setPageData', // 设置页面缓存数据
     updateUserBaseInfoPhone: 'updateUserBaseInfoPhone', // 更新用户基本信息 - 手机号
@@ -16,5 +15,6 @@ export const SOME_MUTATION = {
     setDriverRecruitData_AuditState: 'setDriverRecruitData_AuditState', // 设置用户司机招募资料审核状态信息
     setDriverRecruitData_PolicyList: 'setDriverRecruitData_PolicyList', // 设置用户司机招募政策声明列表
     setDriverRecruitData_PolicyListUpdateReadStatus: 'setDriverRecruitData_PolicyListUpdateReadStatus', // 设置用户司机招募政策声明列表文件阅读状态
-    setDriverRecruitData_PolicyDataInfo: 'setDriverRecruitData_PolicyDataInfo' // 设置用户司机招募资料政策声明相关信息
+    setDriverRecruitData_PolicyDataInfo: 'setDriverRecruitData_PolicyDataInfo', // 设置用户司机招募资料政策声明相关信息
+    setDriverRecruitData_DataProAbout: 'setDriverRecruitData_DataProAbout' // 设置 数据宝 读取证件图片获取到的数据
 }
