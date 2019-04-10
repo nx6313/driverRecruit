@@ -30,13 +30,17 @@ const store = new Vuex.Store({
     auth: {
       state: {
         secret: null,
-        token: null
+        token: null,
+        byLogin: null
       },
       getters: {},
       mutations: {
         [SOME_MUTATION.updateAuth] (state, payload) {
           state.secret = payload.secret
           state.token = payload.token
+        },
+        [SOME_MUTATION.updateAuthLoginType] (state, payload) {
+          state.byLogin = payload
         }
       },
       actions: {}

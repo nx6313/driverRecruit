@@ -10,6 +10,7 @@ export const APP_CONFIG = {
   // 172.18.2.26:8080 // 玉慧
   // 172.18.2.21:7777 // 璐璐
   // 172.18.2.14:8080 // 泽明
+  // https://test.dcchuxing.com
   localhostServerBaseUrl: 'https://test.dcchuxing.com/' // 默认环境   生产服务器:new 、 预生产服务器:newpre 、 测试服:test   仅影响本地
 }
 

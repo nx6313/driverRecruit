@@ -189,8 +189,9 @@ export default {
         }
       })
       if (focus) {
-        this.otherAnswer = ''
-        this.selectAnswer = null
+        if (this.otherAnswer === null) this.selectAnswer = null
+        // this.otherAnswer = ''
+        // this.selectAnswer = null
       } else {
         if (this.otherAnswer == '') {
           this.otherAnswer = null

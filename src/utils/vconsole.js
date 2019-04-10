@@ -14,7 +14,7 @@ const Axios = axios.create({
     }
     return ret
   }],
-  timeout: 10000
+  timeout: 20000
 })
 Axios.interceptors.response.use((response) => {
   return response
@@ -160,6 +160,7 @@ export default {
 								secret: res.data.data.secret,
 								token: res.data.data.token
 							})
+							options.vuexStore.commit('updateAuthLoginType', true)
 						} else {
 							options.showToast({
 								msg: res.data.msg

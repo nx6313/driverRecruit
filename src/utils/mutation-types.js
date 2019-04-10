@@ -1,5 +1,6 @@
 export const SOME_MUTATION = {
     updateAuth: 'updateAuth', // 更新用户登陆认证信息  secret、token
+    updateAuthLoginType: 'updateAuthLoginType', // 更新用户登陆认证方式   是否通过h5内部登陆
     setPageData: 'setPageData', // 设置页面缓存数据
     updateUserBaseInfoPhone: 'updateUserBaseInfoPhone', // 更新用户基本信息 - 手机号
     updateUserBaseInfoDType: 'updateUserBaseInfoDType', // 更新用户基本信息 - 所选招募类型

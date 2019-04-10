@@ -61,6 +61,7 @@ export default {
     submit: function() {
       let health = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q1.answer : null
       let league = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q2.answer : null
+      let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       let leagueRecommend = null
       if (league != null && this.$vctool.isArray(league)) {
         league.map(v => {
@@ -75,8 +76,13 @@ export default {
         if (SOME_RULES.emoji.test(leagueRecommend.trim())) { this.$comfun.showToast(this, '推荐人姓名及联系方式中不能含有特殊字符'); return false }
         if (leagueRecommend.trim().length > 20) { this.$comfun.showToast(this, '推荐人姓名及联系方式内容过长，不得超过20个字符'); return false }
       }
+      if (health != null && !this.$vctool.isArray(health) && health.val != null && SOME_RULES.emoji.test(health.val.trim())) { this.$comfun.showToast(this, '其他健康状况中不能含有特殊字符'); return false }
+      if (health != null && !this.$vctool.isArray(health) && health.val != null && health.val.trim().length > 80) { this.$comfun.showToast(this, '其他健康状况内容过长，不得超过80个字符'); return false }
+      if (league != null && !this.$vctool.isArray(league) && league.val != null && SOME_RULES.emoji.test(league.val.trim())) { this.$comfun.showToast(this, '其他消息来源中不能含有特殊字符'); return false }
+      if (league != null && !this.$vctool.isArray(league) && league.val != null && league.val.trim().length > 80) { this.$comfun.showToast(this, '其他消息来源内容过长，不得超过80个字符'); return false }
+      if (experience != null && !this.$vctool.isArray(experience) && experience.val != null && SOME_RULES.emoji.test(experience.val.trim())) { this.$comfun.showToast(this, '其他网约车经历中不能含有特殊字符'); return false }
+      if (experience != null && !this.$vctool.isArray(experience) && experience.val != null && experience.val.trim().length > 80) { this.$comfun.showToast(this, '其他网约车经历内容过长，不得超过80个字符'); return false }
       this.$comfun.showLoading(this, 'baseInfoApplyInfo', false)
-      let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
       this.$comfun.http_post(this, this.$api.applyInfo, {
         'apply.d_type': this.$store.state.userBaseInfo.dType,
         'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,

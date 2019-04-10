@@ -25,7 +25,8 @@ export default {
         NORMAL: -1, // 该用户还未提交任何资料
         AUDITING: 20, // 该用户提交的资料正在审核中
         AUDIT_PASS: 21, // 该用户提交的资料审核已通过，通知其来公司面试
-        AUDIT_NO_PASS: 22, // 该用户提交的资料审核未通过
+        AUDIT_NO_PASS: 22, // 该用户提交的资料审核未通过，不可修改
+        AUDIT_NO_PASS_CAN_UPDATE: 23, // 该用户提交的资料审核未通过，可修改后重新提交
         INTERVIEW_PASS: 31, // 该用户已通过公司面试，需要阅读具体规则
         INTERVIEW_NO_PASS: 32, // 该用户未通过公司面试
         RULEING: 40, // 该用户提交的规则资料正在审核中
@@ -62,7 +63,10 @@ export default {
         // 该用户提交的资料审核已通过，通知其来公司面试
         link = '/fullTime/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_NO_PASS) {
-        // 该用户提交的资料审核未通过
+        // 该用户提交的资料审核未通过，不可修改
+        link = '/fullTime/auditResult'
+      } else if (this.userDriverRecruitState == this.driverRecruitState.AUDIT_NO_PASS_CAN_UPDATE) {
+        // 该用户提交的资料审核未通过，可修改后重新提交
         link = '/fullTime/auditResult'
       } else if (this.userDriverRecruitState == this.driverRecruitState.INTERVIEW_PASS) {
         // 该用户已通过公司面试，需要阅读具体规则
@@ -108,7 +112,7 @@ export default {
             state: request.data.data.state
           })
           let aduitingState = this.userDriverRecruitState == this.driverRecruitState.AUDITING
-          let auditPassState = this.userDriverRecruitState != this.driverRecruitState.AUDIT_NO_PASS
+          let auditPassState = this.userDriverRecruitState != this.driverRecruitState.AUDIT_NO_PASS && request.data.data.state != this.$store.state.driverRecruit.stateRule.AUDIT_NO_PASS_CAN_UPDATE
           this.$store.commit('setDriverRecruitData_AuditState', {
             auditState: {
               state: aduitingState,

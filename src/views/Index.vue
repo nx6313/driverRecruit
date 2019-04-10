@@ -53,7 +53,6 @@ export default {
   },
   data() {
     return {
-      autoShowLoginDialog: false,
       bannerOption: {
         autoplay: {
           disableOnInteraction: false,
@@ -132,8 +131,22 @@ export default {
     }
   },
   created() {
+    let needReSaveAuthInfo = false
+    let authInfoTemp = null
+    if (this.$store.state.auth.byLogin === true) {
+      needReSaveAuthInfo = true
+      authInfoTemp = JSON.parse(JSON.stringify(this.$store.state.auth))
+    }
     this.$store.dispatch('clearAll')
-    if (this.autoShowLoginDialog) {
+    if (needReSaveAuthInfo) {
+      this.$store.commit('updateAuth', {
+        secret: authInfoTemp.secret,
+        token: authInfoTemp.token
+      })
+      this.$store.commit('updateAuthLoginType', true)
+    }
+    if (!this.$comfun.hasAuthInfoInUrl() && !this.$comfun.hasAuthInfo(this)) {
+      console.log('正在通过 h5 方式访问，没有检测到登陆信息')
       // this.showLoginDialog()
     }
     if (this.$comfun.hasAuthInfo(this)) {
@@ -203,9 +216,12 @@ export default {
     },
     toADriverRecruit: function(key) {
       if (!this.$comfun.hasAuthInfo(this) && this.$store.state.userBaseInfo.phone == null) {
-        // this.showLoginDialog()
-        this.$comfun.showToast(this, '未检测到登录信息，请先登录')
-        return false
+        if (!this.$comfun.hasAuthInfoInUrl()) {
+          console.log('正在通过 h5 方式访问，没有检测到登陆信息')
+          // this.showLoginDialog()
+        } else {
+          this.$comfun.showToast(this, '未检测到登录信息，请先登录')
+        }
       } else {
         this.$store.commit('updateUserBaseInfoDType', {
           dType: key
