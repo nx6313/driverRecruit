@@ -877,6 +877,7 @@ export default {
         let driveAge = 3 // 要求驾龄 -> 需满 x 年
         let carAge = 3 // 要求车龄 -> 不可大于 x 年
         let mustPassengers = [ 5, 6, 7 ] // 车辆核定载人数
+        let mustCarLength = 4100 // 车辆要求的长度
 
         let cardDetactionDialog = DialogCardDetection.installCardDetection({
           tip: tip,
@@ -1163,7 +1164,7 @@ export default {
                     let plateType = 0
                     if (needCarTypes.indexOf(runcarda_carType) < 0) {
                       cardDetactionDialog.close()
-                      this.showToast(context, '对不起，您的车辆不符合我们的要求')
+                      this.showToast(context, '对不起，您的车辆类型不符合我们的要求')
                       if (clearCallBack) clearCallBack.apply()
                       context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardA')
                       return false
@@ -1256,6 +1257,13 @@ export default {
                       context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardB')
                       return false
                     }
+                    if (parseInt(runcardb_overall_dimension.substr(0, 4)) < mustCarLength) {
+                      cardDetactionDialog.close()
+                      this.showToast(context, `抱歉，您的车辆外廓尺寸长度不符合我们的要求`)
+                      if (clearCallBack) clearCallBack.apply()
+                      context.$store.dispatch('clearDriverRecruitData_DataProAbout_runCardB')
+                      return false
+                    }
                     context.$store.commit('setDriverRecruitData_DataProAbout', {
                       'runcardb_recordId': runcardb_recordId,
                       'runcardb_passengers': runcardb_passengers,
@@ -1273,7 +1281,8 @@ export default {
                   }
                 } else {
                   cardDetactionDialog.close()
-                  this.showToast(context, '识别失败，请上传正确的卡片信息')
+                  // request.data.msg
+                  this.showToast(context, '识别失败，' + request.data.msg)
                   if (clearCallBack) clearCallBack.apply()
                 }
               }, error => {

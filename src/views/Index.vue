@@ -33,7 +33,7 @@
     <div class="pageContentWrap dcGoMerit">
       <div class="title">大昌出行的优势</div>
       <div class="meritWrap">
-        <img v-lazy="require('@/assets/merit_1.png')">
+        <!-- <img v-lazy="require('@/assets/merit_1.png')"> -->
         <img v-lazy="require('@/assets/merit_2.png')">
         <img v-lazy="require('@/assets/merit_3.png')">
       </div>
