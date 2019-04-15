@@ -40,9 +40,9 @@ export default {
     }
   },
   created () {
-    this.phone = this.$store.state.pageData.data.loginPhone || ''
-    this.timerStart = this.$store.state.pageData.data.loginCurrentTimerStart || false
-    this.canUseGetSmsCodeBtnTime = this.$store.state.pageData.data.loginCurrentTime || 100
+    this.phone = this.$store.state.pageData.data === null ? '' : (this.$store.state.pageData.data.loginPhone || '')
+    this.timerStart = this.$store.state.pageData.data === null ? false : (this.$store.state.pageData.data.loginCurrentTimerStart || false)
+    this.canUseGetSmsCodeBtnTime = this.$store.state.pageData.data === null ? 100 : (this.$store.state.pageData.data.loginCurrentTime || 100)
     if (this.timerStart) {
       clearInterval(this.timer)
       this.timer = setInterval(() => {
