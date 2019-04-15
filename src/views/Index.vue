@@ -53,6 +53,7 @@ export default {
   },
   data() {
     return {
+      autoShowLoginPage: false, // 仅针对纯h5方式
       bannerOption: {
         autoplay: {
           disableOnInteraction: false,
@@ -147,7 +148,9 @@ export default {
     }
     if (!this.$comfun.hasAuthInfoInUrl() && !this.$comfun.hasAuthInfo(this)) {
       console.log('正在通过 h5 方式访问，没有检测到登陆信息')
-      // this.showLoginDialog()
+      if (this.autoShowLoginPage) {
+        this.showLoginDialog()
+      }
     }
     if (this.$comfun.hasAuthInfo(this)) {
       this.isDriver(this.userPhone)
@@ -155,12 +158,7 @@ export default {
   },
   methods: {
     showLoginDialog: function() {
-      let myreg = SOME_RULES.phone
-      this.$comfun.showDialogForLogin(this, '请您先进行登录', '欢迎来到大昌出行司机招募，首先请输入您的手机号进行登录（任意手机号都可以哦）', myreg, '账号格式正确', '请输入正确的手机号', (phoneNumber) => {
-        this.applySms(phoneNumber)
-      }, (phone, code) => {
-        this.applyDriverSmsCode(phone, code)
-      })
+      this.$router.push('/login')
     },
     isDriver: function(phone, callBack) {
       this.$comfun.showLoading(this, 'isDriver', false)
@@ -215,17 +213,17 @@ export default {
       })
     },
     toADriverRecruit: function(key) {
+      this.$store.commit('updateUserBaseInfoDType', {
+        dType: key
+      })
       if (!this.$comfun.hasAuthInfo(this) && this.$store.state.userBaseInfo.phone == null) {
         if (!this.$comfun.hasAuthInfoInUrl()) {
           console.log('正在通过 h5 方式访问，没有检测到登陆信息')
-          // this.showLoginDialog()
+          this.showLoginDialog()
         } else {
           this.$comfun.showToast(this, '未检测到登录信息，请先登录')
         }
       } else {
-        this.$store.commit('updateUserBaseInfoDType', {
-          dType: key
-        })
         if (this.userIsDriver === true) {
           // 已经是司机了
           this.$router.push('/isDriver')

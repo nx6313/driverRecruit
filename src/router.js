@@ -17,6 +17,14 @@ let router = new Router({
       }
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('./views/Login.vue'),
+      meta: {
+        pageBg: '#ffffff'
+      }
+    },
+    {
       path: '/fullTimeHome',
       name: 'fullTimeHome',
       component: () => import('./views/FullTimeHome.vue'),

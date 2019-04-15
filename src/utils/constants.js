@@ -4,7 +4,7 @@ export const BASE_URL = {
 }
 
 export const APP_CONFIG = {
-  isTest: false, // 设置h5是否为测试环境，将忽略内置环境
+  isTest: false, // 设置h5是否为测试环境，将忽略内置环境 开启顶部服务器提示调试工具
   openCredentialsDetaction: false, // 是否开启证件检测
   // 172.18.2.32:8080 // 一飞
   // 172.18.2.26:8080 // 玉慧
