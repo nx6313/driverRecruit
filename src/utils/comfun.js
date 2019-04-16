@@ -374,7 +374,7 @@ export default {
       },
       closeSignPanel: function() {
         if (signPanel !== null) {
-          signPanel.closeSign()
+          signPanel.destorySign()
           signPanel = null
         }
       },

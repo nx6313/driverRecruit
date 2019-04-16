@@ -56,9 +56,12 @@ export default {
     }, 1900)
   },
   methods: {
+    destorySign () {
+        this.isShow = false
+    },
     closeSign () {
-        this.$refs['sign-content'].classList.remove('zoomInLeft')
-        this.$refs['sign-content'].classList.add('zoomOutLeft')
+        if (this.$refs['sign-content']) this.$refs['sign-content'].classList.remove('zoomInLeft')
+        if (this.$refs['sign-content']) this.$refs['sign-content'].classList.add('zoomOutLeft')
         setTimeout(() => {
             this.isShow = false
         }, 0.5 * 1000)
@@ -209,10 +212,12 @@ export default {
     showDirectionTip(val) {
       if (!val) {
         this.$nextTick(() => {
-          this.canvasBoard = this.$refs.canvasSign
-          this.canvasContext = this.canvasBoard.getContext('2d')
-          this.canvasBoard.height = this.$refs.canvasHW.offsetHeight
-          this.canvasBoard.width = this.$refs.canvasHW.offsetWidth
+          if (this.isShow) {
+            this.canvasBoard = this.$refs.canvasSign
+            this.canvasContext = this.canvasBoard.getContext('2d')
+            this.canvasBoard.height = this.$refs.canvasHW.offsetHeight
+            this.canvasBoard.width = this.$refs.canvasHW.offsetWidth
+          }
         })
       }
     }
