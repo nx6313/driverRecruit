@@ -132,6 +132,7 @@ export default {
     }
   },
   created() {
+    this.$comfun.closeCurDialogPrompt()
     let needReSaveAuthInfo = false
     let authInfoTemp = null
     if (this.$store.state.auth.byLogin === true) {

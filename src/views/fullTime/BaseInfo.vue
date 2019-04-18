@@ -1,8 +1,8 @@
 <template>
   <div class="baseInfo">
-    <BaseInfoItem title="健康状况" :titleIcon="require('@/assets/logo.png')" question="您是否得过以下疾病（包括类似的症状，或者接受过类似症状的治疗）？" :answers="answers_1" isMultiple="true" ref="question1"/>
-    <BaseInfoItem title="消息来源" :titleIcon="require('@/assets/logo.png')" question="您是如何得知加盟信息的？" :answers="answers_2" isMultiple="true" ref="question2"/>
-    <BaseInfoItem title="网约车经历" :titleIcon="require('@/assets/logo.png')" question="您是否有过跑网约车平台的经历？" :answers="answers_3" isMultiple="true" ref="question3"/>
+    <BaseInfoItem title="健康状况" :titleIcon="require('@/assets/logo.png')" question="您是否得过以下疾病（包括类似的症状，或者接受过类似症状的治疗）？身体良好可不选" :answers="answers_1" isMultiple="true" ref="question1"/>
+    <BaseInfoItem title="消息来源" :titleIcon="require('@/assets/logo.png')" question="您是如何得知加盟信息的？可不选" :answers="answers_2" isMultiple="true" ref="question2"/>
+    <BaseInfoItem title="网约车经历" :titleIcon="require('@/assets/logo.png')" question="您是否有过跑网约车平台的经历？可不选" :answers="answers_3" isMultiple="true" ref="question3"/>
     <span class="toNextStep" @click="toSubmit">提交</span>
   </div>
 </template>

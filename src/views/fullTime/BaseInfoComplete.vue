@@ -47,9 +47,18 @@ export default {
         },
         {
           label: '驾驶证',
-          type: 'radio',
-          range: [ { name: 'C1', value: 'C1' }, { name: 'C2', value: 'C2' } ],
-          model: 'C1',
+          hint: '点击选择您的驾驶证准驾类型',
+          type: 'picker',
+          range: [
+            { text: 'C2', value: 'C2' },
+            { text: 'C1', value: 'C1' },
+            { text: 'B2', value: 'B2' },
+            { text: 'B1', value: 'B1' },
+            { text: 'A3', value: 'A3' },
+            { text: 'A2', value: 'A2' },
+            { text: 'A1', value: 'A1' }
+          ],
+          model: '',
           require: true
         },
         {

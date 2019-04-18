@@ -26,6 +26,7 @@
         <input class="textInput" v-if="input.type == 'text'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}">
         <textarea class="textInput" v-if="input.type == 'textarea'" :placeholder="input.hint" v-model="input.model" :readonly="input.readOnly === true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}"></textarea>
         <FormRadio v-model="input.model" :radios="input.range" v-if="input.type == 'radio'" :style="input.label === undefined ? { left: '1.6rem' } : {}"/>
+        <input class="textInput" v-if="input.type == 'picker'" type="text" :placeholder="input.hint" v-model="input.model" :readonly="true" :style="input.label === undefined ? { left: '0', width: `calc(100% - 0.6rem - 0.6rem)` } : {}" @click="showPicker(input.label, input.range, input)">
         <!-- <VueGroup v-model="input.model" class="btnSelect" v-if="input.type == 'select'">
           <VueGroupButton v-for="(select, selectIndex) in input.range" v-bind:key="selectIndex" class="selectBtnItem round" :value="select.name">{{select.value}}</VueGroupButton>
         </VueGroup> -->
@@ -86,7 +87,7 @@ export default {
     },
     inputs: {
       /**
-       * label、model、hint、type(text、textarea、radio、switch、select、sendSmsCode、smsCodeText)、range(对于select)、
+       * label、model、hint、type(text、textarea、radio、switch、select、picker、sendSmsCode、smsCodeText)、range(对于select)、
        * send(对于sendSmsCode)、callBack(对于sendSmsCode)、codeCount(对于smsCodeText)、readOnly(对于text)、require
        */
       default() {
@@ -283,6 +284,15 @@ export default {
         return (this.selectAnswer != null && this.selectAnswer.length > 0 ? this.selectAnswer : null) || (this.otherAnswer != null ? { key: String.fromCharCode(65 + this.answers.length), val: this.otherAnswer } : null)
       }
       return this.selectAnswer || (this.otherAnswer != null ? { key: String.fromCharCode(65 + this.answers.length), val: this.otherAnswer } : null)
+    },
+    showPicker: function(label, range, input) {
+      let defaultValue = []
+      if (input.model) {
+        defaultValue.push(input.model)
+      }
+      this.$comfun.showPicker('选择' + label, [range], (result) => {
+        this.$set(input, 'model', result[0].value)
+      }, null, defaultValue)
     }
   }
 }

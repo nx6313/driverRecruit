@@ -380,10 +380,12 @@ export default {
       },
       // 弹出picker选择
       // data 为双层数组结构
-      showPicker: function(title, data, onSelect, onChange) {
+      showPicker: function(title, data, onSelect, onChange, value) {
+        value = value || []
         picker = new WheelPicker({
           title: title,
           data: data,
+          value: value,
           hideOnBackdrop: true,
           onSelect: (result) => {
             onSelect(result)
@@ -651,7 +653,7 @@ export default {
         }
         return true
       },
-      // 关闭当前带有输入框的dialog弹出框
+      // 关闭当前页面可能存在的弹出框
       closeCurDialogPrompt: function() {
         if (picker != null) {
           picker.destory()
