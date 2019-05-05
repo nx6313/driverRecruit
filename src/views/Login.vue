@@ -3,7 +3,7 @@
     <div class="title">登录 / 授权</div>
     <div class="des">
       <span>感谢您选择大昌出行</span>
-      <span>请先输入您的手机号码</span>
+      <span>请先输入您的手机号码进行登录授权</span>
     </div>
     <div class="inputItemWrap phoneWrap">
       <input type="number" v-model="phone">

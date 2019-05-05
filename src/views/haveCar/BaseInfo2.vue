@@ -307,6 +307,8 @@ export default {
           'apply.is_have_qualification': this.$store.state.driverRecruitData.baseInfoComplete.certificationType,
           'apply.qualification_certificate': this.$store.state.driverRecruitData.baseInfoComplete.certificationCard,
           'apply.is_help_qualification': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification || '0',
+          //'apply.league_recommend_name': this.$store.state.driverRecruitData.baseInfoComplete.recommendName,
+          'apply.league_recommend': this.$store.state.driverRecruitData.baseInfoComplete.recommendPhone,
           'apply.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
           'apply.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
           'apply.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,

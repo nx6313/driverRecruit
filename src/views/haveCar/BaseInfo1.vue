@@ -9,6 +9,7 @@
       </div>
       <span class="uploadTip">上传网约车从业资格证</span>
     </BaseInfoItem>
+    <BaseInfoItem title="填写推荐人信息（无 可不填）" :titleIcon="require('@/assets/logo.png')" :inputs="input3"/>
     <div class="pageTip" v-if="!showCertificationUpload">查看<span @click="toFlow">《网约车从业资格证》</span>办理流程</div>
     <span class="toNextStep" @click="toNext">下一步</span>
   </div>
@@ -72,6 +73,20 @@ export default {
           range: [ { name: '1', value: '已有' }, { name: '2', value: '正在办理中' }, { name: '0', value: '暂无' } ],
           model: ''
         }
+      ],
+      input3: [
+        {
+          label: '姓名',
+          hint: '请输入推荐人姓名',
+          type: 'text',
+          model: ''
+        },
+        {
+          label: '手机号码',
+          hint: '请输入推荐人手机号码',
+          type: 'text',
+          model: ''
+        }
       ]
     }
   },
@@ -90,6 +105,8 @@ export default {
       this.input1[1].model = pageData.input1[1].model
       this.input1[4].model = pageData.input1[4].model
       this.input2[0].model = pageData.input2[0].model
+      this.input3[0].model = pageData.input3[0].model
+      this.input3[1].model = pageData.input3[1].model
     }
     this.clearPageData()
   },
@@ -148,6 +165,15 @@ export default {
       if (SOME_RULES.emoji.test(this.input1[4].model.trim())) { this.$comfun.showToast(this, '现居住地中不能含有特殊字符'); return false }
       if (this.input2[0].model.trim() == '') { this.$comfun.showToast(this, '请先选择您是否拥有网约车司机从业资格证'); return false }
       if (this.input2[0].model.trim() == '1' && this.$store.state.driverRecruitData.baseInfoComplete.certificationCard == null) { this.$comfun.showToast(this, '请先上传您的网约车司机从业资格证'); return false }
+      if (this.input3[0].model.trim() != '') {
+        if (SOME_RULES.emoji.test(this.input3[0].model.trim())) { this.$comfun.showToast(this, '推荐人姓名中不能含有特殊字符'); return false }
+        if (this.input3[0].model.trim().length > 10) { this.$comfun.showToast(this, '推荐人姓名内容过长，不得超过10个字符'); return false }
+        if (this.input3[1].model.trim() == '') { this.$comfun.showToast(this, '推荐人联系方式不能为空'); return false }
+      }
+      if (this.input3[1].model.trim() != '') {
+        if (this.input3[0].model.trim() == '') { this.$comfun.showToast(this, '推荐人姓名不能为空'); return false }
+        if (!SOME_RULES.phone.test(this.input3[1].model.trim())) { this.$comfun.showToast(this, '请输入正确的推荐人手机号'); return false }
+      }
       this.saveBaseInfo1()
       this.$router.replace('/haveCar/baseInfo2')
     },
@@ -175,6 +201,14 @@ export default {
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
         key: 'certificationType',
         value: this.input2[0].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'recommendName',
+        value: this.input3[0].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'recommendPhone',
+        value: this.input3[1].model.trim()
       })
     }
   },

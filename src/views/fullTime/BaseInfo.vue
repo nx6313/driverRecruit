@@ -20,7 +20,7 @@ export default {
     return {
       isMustSelect: false,
       answers_1: ['癫痫', '心脏病', '各类传染性疾病', '精神类疾病', '各类贫血、败血症', '高血压等血栓性疾病', '阑尾炎'],
-      answers_2: ['人才市场', '微信', '平台', '推荐人姓名及联系方式[league_recommend]'],
+      answers_2: ['人才市场', '微信', '平台', '推荐人姓名[league_recommend_name]', '推荐人联系方式[league_recommend_phone]'],
       answers_3: ['滴滴', '首汽', '曹操专车', '神州专车']
     }
   },
@@ -62,19 +62,27 @@ export default {
       let health = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q1.answer : null
       let league = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q2.answer : null
       let experience = this.$store.state.driverRecruitData.baseInfo ? this.$store.state.driverRecruitData.baseInfo.q3.answer : null
+      let leagueRecommendName = null
       let leagueRecommend = null
       if (league != null && this.$vctool.isArray(league)) {
         league.map(v => {
           if (v.hasOwnProperty('filterKey')) {
-            if (v['filterKey'] === 'league_recommend') {
+            if (v['filterKey'] === 'league_recommend_name') {
+              leagueRecommendName = v['filterValue']
+            } else if (v['filterKey'] === 'league_recommend_phone') {
               leagueRecommend = v['filterValue']
             }
           }
         })
       }
+      if (leagueRecommendName != null) {
+        if (SOME_RULES.emoji.test(leagueRecommendName.trim())) { this.$comfun.showToast(this, '推荐人姓名中不能含有特殊字符'); return false }
+        if (leagueRecommendName.trim().length > 10) { this.$comfun.showToast(this, '推荐人姓名内容过长，不得超过10个字符'); return false }
+        if (leagueRecommend == null) { this.$comfun.showToast(this, '推荐人联系方式不能为空'); return false }
+      }
       if (leagueRecommend != null) {
-        if (SOME_RULES.emoji.test(leagueRecommend.trim())) { this.$comfun.showToast(this, '推荐人姓名及联系方式中不能含有特殊字符'); return false }
-        if (leagueRecommend.trim().length > 20) { this.$comfun.showToast(this, '推荐人姓名及联系方式内容过长，不得超过20个字符'); return false }
+        if (leagueRecommendName == null) { this.$comfun.showToast(this, '推荐人姓名不能为空'); return false }
+        if (!SOME_RULES.phone.test(leagueRecommend.trim())) { this.$comfun.showToast(this, '请输入正确的推荐人手机号'); return false }
       }
       if (health != null && !this.$vctool.isArray(health) && health.val != null && SOME_RULES.emoji.test(health.val.trim())) { this.$comfun.showToast(this, '其他健康状况中不能含有特殊字符'); return false }
       if (health != null && !this.$vctool.isArray(health) && health.val != null && health.val.trim().length > 80) { this.$comfun.showToast(this, '其他健康状况内容过长，不得超过80个字符'); return false }
@@ -92,6 +100,7 @@ export default {
         'apply.health': health != null && this.$vctool.isArray(health) ? health.map(v => { return v.key }).join(',') : (health != null && !this.$vctool.isArray(health) ? health.key : null),
         'apply.health_other': health != null && !this.$vctool.isArray(health) ? health.val : null,
         'apply.league': league != null && this.$vctool.isArray(league) ? league.map(v => { return v.key }).join(',') : (league != null && !this.$vctool.isArray(league) ? league.key : null),
+        //'apply.league_recommend_name': leagueRecommendName !== null ? leagueRecommendName.trim() : null,
         'apply.league_recommend': leagueRecommend !== null ? leagueRecommend.trim() : null,
         'apply.league_other': league != null && !this.$vctool.isArray(league) ? league.val : null,
         'apply.experience': experience != null && this.$vctool.isArray(experience) ? experience.map(v => { return v.key }).join(',') : (experience != null && !this.$vctool.isArray(experience) ? experience.key : null),

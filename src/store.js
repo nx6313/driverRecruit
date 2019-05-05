@@ -108,7 +108,9 @@ const store = new Vuex.Store({
           driverType: null,
           certificationType: null,
           certificationCard: null,
-          needHelpGetcertification: null
+          needHelpGetcertification: null,
+          recommendName: null,
+          recommendPhone: null
         },
         intentionInfo: {
           city: null,
