@@ -650,6 +650,10 @@ let router = new Router({
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  window.scrollTo(0, 0)
+  next()
+})
 router.beforeResolve((to, from, next) => {
   if (to.meta.keepAliveName) {
     if (from.name == to.meta.keepAliveName) {

@@ -10,15 +10,15 @@
             <div v-bind:key="`unfold-${doIndex}`" :class="['line', 'doItemUnfoldWrap', doItem.isUnfold ? 'isUnfoldContent' : '']" v-if="doItem.isUnfold">
                 <template v-if="doIndex === 0">
                     <div :class="['cardWrap', 'userPhotoWrap', userPhotoBase64 == null ? 'normalCardWrap' : '']">
-                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择红底正装照片" accept="image/*" @change="selectFile($event, 'user_photo', doItem)">
-                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/user_photo.png')">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择个人自拍照片" accept="image/*" @change="selectFile($event, 'user_photo', doItem)">
+                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/user_photo_.png')">
                         <span v-if="userPhotoBase64 != null" class="imgPreview hasBorder" :style="userPhotoBase64 != null ? { 'background-image': `url(${userPhotoBase64})` } : {}"></span>
                     </div>
                 </template>
                 <template v-if="doIndex === 1">
                     <div :class="['cardWrap', 'salaryCardWrap', salaryCardBase64 == null ? 'normalCardWrap' : '']">
-                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择建行工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
-                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/salary_card.png')">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择邮政工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
+                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/salary_card_cx.png')">
                         <span v-if="salaryCardBase64 != null" class="imgPreview hasBorder" :style="salaryCardBase64 != null ? { 'background-image': `url(${salaryCardBase64})` } : {}"></span>
                     </div>
                     <div class="inputWrap">
@@ -71,41 +71,41 @@ export default {
             userInfo: null,
             doItems: [
                 {
-                    title: '二寸红底正装照片',
-                    minTitle: '正装深色领带',
+                    title: '个人自拍照片',
+                    minTitle: '请确保图像五官清晰',
                     isUnfold: false,
                     isOk: false
                 },
                 {
-                    title: '建行工资卡',
+                    title: '邮政工资卡',
                     minTitle: '请填写开户行信息',
                     isUnfold: false,
                     isOk: false
-                },
-                {
-                    title: '户口簿个人页',
-                    minTitle: '只上传个人页',
-                    isUnfold: false,
-                    isOk: false
-                },
-                {
-                    title: '肝功能体检报告',
-                    minTitle: '',
-                    isUnfold: false,
-                    isOk: false
-                },
-                {
-                    title: '心电体检报告',
-                    minTitle: '',
-                    isUnfold: false,
-                    isOk: false
-                },
-                {
-                    title: 'X光胸透体检报告',
-                    minTitle: '',
-                    isUnfold: false,
-                    isOk: false
                 }
+                // {
+                //     title: '户口簿个人页',
+                //     minTitle: '只上传个人页',
+                //     isUnfold: false,
+                //     isOk: false
+                // },
+                // {
+                //     title: '肝功能体检报告',
+                //     minTitle: '',
+                //     isUnfold: false,
+                //     isOk: false
+                // },
+                // {
+                //     title: '心电体检报告',
+                //     minTitle: '',
+                //     isUnfold: false,
+                //     isOk: false
+                // },
+                // {
+                //     title: 'X光胸透体检报告',
+                //     minTitle: '',
+                //     isUnfold: false,
+                //     isOk: false
+                // }
             ],
             // 证件照
             userPhoto: null,
@@ -303,7 +303,8 @@ export default {
             })
         },
         readFinish: function() {
-            if (this.userPhoto == null || this.salaryCard == null || this.salaryCardAddress == '' || this.accountCard == null || this.liver == null || this.heart == null || this.xLight == null) {
+            // this.userPhoto == null || this.salaryCard == null || this.salaryCardAddress == '' || this.accountCard == null || this.liver == null || this.heart == null || this.xLight == null
+            if (this.userPhoto == null || this.salaryCard == null || this.salaryCardAddress == '') {
                 this.$comfun.showToast(this, '请先上传所有需要的文件内容')
                 return false
             }
@@ -318,11 +319,11 @@ export default {
                 type: 'induction',
                 'induction.photo': this.$store.state.driverRecruitData.policyDataInfo.userPhoto,
                 'induction.bankcar': this.$store.state.driverRecruitData.policyDataInfo.salaryCard,
-                'induction.bankaddress': this.$store.state.driverRecruitData.policyDataInfo.salaryCardAddress,
-                'induction.residence': this.$store.state.driverRecruitData.policyDataInfo.accountCard,
-                'induction.liver': this.$store.state.driverRecruitData.policyDataInfo.liver,
-                'induction.ecg': this.$store.state.driverRecruitData.policyDataInfo.heart,
-                'induction.xray': this.$store.state.driverRecruitData.policyDataInfo.xLight
+                'induction.bankaddress': this.$store.state.driverRecruitData.policyDataInfo.salaryCardAddress
+                // 'induction.residence': this.$store.state.driverRecruitData.policyDataInfo.accountCard,
+                // 'induction.liver': this.$store.state.driverRecruitData.policyDataInfo.liver,
+                // 'induction.ecg': this.$store.state.driverRecruitData.policyDataInfo.heart,
+                // 'induction.xray': this.$store.state.driverRecruitData.policyDataInfo.xLight
             }).then((request) => {
                 this.$comfun.hideLoading('applyRuleRead')
                 if (request.data.status == 'OK') {
@@ -482,7 +483,7 @@ export default {
         pointer-events: none;
     }
     .userPhotoWrap {
-        width: 6rem;
+        width: 12rem;
     }
     .salaryCardWrap {
         width: 13rem;
