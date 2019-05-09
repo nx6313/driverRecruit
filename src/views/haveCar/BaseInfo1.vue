@@ -47,6 +47,13 @@ export default {
           require: true
         },
         {
+          label: '身份证号',
+          hint: '请输入您的身份证号',
+          type: 'text',
+          model: '',
+          require: true
+        },
+        {
           label: '手机号码',
           hint: '请输入您的手机号',
           type: 'text',
@@ -103,7 +110,8 @@ export default {
       this.showCertificationUpload = pageData.showCertificationUpload
       this.input1[0].model = pageData.input1[0].model
       this.input1[1].model = pageData.input1[1].model
-      this.input1[4].model = pageData.input1[4].model
+      this.input1[2].model = pageData.input1[2].model
+      this.input1[5].model = pageData.input1[5].model
       this.input2[0].model = pageData.input2[0].model
       this.input3[0].model = pageData.input3[0].model
       this.input3[1].model = pageData.input3[1].model
@@ -161,8 +169,10 @@ export default {
     toNext: function() {
       if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
       if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '姓名中不能含有特殊字符'); return false }
-      if (this.input1[4].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的现居住地'); return false }
-      if (SOME_RULES.emoji.test(this.input1[4].model.trim())) { this.$comfun.showToast(this, '现居住地中不能含有特殊字符'); return false }
+      if (this.input1[2].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的身份证号'); return false }
+      if (!SOME_RULES.idCard.test(this.input1[2].model.trim())) { this.$comfun.showToast(this, '请输入正确的身份证号'); return false }
+      if (this.input1[5].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的现居住地'); return false }
+      if (SOME_RULES.emoji.test(this.input1[5].model.trim())) { this.$comfun.showToast(this, '现居住地中不能含有特殊字符'); return false }
       if (this.input2[0].model.trim() == '') { this.$comfun.showToast(this, '请先选择您是否拥有网约车司机从业资格证'); return false }
       if (this.input2[0].model.trim() == '1' && this.$store.state.driverRecruitData.baseInfoComplete.certificationCard == null) { this.$comfun.showToast(this, '请先上传您的网约车司机从业资格证'); return false }
       if (this.input3[0].model.trim() != '') {
@@ -187,8 +197,12 @@ export default {
         value: this.input1[1].model.trim()
       })
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
-        key: 'phone',
+        key: 'idcarNo',
         value: this.input1[2].model.trim()
+      })
+      this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+        key: 'phone',
+        value: this.input1[3].model.trim()
       })
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
         key: 'driverType',
@@ -196,7 +210,7 @@ export default {
       })
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
         key: 'addressDetail',
-        value: this.input1[4].model.trim()
+        value: this.input1[5].model.trim()
       })
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
         key: 'certificationType',

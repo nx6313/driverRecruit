@@ -302,6 +302,7 @@ export default {
           'apply.d_type': this.$store.state.userBaseInfo.dType,
           'apply.person_name': this.$store.state.driverRecruitData.baseInfoComplete.personName,
           'apply.person_sex': this.$store.state.driverRecruitData.baseInfoComplete.personSex,
+          'apply.idcar_no': this.$store.state.driverRecruitData.baseInfoComplete.idcarNo,
           'apply.phone': this.$store.state.driverRecruitData.baseInfoComplete.phone,
           'apply.address_detail': this.$store.state.driverRecruitData.baseInfoComplete.addressDetail,
           'apply.is_have_qualification': this.$store.state.driverRecruitData.baseInfoComplete.certificationType,
