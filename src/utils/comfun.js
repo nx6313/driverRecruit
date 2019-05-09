@@ -30,6 +30,7 @@ const Axios = axios.create({
 Axios.interceptors.response.use((response) => {
   return response
 }, (error) => {
+  console.log(error)
   loadingManager.forEach((loader) => {
     loader.hide()
   })
@@ -41,11 +42,23 @@ Axios.interceptors.response.use((response) => {
     })
   } else {
     // eslint-disable-next-line
-    console.log(error)
-    DialogMsg.installMsg({
-      msg: '请求出错',
-      duration: 2000
-    })
+    if (error.response) {
+      // 请求已发出，但服务器响应的状态码不在 2xx 范围内
+      DialogMsg.installMsg({
+        msg: `请求出错，错误码：${error.response.status}，请联系客服`,
+        duration: 2000
+      })
+    } else if (error.request) {
+      DialogMsg.installMsg({
+        msg: '请求未响应，请检查您的网络连接',
+        duration: 2000
+      })
+    } else {
+      DialogMsg.installMsg({
+        msg: '请求出错',
+        duration: 2000
+      })
+    }
   }
   if (loginDialog != null) {
     loginDialog.destory()
