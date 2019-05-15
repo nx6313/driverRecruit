@@ -17,8 +17,8 @@
                 </template>
                 <template v-if="doIndex === 1">
                     <div :class="['cardWrap', 'salaryCardWrap', salaryCardBase64 == null ? 'normalCardWrap' : '']">
-                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择邮政工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
-                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/salary_card_cx.png')">
+                        <input v-if="showFileSelectInput" type="file" class="fileInput" title="请选择建行工资卡" accept="image/*" @change="selectFile($event, 'salary_card', doItem)">
+                        <img class="cardDisplay showBorder" v-lazy="require('@/assets/salary_card.png')">
                         <span v-if="salaryCardBase64 != null" class="imgPreview hasBorder" :style="salaryCardBase64 != null ? { 'background-image': `url(${salaryCardBase64})` } : {}"></span>
                     </div>
                     <div class="inputWrap">
@@ -77,7 +77,7 @@ export default {
                     isOk: false
                 },
                 {
-                    title: '邮政工资卡',
+                    title: '建行工资卡',
                     minTitle: '请填写开户行信息',
                     isUnfold: false,
                     isOk: false
