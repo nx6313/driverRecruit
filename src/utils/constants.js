@@ -17,8 +17,8 @@ export const APP_CONFIG = {
 export const CONFIG_DATA = {
   fullTimeContactPhone: '0351-3183896', // 全职自营 联系人电话
   fullTimeContactPeople: '王经理', // 全职自营 联系人姓名
-  joinContactPhone: '0351-3188009', // 加盟司机 联系人电话
-  joinContactPeople: '李经理', // 加盟司机 联系人姓名
+  joinContactPhone: '0351-3183896', // 加盟司机 联系人电话
+  joinContactPeople: '王经理', // 加盟司机 联系人姓名
 
   idCardOcrApiKey: '9be531fdf84fd71b53aba94caad95178', // 数据宝 身份证OCR识别（尊享版） ApiKey
   driverCardOcrApiKey: 'a5d74317a5f3968eed5fb016fd3f3aaa', // 数据宝 驾驶证OCR识别 ApiKey
