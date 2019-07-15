@@ -9,7 +9,7 @@
       </div>
       <span class="uploadTip">上传网约车从业资格证</span>
     </BaseInfoItem>
-    <BaseInfoItem title="填写推荐人信息（无 可不填）" :titleIcon="require('@/assets/logo.png')" :inputs="input3"/>
+    <BaseInfoItem title="填写推荐人信息（无 可不填）" minTitle="请您如实填写推荐人及推荐人联系方式（提交后不可修改）" :titleIcon="require('@/assets/logo.png')" :inputs="input3"/>
     <div class="pageTip" v-if="!showCertificationUpload">查看<span @click="toFlow">《网约车从业资格证》</span>办理流程</div>
     <span class="toNextStep" @click="toNext">下一步</span>
   </div>

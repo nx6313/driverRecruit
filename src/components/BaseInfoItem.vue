@@ -4,12 +4,16 @@
       <img class="itemTitleIcon" v-lazy="titleIcon">
       <span class="itemTitleContent">{{title}}</span>
     </div>
+    <div class="itemMinTitleWrap" v-if="minTitle">
+      <span class="itemMinTitleContent">{{minTitle}}</span>
+    </div>
     <template v-if="inputs.length == 0">
       <div class="itemQuestionSelectWrap">
         <span class="questionContent">{{question}}</span>
         <div class="answersWrap">
           <template v-for="(answer, index) in answers">
-            <span v-bind:key="index" v-if="!/^\S+(\[\S+\]){1}$/.test(answer)" @click="selectThisAnswer(index, answer)" :class="['answerItem', thisAnswerSelected(index, answer) ? 'current-selected' : '']">{{answer}}</span>
+            <span v-bind:key="index" v-if="!/^\S+(\[\S+\]){1}$/.test(answer) && !/^(TIP>\S+){1}$/.test(answer)" @click="selectThisAnswer(index, answer)" :class="['answerItem', thisAnswerSelected(index, answer) ? 'current-selected' : '']">{{answer}}</span>
+            <span v-bind:key="index" v-if="/^(TIP>\S+){1}$/.test(answer)" class="answerTipItem">{{answer.substr(4, answer.length)}}</span>
           </template>
         </div>
       </div>
@@ -62,6 +66,9 @@ export default {
     },
     title: {
       default: '基础信息标题'
+    },
+    minTitle: {
+      default: null
     },
     question: {
       default: '基础信息提示问题'
@@ -322,6 +329,31 @@ export default {
     color: #33374b;
   }
 }
+.itemMinTitleWrap {
+  position: relative;
+  background: #fff;
+  color: #686868;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  padding-left: 2.9rem;
+  padding-right: 0.8rem;
+  font-size: 0.7rem;
+}
+.itemMinTitleWrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  left: 0.6rem;
+  width: 2rem;
+  height: 1.6rem;
+  display: block;
+  background-image: url('./../assets/icon_d_info.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  background-position: center;
+}
 .itemQuestionSelectWrap {
   position: relative;
   .questionContent {
@@ -350,6 +382,33 @@ export default {
     .current-selected {
       border: 1px solid #db3a09;
       background: #ffffff;
+    }
+    .answerTipItem {
+      position: relative;
+      background: #fff;
+      color: #686868;
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
+      padding-left: 2.2rem;
+      padding-right: 0.8rem;
+      font-size: 0.7rem;
+      margin-bottom: -0.8rem;
+      margin-top: 0.4rem;
+    }
+    .answerTipItem::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      left: 0.1rem;
+      width: 2rem;
+      height: 1.6rem;
+      display: block;
+      background-image: url('./../assets/icon_d_info.png');
+      background-repeat: no-repeat;
+      background-size: auto 100%;
+      background-position: center;
     }
   }
 }

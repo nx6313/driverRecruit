@@ -20,7 +20,7 @@ export default {
     return {
       isMustSelect: false,
       answers_1: ['癫痫', '心脏病', '各类传染性疾病', '精神类疾病', '各类贫血、败血症', '高血压等血栓性疾病', '阑尾炎'],
-      answers_2: ['人才市场', '微信', '平台', '推荐人姓名[league_recommend_name]', '推荐人联系方式[league_recommend_phone]'],
+      answers_2: ['人才市场', '微信', '平台', 'TIP>请您如实填写推荐人及推荐人联系方式（提交后不可修改）', '推荐人姓名[league_recommend_name]', '推荐人联系方式[league_recommend_phone]'],
       answers_3: ['滴滴', '首汽', '曹操专车', '神州专车']
     }
   },
