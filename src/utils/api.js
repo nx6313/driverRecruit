@@ -23,6 +23,8 @@ export default {
     applyRuleRead: 'member/api/member/applyRuleRead',
     // 提交加盟车一项数据信息
     saveApplyDriverIntention: 'member/api/member/saveApplyDriverIntention',
+    // 获取城际车支持城市列表
+    getIntercityCityList: 'driver/api/intercity/queryBranch',
 
     // 数据宝 上传图片
     dataProUploadImg: `${BASE_URL.datapro_server_base_address_file}/img/upload`,

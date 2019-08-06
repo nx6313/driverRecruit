@@ -108,6 +108,25 @@ let router = new Router({
         }
       }
     },
+    {
+      path: '/cityCarHome',
+      name: 'cityCarHome',
+      component: () => import('./views/CityCarHome.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '城际专车',
+        pageBg: {
+          backgroundColor: '#fff'
+        }
+      }
+    },
     /** 专职自营司机相关页面 */
     {
       path: '/fullTime/baseInfoComplete',
@@ -645,6 +664,75 @@ let router = new Router({
       },
       meta: {
         title: '租车加盟审核结果页',
+        pageBg: '#ffffff'
+      }
+    },
+    /** 城际专车相关页面 */
+    {
+      path: '/cityCar/workCitySelect',
+      name: 'cityCarWorkCitySelect',
+      component: () => import('./views/cityCar/WorkCitySelect.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '选择城市',
+        pageBg: '#ffffff'
+      }
+    },
+    {
+      path: '/cityCar/infoGet',
+      name: 'cityCarInfoGet',
+      component: () => import('./views/cityCar/InfoGet.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '司机招募',
+        keepAliveName: 'cityCarFlow'
+      }
+    },
+    {
+      path: '/cityCar/flow',
+      name: 'cityCarFlow',
+      component: () => import('./views/cityCar/Flow.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '网约车从业资格证办理流程',
+        pageBg: '#ffffff'
+      }
+    },
+    {
+      path: '/cityCar/auditResult',
+      name: 'cityCarAuditResult',
+      component: () => import('./views/cityCar/AuditResult.vue'),
+      beforeEnter: (to, from, next) => {
+        refForVuexData()
+        if (store.state.userBaseInfo.phone == null) {
+          next('/')
+        } else {
+          next()
+        }
+      },
+      meta: {
+        title: '司机招募',
         pageBg: '#ffffff'
       }
     }

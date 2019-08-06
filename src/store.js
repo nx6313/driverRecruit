@@ -110,7 +110,8 @@ const store = new Vuex.Store({
           certificationCard: null,
           needHelpGetcertification: null,
           recommendName: null,
-          recommendPhone: null
+          recommendPhone: null,
+          cityIntercityId: null
         },
         intentionInfo: {
           city: null,

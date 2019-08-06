@@ -358,9 +358,9 @@ export default {
 }
 
 .uploadTip {
-    display: block;
-    text-align: center;
-    font-size: 0.92rem;
-    margin-top: 0.2rem;
+  display: block;
+  text-align: center;
+  font-size: 0.92rem;
+  margin-top: 0.2rem;
 }
 </style>

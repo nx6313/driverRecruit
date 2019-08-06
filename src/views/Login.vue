@@ -153,6 +153,9 @@ export default {
             } else if (key === '4') {
               // 租车加盟
               this.$router.replace('/rentCarHome')
+            } else if (key === '5') {
+              // 城际专车
+              this.$router.replace('/cityCarHome')
             }
           } else {
             this.isDriver(this.$store.state.userBaseInfo.phone, () => {
@@ -172,6 +175,9 @@ export default {
                 } else if (key === '4') {
                   // 租车加盟
                   this.$router.replace('/rentCarHome')
+                } else if (key === '5') {
+                  // 城际专车
+                  this.$router.replace('/cityCarHome')
                 }
               }
             })

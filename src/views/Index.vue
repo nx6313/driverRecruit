@@ -17,9 +17,13 @@
             <Marquee :lists="[progressOfAudit]"></Marquee>
           </span>
         </p>
-        <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
+        <!-- <div :class="['selecterItemWrap', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" @click="toADriverRecruit(sel.key)">
           <span class="selecterItemName">{{sel.name}}</span>
           <span class="selecterItemTip">了解详情</span>
+        </div> -->
+        <div :class="['selecterItemWrap2', sel.isRecommend ? 'selecterItemIsRecommend' : '']" v-for="(sel, selIndex) in selecters" v-bind:key="selIndex" :style="{ width: `calc(100% / ${selecters.length} - 0.5rem)` }" @click="toADriverRecruit(sel.key)">
+          <span class="selecterItemName2">{{sel.name.substr(0, 2)}}</span>
+          <span class="selecterItemName2">{{sel.name.substr(2)}}</span>
         </div>
       </div>
     </div>
@@ -114,13 +118,18 @@ export default {
         // },
         {
           key: '1',
-          name: '专车全职',
+          name: '大昌专车',
           isRecommend: false
         },
         {
           key: '3',
-          name: '带车加盟',
+          name: '加盟快车',
           isRecommend: true
+        },
+        {
+          key: '5',
+          name: '城际专车',
+          isRecommend: false
         }
       ],
       userIsDriver: null
@@ -241,6 +250,9 @@ export default {
           } else if (key === '4') {
             // 租车加盟
             this.$router.push('/rentCarHome')
+          } else if (key === '5') {
+            // 城际专车
+            this.$router.push('/cityCarHome')
           }
         } else {
           this.isDriver(this.$store.state.userBaseInfo.phone, () => {
@@ -260,6 +272,9 @@ export default {
               } else if (key === '4') {
                 // 租车加盟
                 this.$router.push('/rentCarHome')
+              } else if (key === '5') {
+                // 城际专车
+                this.$router.push('/cityCarHome')
               }
             }
           })
@@ -404,6 +419,26 @@ export default {
       }
       .selecterItemWrap:nth-of-type(n + 3) {
         margin-top: 1.2rem;
+      }
+      .selecterItemWrap2 {
+        position: relative;
+        display: inline-block;
+        border-radius: 6px;
+        background-color: #FF5252;
+        color: #ffffff;
+        text-align: center;
+        height: 5.7rem;
+        display: -webkit-flex; /* Safari */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        .selecterItemName2 {
+          position: relative;
+          font-size: 1rem;
+          display: block;
+          line-height: 1.6rem;
+        }
       }
       .selecterItemIsRecommend::before {
         content: '';
