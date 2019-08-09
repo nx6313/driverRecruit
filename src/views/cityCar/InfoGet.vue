@@ -99,8 +99,8 @@ export default {
         {
           label: '性别',
           type: 'radio',
-          range: [ { name: '男', value: '男' }, { name: '女', value: '女' } ],
-          model: '男',
+          range: [ { name: '1', value: '男' }, { name: '2', value: '女' } ],
+          model: '1',
           require: true
         }
       ],
@@ -114,6 +114,10 @@ export default {
     }
   },
   created () {
+    this.input1[0].model = this.$store.state.driverRecruitData.baseInfoComplete.personName || ''
+    this.input1[1].model = this.$store.state.driverRecruitData.baseInfoComplete.idcarNo || ''
+    this.input1[2].model = this.$store.state.driverRecruitData.baseInfoComplete.personSex || ''
+    this.input2[0].model = this.$store.state.driverRecruitData.baseInfoComplete.certificationType || ''
     this.idCardABase64 = this.$store.state.driverRecruitData.cardInfo.idCardA
     this.idCardBBase64 = this.$store.state.driverRecruitData.cardInfo.idCardB
     this.driveCardABase64 = this.$store.state.driverRecruitData.cardInfo.driveCardA
@@ -255,7 +259,38 @@ export default {
       if (!SOME_RULES.idCard.test(this.input1[1].model.trim())) { this.$comfun.showToast(this, '请输入正确的身份证号'); return false }
       if (this.input2[0].model.trim() == '') { this.$comfun.showToast(this, '请先选择您是否拥有网约车司机从业资格证'); return false }
       if (this.input2[0].model.trim() == '1' && this.$store.state.driverRecruitData.baseInfoComplete.certificationCard == null) { this.$comfun.showToast(this, '请先上传您的网约车司机从业资格证'); return false }
+      if (this.$store.state.driverRecruitData.cardInfo.idCardA === null) { this.$comfun.showToast(this, '请上传身份证正面'); return false }
+      if (this.$store.state.driverRecruitData.cardInfo.idCardB === null) { this.$comfun.showToast(this, '请上传身份证反面'); return false }
+      if (this.$store.state.driverRecruitData.cardInfo.driveCardA === null) { this.$comfun.showToast(this, '请上传驾驶证正面'); return false }
+      if (this.$store.state.driverRecruitData.cardInfo.driveCardB === null) { this.$comfun.showToast(this, '请上传驾驶证副页'); return false }
       this.saveBaseInfo()
+      let httpParams = {
+        'driver.d_type': this.$store.state.userBaseInfo.dType,
+        'driver.phone': this.$store.state.userBaseInfo.phone,
+        'driver.real_name': this.$store.state.driverRecruitData.baseInfoComplete.personName,
+        'driver.certificate_no': this.$store.state.driverRecruitData.baseInfoComplete.idcarNo,
+        'driver.gender': this.$store.state.driverRecruitData.baseInfoComplete.personSex,
+        'credentials.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
+        'credentials.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
+        'credentials.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
+        'credentials.driverlicense_reverse	': this.$store.state.driverRecruitData.cardInfo.driveCardB,
+        'credentials.cert_type': this.$store.state.driverRecruitData.baseInfoComplete.certificationType,
+        'driver.join_business_id': this.$store.state.driverRecruitData.baseInfoComplete.cityIntercityId,
+        'credentials.status': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification || '0'
+      }
+      if (this.$store.state.driverRecruitData.baseInfoComplete.certificationType == '1') {
+        httpParams['credentials.qualification_certificate'] = this.$store.state.driverRecruitData.baseInfoComplete.certificationCard
+      }
+      this.$comfun.showLoading(this, 'saveIntercityInfo', false)
+      this.$comfun.http_post(this, this.$api.saveIntercityInfo, httpParams).then((request) => {
+        this.$comfun.hideLoading('saveIntercityInfo')
+        if (request.data.status == 'OK') {
+          this.$comfun.showToast(this, '资料提交成功，请您耐心等待通知')
+          this.$router.back()
+        } else {
+          this.$comfun.showToast(this, request.data.msg)
+        }
+      })
     },
     saveBaseInfo () {
       this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {

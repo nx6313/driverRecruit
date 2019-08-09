@@ -24,7 +24,9 @@ export default {
   data () {
     return {
       cityList: [],
-      curSelectCity: null
+      curSelectCity: null,
+      curStatus: null, // 0 未提交   1 审核通过   2 审核未通过   3 审核中
+      reason: null
     }
   },
   created() {
@@ -44,8 +46,45 @@ export default {
           })
         }
       } else {
+        this.$comfun.http_post(this, this.$api.getIntercityStatus, {
+          phone: this.$store.state.userBaseInfo.phone
+        }).then(statusData => {
+          console.log('城际专车进度状态', statusData.data)
+          this.curStatus = statusData.data.data.num
+          this.reason = statusData.data.data.message
+        })
         this.$comfun.http_post(this, this.$api.getIntercityCityList).then(cityData => {
+          console.log('城际专车支持城市列表', cityData.data)
           this.cityList = cityData.data.data
+        })
+        this.$comfun.http_post(this, this.$api.getIntercityInfo, {
+          phone: this.$store.state.userBaseInfo.phone
+        }).then(hasInfoData => {
+          console.log('城际专车已注册过的相关信息', hasInfoData.data)
+          if (hasInfoData.data.status == 'OK') {
+            if (hasInfoData.data.data.branch_id) {
+              this.curSelectCity = {
+                id: hasInfoData.data.data.branch_id,
+                county_name: hasInfoData.data.data.branch_county_name
+              }
+            }
+            this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+              key: 'personName',
+              value: hasInfoData.data.data.real_name
+            })
+            this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+              key: 'idcarNo',
+              value: hasInfoData.data.data.certificate_no
+            })
+            this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+              key: 'personSex',
+              value: String(hasInfoData.data.data.gender)
+            })
+            // this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+            //   key: 'certificationType',
+            //   value: hasInfoData.data.data.gender
+            // })
+          }
         })
       }
     },
@@ -61,14 +100,35 @@ export default {
       })
     },
     toRegisterIntercityDriver () {
-      if (this.curSelectCity && this.curSelectCity.id) {
-        this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
-          key: 'cityIntercityId',
-          value: this.curSelectCity.id
-        })
-        this.$router.push('/cityCar/infoGet')
+      if (this.curStatus !== null) {
+        if (this.curStatus == 0 || this.$route.query.outAgain === true) {
+          if (this.curSelectCity && this.curSelectCity.id) {
+            this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+              key: 'cityIntercityId',
+              value: this.curSelectCity.id
+            })
+            this.$router.replace('/cityCar/infoGet')
+          } else {
+            this.$comfun.showToast(this, '请先选择工作城市')
+          }
+        } else {
+          this.$router.replace({
+            path: '/cityCar/auditResult',
+            query: {
+              status: this.curStatus,
+              reason: this.reason
+            }
+          })
+        }
       } else {
-        this.$comfun.showToast(this, '请先选择工作城市')
+        this.$comfun.http_post(this, this.$api.getIntercityStatus, {
+          phone: this.$store.state.userBaseInfo.phone
+        }).then(statusData => {
+          console.log('城际专车', statusData.data)
+          this.curStatus = statusData.data.data.num
+          this.reason = statusData.data.data.message
+          this.toRegisterIntercityDriver()
+        })
       }
     }
   }

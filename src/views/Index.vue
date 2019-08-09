@@ -234,7 +234,7 @@ export default {
           this.$comfun.showToast(this, '未检测到登录信息，请先登录')
         }
       } else {
-        if (this.userIsDriver === true) {
+        if (this.userIsDriver === true && key !== '5') {
           // 已经是司机了
           this.$router.push('/isDriver')
         } else if (this.userIsDriver === false) {
@@ -256,10 +256,10 @@ export default {
           }
         } else {
           this.isDriver(this.$store.state.userBaseInfo.phone, () => {
-            if (this.userIsDriver === true) {
+            if (this.userIsDriver === true && key !== '5') {
               // 已经是司机了
               this.$router.push('/isDriver')
-            } else if (this.userIsDriver === false) {
+            } else {
               if (key === '1') {
                 // 自营专职加盟
                 this.$router.push('/fullTimeHome')

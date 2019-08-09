@@ -137,7 +137,7 @@ export default {
           } else {
             this.userIsDriver = true
           }
-          if (this.userIsDriver === true) {
+          if (this.userIsDriver === true && key !== '5') {
             // 已经是司机了
             this.$router.replace('/isDriver')
           } else if (this.userIsDriver === false) {
@@ -158,27 +158,41 @@ export default {
               this.$router.replace('/cityCarHome')
             }
           } else {
-            this.isDriver(this.$store.state.userBaseInfo.phone, () => {
-              if (this.userIsDriver === true) {
-                // 已经是司机了
-                this.$router.replace('/isDriver')
-              } else if (this.userIsDriver === false) {
-                if (key === '1') {
-                  // 自营专职加盟
-                  this.$router.replace('/fullTimeHome')
-                } else if (key === '2') {
-                  // 购车加盟
-                  this.$router.replace('/buyCarHome')
-                } else if (key === '3') {
-                  // 带车加盟
-                  this.$router.replace('/haveCarHome')
-                } else if (key === '4') {
-                  // 租车加盟
-                  this.$router.replace('/rentCarHome')
-                } else if (key === '5') {
-                  // 城际专车
-                  this.$router.replace('/cityCarHome')
+            this.$comfun.showLoading(this, 'isDriver', false)
+            this.$comfun.http_post(this, this.$api.isDriver, {
+              phone: this.phone.trim()
+            }).then((request) => {
+              this.$comfun.hideLoading('isDriver')
+              console.log('司机招募登录页', request.data)
+              if (request.data.status == 'OK') {
+                if (request.data.data.state === 1) {
+                  this.userIsDriver = false
+                } else {
+                  this.userIsDriver = true
                 }
+                if (this.userIsDriver === true && key !== '5') {
+                  // 已经是司机了
+                  this.$router.replace('/isDriver')
+                } else {
+                  if (key === '1') {
+                    // 自营专职加盟
+                    this.$router.replace('/fullTimeHome')
+                  } else if (key === '2') {
+                    // 购车加盟
+                    this.$router.replace('/buyCarHome')
+                  } else if (key === '3') {
+                    // 带车加盟
+                    this.$router.replace('/haveCarHome')
+                  } else if (key === '4') {
+                    // 租车加盟
+                    this.$router.replace('/rentCarHome')
+                  } else if (key === '5') {
+                    // 城际专车
+                    this.$router.replace('/cityCarHome')
+                  }
+                }
+              } else {
+                this.$comfun.showToast(this, request.data.msg)
               }
             })
           }

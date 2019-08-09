@@ -6,8 +6,9 @@ export const BASE_URL = {
 export const APP_CONFIG = {
   isTest: false, // 设置h5是否为测试环境，将忽略内置环境 开启顶部服务器提示调试工具
   openCredentialsDetaction: false, // 是否开启证件检测
-  localhostServerBaseUrl: 'http://172.18.4.81:8080/'
-  // localhostServerBaseUrl: 'https://test.dcchuxing.com/' // 默认环境   生产服务器:new 、 预生产服务器:newpre 、 测试服:test   仅影响本地
+  // localhostServerBaseUrl: 'http://172.18.4.81:8080/'
+  // localhostServerBaseUrl: 'http://172.18.4.73:8080/'
+  localhostServerBaseUrl: 'https://test.dcchuxing.com/' // 默认环境   生产服务器:new 、 预生产服务器:newpre 、 测试服:test   仅影响本地
 }
 
 export const CONFIG_DATA = {

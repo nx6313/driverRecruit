@@ -23,8 +23,14 @@ export default {
     applyRuleRead: 'member/api/member/applyRuleRead',
     // 提交加盟车一项数据信息
     saveApplyDriverIntention: 'member/api/member/saveApplyDriverIntention',
-    // 获取城际车支持城市列表
+    // 城际司机----获取城际车支持城市列表
     getIntercityCityList: 'driver/api/intercity/queryBranch',
+    // 城际司机----个人信息上传
+    saveIntercityInfo: 'driver/api/intercity/saveIntercityDriver',
+    // 城际司机----获取司机注册过的信息
+    getIntercityInfo: 'driver/api/intercity/queryDriver',
+    // 城际司机----获取司机审核情况
+    getIntercityStatus: 'driver/api/intercity/getDriverStatus',
 
     // 数据宝 上传图片
     dataProUploadImg: `${BASE_URL.datapro_server_base_address_file}/img/upload`,
