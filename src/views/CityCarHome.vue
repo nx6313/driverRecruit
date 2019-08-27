@@ -25,7 +25,7 @@ export default {
     return {
       cityList: [],
       curSelectCity: null,
-      curStatus: null, // 0 未提交   1 审核通过   2 审核未通过   3 审核中
+      curStatus: null, // 0 未提交   1 审核通过   2 审核未通过   3 审核中   4 非城际司机
       reason: null
     }
   },
@@ -80,6 +80,10 @@ export default {
               key: 'personSex',
               value: String(hasInfoData.data.data.gender)
             })
+            this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
+              key: 'driverCredentials_id',
+              value: hasInfoData.data.data.driverCredentials_id
+            })
             // this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
             //   key: 'certificationType',
             //   value: hasInfoData.data.data.gender
@@ -101,7 +105,7 @@ export default {
     },
     toRegisterIntercityDriver () {
       if (this.curStatus !== null) {
-        if (this.curStatus == 0 || this.$route.query.outAgain === true) {
+        if (this.curStatus == 0 || this.curStatus == 4 || this.$route.query.outAgain === true) {
           if (this.curSelectCity && this.curSelectCity.id) {
             this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
               key: 'cityIntercityId',

@@ -273,10 +273,11 @@ export default {
         'credentials.idcard_positive': this.$store.state.driverRecruitData.cardInfo.idCardA,
         'credentials.idcard_reverse': this.$store.state.driverRecruitData.cardInfo.idCardB,
         'credentials.driverlicense_positive': this.$store.state.driverRecruitData.cardInfo.driveCardA,
-        'credentials.driverlicense_reverse	': this.$store.state.driverRecruitData.cardInfo.driveCardB,
+        'credentials.driverlicense_reverse': this.$store.state.driverRecruitData.cardInfo.driveCardB,
         'credentials.cert_type': this.$store.state.driverRecruitData.baseInfoComplete.certificationType,
         'driver.join_business_id': this.$store.state.driverRecruitData.baseInfoComplete.cityIntercityId,
-        'credentials.status': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification || '0'
+        'credentials.status': this.$store.state.driverRecruitData.baseInfoComplete.needHelpGetcertification || '0',
+        'credentials.id': this.$store.state.driverRecruitData.baseInfoComplete.driverCredentials_id || ''
       }
       if (this.$store.state.driverRecruitData.baseInfoComplete.certificationType == '1') {
         httpParams['credentials.qualification_certificate'] = this.$store.state.driverRecruitData.baseInfoComplete.certificationCard
