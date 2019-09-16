@@ -15,6 +15,13 @@ export default {
   created () {
     this.cityList = this.$store.state.pageData.data.list
     this.curSelectCityId = this.$store.state.pageData.data.curCityId
+    if (this.cityList && this.cityList.length > 0 && this.curSelectCityId) {
+      this.$store.commit('setPageData', {
+        data: {
+          selected: this.cityList.filter(v => { return v.id == this.curSelectCityId })[0]
+        }
+      })
+    }
   },
   methods: {
     selectThisCity (city) {

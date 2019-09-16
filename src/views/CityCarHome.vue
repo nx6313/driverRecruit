@@ -78,7 +78,7 @@ export default {
             })
             this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
               key: 'personSex',
-              value: String(hasInfoData.data.data.gender)
+              value: hasInfoData.data.data.gender ? String(hasInfoData.data.data.gender) : ''
             })
             this.$store.commit('setDriverRecruitData_BaseInfoCompleteByKey', {
               key: 'driverCredentials_id',

@@ -116,7 +116,7 @@ export default {
   created () {
     this.input1[0].model = this.$store.state.driverRecruitData.baseInfoComplete.personName || ''
     this.input1[1].model = this.$store.state.driverRecruitData.baseInfoComplete.idcarNo || ''
-    this.input1[2].model = this.$store.state.driverRecruitData.baseInfoComplete.personSex || ''
+    this.input1[2].model = this.$store.state.driverRecruitData.baseInfoComplete.personSex || '1'
     this.input2[0].model = this.$store.state.driverRecruitData.baseInfoComplete.certificationType || ''
     this.idCardABase64 = this.$store.state.driverRecruitData.cardInfo.idCardA
     this.idCardBBase64 = this.$store.state.driverRecruitData.cardInfo.idCardB
@@ -254,6 +254,7 @@ export default {
     },
     toSubmit () {
       if (this.input1[0].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的姓名'); return false }
+      if (this.input1[0].model.trim().length > 8) { this.$comfun.showToast(this, '姓名长度不能大于8个字符'); return false }
       if (SOME_RULES.emoji.test(this.input1[0].model.trim())) { this.$comfun.showToast(this, '姓名中不能含有特殊字符'); return false }
       if (this.input1[1].model.trim() == '') { this.$comfun.showToast(this, '请先输入您的身份证号'); return false }
       if (!SOME_RULES.idCard.test(this.input1[1].model.trim())) { this.$comfun.showToast(this, '请输入正确的身份证号'); return false }
